@@ -60,7 +60,6 @@
   <ItemGroup>
     <Folder Include="Properties" />
     <Folder Include="9-Publish" />
-    <Folder Include="9-Publish\1-Scripts" />
     <Folder Include="9-Publish\2-Depolyment" />
     <Folder Include="1-Meta-Data-Model" />
     <Folder Include="1-Meta-Data-Model\1-MDM-Meta-Data-Model" />

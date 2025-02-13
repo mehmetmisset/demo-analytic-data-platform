@@ -19,8 +19,6 @@
 :r ".\1-Transformations\Script.usp_transformation_attribute.sql"
 :r ".\1-Transformations\Script.usp_transformation_attribute_all.sql"
 
-/* 2-Validation */
-:r ".\2-Validation\Script1.usp_validation_of_definitions.sql"
-
 /* 3-Documentation */
 :r ".\3-documentation\Script.usp_build_html_file_dataset.sql"
+:r ".\3-documentation\Script.usp_build_html_file_dataset_all.sql"

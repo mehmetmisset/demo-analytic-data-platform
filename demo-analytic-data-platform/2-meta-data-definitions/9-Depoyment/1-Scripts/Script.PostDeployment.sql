@@ -80,3 +80,9 @@ GO
 BEGIN EXEC ##build_html_file_dataset_all @ip_is_debugging = 0; END
 GO
 
+PRINT('/* ------------------------------------------------------------------------- */');
+PRINT('/* Execute all "Validation" of "metadata"-definitions.                       */');
+PRINT('/* ------------------------------------------------------------------------- */');
+GO
+:r ".\2-Validation\Script1.usp_validation_of_definitions.sql"
+GO
