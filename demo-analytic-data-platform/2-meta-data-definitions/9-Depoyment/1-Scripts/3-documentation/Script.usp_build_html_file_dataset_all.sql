@@ -25,7 +25,7 @@ BEGIN
   WHILE ((SELECT COUNT(*) FROM ##dst) > 0) BEGIN
     
     /* Fetch Next "dataset" and remove from temp-table.. */
-    SELECT @id_dataset = id_dataset FROM (SELECT TOP 1 * FROM ##dst);
+    SELECT @id_dataset = id_dataset FROM (SELECT TOP 1 * FROM ##dst) AS dst;
     DELETE FROM ##dst WHERE id_dataset = @id_dataset;
 
 	  /* Extract all "Transformation"-parts from "source"-query. */
