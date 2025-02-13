@@ -239,6 +239,7 @@ BEGIN
           EXEC f @id, @tx; SET @tx = N'      </div>';
 
         SET @ni_prt += 1; END
+      
       END
     
     END

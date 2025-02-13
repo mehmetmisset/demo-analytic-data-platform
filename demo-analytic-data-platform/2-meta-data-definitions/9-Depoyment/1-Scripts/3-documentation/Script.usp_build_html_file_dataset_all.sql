@@ -23,15 +23,15 @@ BEGIN
   END
 
   WHILE ((SELECT COUNT(*) FROM ##dst) > 0) BEGIN
+    
+    /* Fetch Next "dataset" and remove from temp-table.. */
+    SELECT @id_dataset = id_dataset FROM (SELECT TOP 1 * FROM ##dst);
+    DELETE FROM ##dst WHERE id_dataset = @id_dataset;
 
 	  /* Extract all "Transformation"-parts from "source"-query. */
     EXEC ##build_html_file_dataset
       @ip_id_dataset   = @id_dataset,
       @ip_is_debugging = @ip_is_debugging;
-
-    /* Remove processed "dataset". */
-    DELETE FROM ##dst
-    WHERE id_dataset = @id_dataset;
 
   END
   
