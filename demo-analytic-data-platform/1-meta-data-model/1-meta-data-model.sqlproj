@@ -47,6 +47,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <SqlTargetName>meta</SqlTargetName>
+    <TreatTSqlWarningsAsErrors>True</TreatTSqlWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
@@ -60,7 +61,7 @@
     <Folder Include="Properties" />
     <Folder Include="9-Publish" />
     <Folder Include="9-Publish\1-Scripts" />
-    <Folder Include="9-Publish\2-Synology" />
+    <Folder Include="9-Publish\2-Depolyment" />
     <Folder Include="1-Meta-Data-Model" />
     <Folder Include="1-Meta-Data-Model\1-MDM-Meta-Data-Model" />
     <Folder Include="1-Meta-Data-Model\2-OHG-Organisation-Hierarchy-Group" />
@@ -131,7 +132,8 @@
     <Build Include="8-Commen-Features\Schemas\gnc_commen.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="9-Publish\2-Synology\1-meta.synology.publish.xml" />
+    <None Include="9-Publish\2-Depolyment\1-meta.synology.publish.xml" />
+    <None Include="9-Publish\2-Depolyment\1-meta-data-model-blank-profiel.publish.xml" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include="$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\130\SqlSchemas\master.dacpac">
