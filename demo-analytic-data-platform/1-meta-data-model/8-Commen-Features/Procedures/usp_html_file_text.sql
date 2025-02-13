@@ -28,7 +28,7 @@ BEGIN
   VALUES (
     @ip_id_dataset, 
     @ni_line + 1, 
-    @ip_tx_line
+    ISNULL(@ip_tx_line, '<!-- empty string provided --!>')
   );
 
 END

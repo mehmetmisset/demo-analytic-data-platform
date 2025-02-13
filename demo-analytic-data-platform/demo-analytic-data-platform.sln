@@ -5,6 +5,8 @@ VisualStudioVersion = 17.12.35728.132 d17.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "1-meta-data-model", "1-meta-data-model\1-meta-data-model.sqlproj", "{2FB62B5E-A2C0-43C8-BCAA-52278D10FEDD}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "2-meta-data-definitions", "2-meta-data-definitions\2-meta-data-definitions.sqlproj", "{33B6A857-1660-495F-BE32-78F22065298F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,6 +19,12 @@ Global
 		{2FB62B5E-A2C0-43C8-BCAA-52278D10FEDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2FB62B5E-A2C0-43C8-BCAA-52278D10FEDD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2FB62B5E-A2C0-43C8-BCAA-52278D10FEDD}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{33B6A857-1660-495F-BE32-78F22065298F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33B6A857-1660-495F-BE32-78F22065298F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33B6A857-1660-495F-BE32-78F22065298F}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{33B6A857-1660-495F-BE32-78F22065298F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33B6A857-1660-495F-BE32-78F22065298F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33B6A857-1660-495F-BE32-78F22065298F}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
