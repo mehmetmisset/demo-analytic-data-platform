@@ -1,26 +1,115 @@
-# Data Ingestion / Transformation Requirements
-## How to capture them into (meta) data model and why you should!
+# __Data Ingestion / Transformation Requirements__
+## *__How to capture them into (meta) data model and why you should!__*
 
 by Mehmet (P.R.M.) Misset
 
-##  1. The General Idea
-### 1.1	Requirements need gathering always
+##  __1. The General Idea__
+### __1.1. Requirements need gathering always__
 
 ---
 
-<p style="text-align: center;">
+<p style="text-align: center;"><i>
     Any project needs requirement to be written down,<br>
     why not do it in a structed way
-</p>
+</i></p>
 
 ---
-
-[![](https://mermaid.ink/img/pako:eNqFVFGLm0AQ_isycG-aqsnmjJRCwFIKPSiX0IfWe5iLEyPVdVnX0DTJf-9uEtc0XjgfBOf75vtmZsfdw6rOCGIgmRSYS6xS7ujn_H54cCZespx7CSr0lhJ5s65lhaqouTeXhGcaKvUrhblSsnhtFTUpvJyBrDGASW5I9WEhTfhG7jtKZRltJYaMJxSi4HlPypoh6WLWk_ANL1uqpVFpaF95To1hOJ-_LU-YncPYWzwn3kJpgZX3TGuSxFd0srv0qsSlV7UTvXC2NUUmtKWyFhVx5RiN9moYVa4JunusSJF0vsi6FT2K8hq18S2W_2X9wLLtTe30ncPB8-q9oTuxk8IGG0ePwUH-8VV--FR0_aYwzNGn2uWkYJvpUEO06DBZn80guUMPZtrvlDMQ1DtzK2jnZzkoB6ZK3OnHLpotGQcOxvR-Q9eolrlB-wqN8X2Pa3SoYrfgjZPsOSkHFyrS611k-l_em3gKakOV3gnDzlD-NvSj5mGr6sWOryBWsiUX9L7lG4jXWDb6qxUZKrrcBTYqkP-s66pL0Z8Q7-EPxAGbjvxwxvyIzXwWscCFHcThKGRRMPZ9P4z8xxkL2dGFvycBfxSNZ9E0CNiEsWn4OJm4QFmhavl0vohO99HxH-GUcO8?type=png)](https://mermaid.live/edit#pako:eNqFVFGLm0AQ_isycG-aqsnmjJRCwFIKPSiX0IfWe5iLEyPVdVnX0DTJf-9uEtc0XjgfBOf75vtmZsfdw6rOCGIgmRSYS6xS7ujn_H54cCZespx7CSr0lhJ5s65lhaqouTeXhGcaKvUrhblSsnhtFTUpvJyBrDGASW5I9WEhTfhG7jtKZRltJYaMJxSi4HlPypoh6WLWk_ANL1uqpVFpaF95To1hOJ-_LU-YncPYWzwn3kJpgZX3TGuSxFd0srv0qsSlV7UTvXC2NUUmtKWyFhVx5RiN9moYVa4JunusSJF0vsi6FT2K8hq18S2W_2X9wLLtTe30ncPB8-q9oTuxk8IGG0ePwUH-8VV--FR0_aYwzNGn2uWkYJvpUEO06DBZn80guUMPZtrvlDMQ1DtzK2jnZzkoB6ZK3OnHLpotGQcOxvR-Q9eolrlB-wqN8X2Pa3SoYrfgjZPsOSkHFyrS611k-l_em3gKakOV3gnDzlD-NvSj5mGr6sWOryBWsiUX9L7lG4jXWDb6qxUZKrrcBTYqkP-s66pL0Z8Q7-EPxAGbjvxwxvyIzXwWscCFHcThKGRRMPZ9P4z8xxkL2dGFvycBfxSNZ9E0CNiEsWn4OJm4QFmhavl0vohO99HxH-GUcO8)
 
 In any (data) project, gathering requirements is a fundamental step. However, these requirements often remain scattered across various documents, emails, and meeting notes. By storing them in a structured way, such as a metadata model, you can ensure that all requirements are easily accessible, traceable, and manageable. This structured approach not only saves time but also reduces the risk of missing or misinterpreting requirements.
 
-###	It should be part of the development process
+###	__1.2. It should be part of the development process__
 
 Integrating the structured storage of requirements as part of the development process ensures that all team members have a clear understanding of what needs to be achieved. This integration promotes consistency and alignment across the project lifecycle, from initial planning to final deployment. By making it a standard practice, you can enhance collaboration and streamline the development process.
 
 
+
+## __2. Why should you want to do this__
+
+### __2.1 Standardization__
+Standardizing the way requirements are captured and stored helps in maintaining uniformity across projects. It ensures that all team members follow the same procedures, making it easier to onboard new members and scale projects. Standardization also facilitates better communication and understanding among stakeholders, as everyone is on the same page regarding the project's goals and requirements.
+
+### *Standardization will provide some key features that can be achieved*
+
+> __Scalability:__<br>
+By defining only table definitions and transformations, the solution can scale efficiently. Automated checks for cardinality, uniqueness, validity, and consistency can be implemented.<br>
+
+> __Compliance with Naming Conventions:__<br>
+Ensure compliance with naming conventions by storing transformation definitions in the database. Functional names can be automatically generated, with an override mechanism if needed.<br>
+
+> __Parallel Processing:__<br> 
+Splitting datasets and merging them later can improve performance, especially for large and wide datasets. Having this in a framework gives the engineers / developers the freedom to make parallel processing a conscious design choice.<br>
+
+> __Vendor Independence:__<br> 
+The solution can be implemented on various SQL engines like Databricks, Microsoft Fabric, Azure SQL Server, SkySQL,  DuckDB, any SQL Engine will do. This will ensuring vendor independence. Any SQL processing engine will be able to process the data pipeline that can be generated from the model.
+
+### __2.2	Improved insight/visibility__
+
+A structured approach to capturing requirements provides improved insight and visibility into the project's progress. It allows for easy tracking of changes, dependencies, and potential issues. With all requirements stored in a centralized location, stakeholders can quickly access and review them, leading to more informed decision-making and better project outcomes.<br>
+Extraction of key Data management information like Datal Lineage and mapping to Business Data Glossaries is possible.
+
+### __2.3. Automation__
+Automation is a key benefit of storing requirements in a structured way. By leveraging tools and technologies, you can automate various aspects of the development process, such as generating documentation, validating requirements, and tracking changes. Automation reduces manual effort, minimizes errors, and accelerates the overall development timeline.
+
+### *Some key aspects are*
+> __Automatic Dependency Handling:__<br> 
+By storing definitions in the database, dependencies can be automatically managed and visualized through data-lineage graphs. Loop dependencies can automatically be detected and flagged during deployment.<br>
+
+> __Technical Documentation:__<br>
+Generate technical documentation based on the metadata stored in the database. This can include links to business attributes from the Business Data Glossary. Small Data-Lineage graphs on the mapping of Transformations.<br> 
+
+> __Automatic Data-Lineage:__<br>
+Data-lineage can be automatically determined at the column level, providing detailed insights into data transformations.<br>
+
+> __Easy Reloading:__<br>
+Reloading datasets can be simplified by restarting the data pipeline. If data is incorrect due to new insights or errors, the dataset can be dropped and reloaded, with dependent datasets automatically updated.
+ 
+## 3. How to do this
+3.1	Meta Data Model
+
+[![](https://mermaid.ink/img/pako:eNqFVF2P2jAQ_CuWpXsjNITkLomqSkhUVaWeVB2oD23uYY8sEJU4lrNBpcB_75ojhib3kTfvzM6Ox3b2clHlKFOJZlrAykCZqUwJ_m5uxNibPUy9GQEVC-8Bl2hQLdCbAsEzJyf9K5N2TTuNmXw8l7e1LeMWN5UuUZGwGk3tCLpcMeE78DgkNOKLqRp9QcFco66-hc1_XT9g01yGOtehN51PTia9uQFVLytT8g4q5U0Mno3jhljqq1phbRHx-dvcCQFZbEJkiqeG8OI6r-m82xrpajPGljuj2CU5RpPXfcZZ50IqdZ90D1oXanUhwQuznNVOFpyyOBw8r9rbSEUqMrkG9u1SblEOtou6Hb_AETxagPr4ZD58KtoIMync4bc9tt3pdiUP9hDekWzvIkfcanJMXa98YG-gttSiQG_19tFeCtZIh3OF8jn3Ujavob1ua6WrTfoVVA5kiXwBipzf7t6yM0lrLPkOWFYO5relHZkHDVWznVrIlEyDA8lvbbWW6RI2Na8anQPh-e27qgb1s6rKtoWXMt3LPzIdjcKhHyRhEgR-EsTxOBrInUyDYRDFo7Hv-0Hs3yVREB0H8u9JwR_G4yS-HY2iMIpug7swHEjMC6rM_fOf5_QDOv4DFCJuCw?type=png)](https://mermaid.live/edit#pako:eNqFVF2P2jAQ_CuWpXsjNITkLomqSkhUVaWeVB2oD23uYY8sEJU4lrNBpcB_75ojhib3kTfvzM6Ox3b2clHlKFOJZlrAykCZqUwJ_m5uxNibPUy9GQEVC-8Bl2hQLdCbAsEzJyf9K5N2TTuNmXw8l7e1LeMWN5UuUZGwGk3tCLpcMeE78DgkNOKLqRp9QcFco66-hc1_XT9g01yGOtehN51PTia9uQFVLytT8g4q5U0Mno3jhljqq1phbRHx-dvcCQFZbEJkiqeG8OI6r-m82xrpajPGljuj2CU5RpPXfcZZ50IqdZ90D1oXanUhwQuznNVOFpyyOBw8r9rbSEUqMrkG9u1SblEOtou6Hb_AETxagPr4ZD58KtoIMync4bc9tt3pdiUP9hDekWzvIkfcanJMXa98YG-gttSiQG_19tFeCtZIh3OF8jn3Ujavob1ua6WrTfoVVA5kiXwBipzf7t6yM0lrLPkOWFYO5relHZkHDVWznVrIlEyDA8lvbbWW6RI2Na8anQPh-e27qgb1s6rKtoWXMt3LPzIdjcKhHyRhEgR-EsTxOBrInUyDYRDFo7Hv-0Hs3yVREB0H8u9JwR_G4yS-HY2iMIpug7swHEjMC6rM_fOf5_QDOv4DFCJuCw)
+
+A metadata model is a framework that defines the structure and relationships of data elements within a system, here above a high over Entity Diagram is shown as example. To capture requirements in a metadata model, you need to identify the key data elements, such as datasets, attributes, transformations, and business keys. By defining these elements and their relationships, you create a comprehensive model that serves as a single source of truth for the project's requirements.
+
+When ingesting datasets, it is essential to capture "*Source*" information, including details such as server, database, schema, table, user names, and potentially a query for SQL sources. For an API web interface, necessary information includes the base URL, relative URL, user credentials, and secrets stored in an Azure Key Vault (or a similar solution). These parameters can be standardized to streamline the process (see Parameter Group, Parameter and Parameter Value in de metadata model from above). Additionally, other sources such as Blob Storage require different parameters. By identifying these parameters, the requirement process can be clarified, ensuring that the necessary information is obtained efficiently.
+
+---
+
+<p style="text-align: center; backcolor: gray;"><i>
+    Simplicity is the key to scalability,<br> 
+    complex logic where everything is done all at once because it can (or is demanded)<br>
+    is not scalable, repeatable and often difficult to explain (on a later stage), <br>
+    let alone knowledge wise transferable to new engineers.
+</i></p>
+
+---
+
+
+To do “Data Transformations” a key requirement is writing down how this needs to be done, the business should provide the requirements on what should end up in the dataset and what the use is and meaning in business teams, a data engineer/modeler can write the query to do this. Remember Simplicity is the key to scalability, complex logic where everything is done all at once because it can (or is demanded) is not scalable, repeatable and often difficult to explain (on a later stage), let alone knowledge wise transferable to new engineers.
+
+Registering trigger schemes will provide insights into what is running and should be running based on requirements.
+
+### 3.2. Git-Repository
+Using a Git repository for version control ensures that all changes to the metadata model are tracked and documented. By storing the metadata in a Git repository, you can maintain a history of modifications, revert to previous versions if needed, and collaborate with team members more effectively. Git also supports branching and merging, allowing multiple team members to work on different aspects of the model simultaneously without conflicts.
+
+### 3.3 A Front-End tool
+A Front-end tool is technically not needed, however due to the relationship between datasets, attributes, parameters, transformations and every entry should be uniquely identifiable, a simple front-end tool is and would be nice. 
+
+Microsoft Access makes a good candidate for a Front-End tool, programming is VBA well documented by Microsoft and the Microsoft Office suit is broadly adopted in many companies, if not a runtime-version is provided by Microsoft.
+
+This tool should be programmed to extract the metadata from the repository and presented it in the form of menu`s, list- and detail-forms. Unique keys should be generated, drop-down-list should help providing correct values. When the metadata is changed the tool should update the relevant parts of the repository.
+
+This front-end tool is if-self stored in the Git-repository, so updating the functionally of the tool is also part of the development process, this ensures the distribution is easily done by cloning the git repository. Some final requirements should be that it can run stand alone and requiring the minimal of other software to be installed. 
+
+Microsoft Access makes a good candidate for a Front-End tool, programming is VBA well documented by Microsoft and the Microsoft Office suit is broadly adopted in many companies, if not a runtime-version is provided by Microsoft. The referenced Git repository, holds an example.
+
+## 4. Conclusion
+By capturing data ingestion and transformation requirements into a metadata model, you can achieve standardization, improved insight, and automation. This structured approach not only enhances the development process but also ensures that all requirements are accurately captured, managed, and utilized throughout the project lifecycle.
+
+##### Attachment:
+-	Git Repository: [demo-analytic-data-platform](https://github.com/mehmetmisset/demo-analytic-data-platform/tree/adding-a-meta-data-model)(use the “adding-a-meta-data-model”-branch)
+
+## 5. Next topic
+-	Extending the Meta Data Model with Data Quality Requirements and Controls
+-	A technical walkthrough in parsing SQL queries to extract data lineage information.
+-	Utilizing the Meta Data to Generate Procedures for Incremental Data Transformations.
+-	Building a Data Pipeline in Azure Data Factory
