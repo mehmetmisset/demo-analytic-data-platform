@@ -25,21 +25,18 @@ Integrating the structured storage of requirements as part of the development pr
 ## __2. Why should you want to do this__
 
 ### __2.1 Standardization__
+
 Standardizing the way requirements are captured and stored helps in maintaining uniformity across projects. It ensures that all team members follow the same procedures, making it easier to onboard new members and scale projects. Standardization also facilitates better communication and understanding among stakeholders, as everyone is on the same page regarding the project's goals and requirements.
 
 ### *Standardization will provide some key features that can be achieved*
 
-> __Scalability:__<br>
-By defining only table definitions and transformations, the solution can scale efficiently. Automated checks for cardinality, uniqueness, validity, and consistency can be implemented.<br>
+> __Scalability:__<br>By defining only table definitions and transformations, the solution can scale efficiently. Automated checks for cardinality, uniqueness, validity, and consistency can be implemented.<br>
 
-> __Compliance with Naming Conventions:__<br>
-Ensure compliance with naming conventions by storing transformation definitions in the database. Functional names can be automatically generated, with an override mechanism if needed.<br>
+> __Compliance with Naming Conventions:__<br> Ensure compliance with naming conventions by storing transformation definitions in the database. Functional names can be automatically generated, with an override mechanism if needed.<br>
 
-> __Parallel Processing:__<br> 
-Splitting datasets and merging them later can improve performance, especially for large and wide datasets. Having this in a framework gives the engineers / developers the freedom to make parallel processing a conscious design choice.<br>
+> __Parallel Processing:__<br>Splitting datasets and merging them later can improve performance, especially for large and wide datasets. Having this in a framework gives the engineers / developers the freedom to make parallel processing a conscious design choice.<br>
 
-> __Vendor Independence:__<br> 
-The solution can be implemented on various SQL engines like Databricks, Microsoft Fabric, Azure SQL Server, SkySQL,  DuckDB, any SQL Engine will do. This will ensuring vendor independence. Any SQL processing engine will be able to process the data pipeline that can be generated from the model.
+> __Vendor Independence:__<br>The solution can be implemented on various SQL engines like Databricks, Microsoft Fabric, Azure SQL Server, SkySQL,  DuckDB, any SQL Engine will do. This will ensuring vendor independence. Any SQL processing engine will be able to process the data pipeline that can be generated from the model.
 
 ### __2.2	Improved insight/visibility__
 
@@ -50,6 +47,7 @@ Extraction of key Data management information like Datal Lineage and mapping to 
 Automation is a key benefit of storing requirements in a structured way. By leveraging tools and technologies, you can automate various aspects of the development process, such as generating documentation, validating requirements, and tracking changes. Automation reduces manual effort, minimizes errors, and accelerates the overall development timeline.
 
 ### *Some key aspects are*
+
 > __Automatic Dependency Handling:__<br> 
 By storing definitions in the database, dependencies can be automatically managed and visualized through data-lineage graphs. Loop dependencies can automatically be detected and flagged during deployment.<br>
 
@@ -82,11 +80,16 @@ When ingesting datasets, it is essential to capture "*Source*" information, incl
 
 ---
 
-To do “Data Transformations” a key requirement is writing down how this needs to be done, the business should provide the requirements on what should end up in the dataset and what the use is and meaning in business teams, a data engineer/modeler can write the query to do this. Remember Simplicity is the key to scalability, complex logic where everything is done all at once because it can (or is demanded) is not scalable, repeatable and often difficult to explain (on a later stage), let alone knowledge wise transferable to new engineers.
+To do “Data Transformations” a key requirement is writing down how this needs to be done, the business should provide the __*requirements*__ on what should end up in the dataset and what the use is and meaning in business teams (this is the __**functional**__ description of the __**dataset**__ and a list of __*attributes*__ also with functional names and descriptions.
+The __*data engineer/modeler*__ can write the query to do this. Remember Simplicity is the key to scalability, complex logic where everything is done all at once because it can (or is demanded) is not scalable, repeatable and often difficult to explain (on a later stage), let alone knowledge wise transferable to new engineers. This means that initial logic/requirements of the business may be split out over multiple dataset/transformation. Reusability of repeating logic will cut down development time and improve uniformatity.
 
-Registering trigger schemes will provide insights into what is running and should be running based on requirements.
+### *Integration with Data Management*
+
+The framework already can provided "__*Data Lineage*__" based on the parsing of "__*Transformations*__". By ider providing "__*Business/Functional*__"-names and -descriptions "__*Data Definition*__" are covert. The *meta-data-model* can be used to reference "__*Busines Objects*__" from the "__*Data Glossary*__" this can be done by "__*ingestion*__" of the "__*Data Glossary*__" as datasets them selfs.
+Integrating "__*Data Quality*__" is a logical next extention of the "*meta-data-model*", the aspects of this will be descussed in the next article (see [next topics](#5-next-topic)).
 
 ### 3.2. Git-Repository and the development process
+
 Using a Git repository for version control ensures that all changes to the metadata model are tracked and documented. By storing the metadata in a Git repository, you can maintain a history of modifications, revert to previous versions if needed, and collaborate with team members more effectively. Git also supports branching and merging, allowing multiple team members to work on different aspects of the model simultaneously without conflicts.
 
 ![Development process](./attachments/development-process.png) "Development process")
@@ -107,9 +110,9 @@ Microsoft Access makes a good candidate for a Front-End tool, programming is VBA
 
 ## 4. Conclusion
 
-By capturing data ingestion and transformation requirements into a metadata model, you can achieve standardization, improved insight, and automation. This structured approach not only enhances the development process but also ensures that all requirements are accurately captured, managed, and utilized throughout the project lifecycle.
+By capturing data ingestion and transformation requirements into a metadata model, you can achieve standardization, improved insight and automation. This structured approach not only enhances the development process but also ensures that all requirements are accurately captured, managed, and utilized throughout the project lifecycle.
 
-##### Attachment:
+### *Attachment*:
 
 - Git Repository: [demo-analytic-data-platform](https://github.com/mehmetmisset/demo-analytic-data-platform/tree/adding-a-meta-data-model)(use the “adding-a-meta-data-model”-branch)
 
