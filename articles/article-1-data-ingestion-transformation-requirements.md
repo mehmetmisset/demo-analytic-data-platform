@@ -4,23 +4,22 @@
 by Mehmet (P.R.M.) Misset
 
 ##  __1. The General Idea__
-### __1.1. Requirements need gathering always__
 
----
 
 <p style="text-align: center;"><i>
-    Any project needs requirement to be written down,<br>
-    why not do it in a structed way
+    "Any project needs requirement to be written down,<br>
+    why not do it in a structed way"
 </i></p>
 
 ---
+
+### __1.1. Requirements need gathering always__
 
 In any (data) project, gathering requirements is a fundamental step. However, these requirements often remain scattered across various documents, emails, and meeting notes. By storing them in a structured way, such as a metadata model, you can ensure that all requirements are easily accessible, traceable, and manageable. This structured approach not only saves time but also reduces the risk of missing or misinterpreting requirements.
 
 ###	__1.2. It should be part of the development process__
 
 Integrating the structured storage of requirements as part of the development process ensures that all team members have a clear understanding of what needs to be achieved. This integration promotes consistency and alignment across the project lifecycle, from initial planning to final deployment. By making it a standard practice, you can enhance collaboration and streamline the development process.
-
 
 
 ## __2. Why should you want to do this__
@@ -75,21 +74,24 @@ When ingesting datasets, it is essential to capture "*Source*" information, incl
 ---
 
 <p style="text-align: center; backcolor: gray;"><i>
-    Simplicity is the key to scalability,<br> 
+    "Simplicity is the key to scalability,<br> 
     complex logic where everything is done all at once because it can (or is demanded)<br>
     is not scalable, repeatable and often difficult to explain (on a later stage), <br>
-    let alone knowledge wise transferable to new engineers.
+    let alone knowledge wise transferable to new engineers."
 </i></p>
 
 ---
-
 
 To do “Data Transformations” a key requirement is writing down how this needs to be done, the business should provide the requirements on what should end up in the dataset and what the use is and meaning in business teams, a data engineer/modeler can write the query to do this. Remember Simplicity is the key to scalability, complex logic where everything is done all at once because it can (or is demanded) is not scalable, repeatable and often difficult to explain (on a later stage), let alone knowledge wise transferable to new engineers.
 
 Registering trigger schemes will provide insights into what is running and should be running based on requirements.
 
-### 3.2. Git-Repository
+### 3.2. Git-Repository and the development process
 Using a Git repository for version control ensures that all changes to the metadata model are tracked and documented. By storing the metadata in a Git repository, you can maintain a history of modifications, revert to previous versions if needed, and collaborate with team members more effectively. Git also supports branching and merging, allowing multiple team members to work on different aspects of the model simultaneously without conflicts.
+
+
+
+The *development*-process as show here above has integrated the Git-repository with a *Frond-end*-tool, describe in the next section.
 
 ### 3.3 A Front-End tool
 A Front-end tool is technically not needed, however due to the relationship between datasets, attributes, parameters, transformations and every entry should be uniquely identifiable, a simple front-end tool is and would be nice. 
