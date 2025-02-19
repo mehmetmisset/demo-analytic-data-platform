@@ -65,7 +65,7 @@ Reloading datasets can be simplified by restarting the data pipeline. If data is
 ## 3. How to do this
 3.1	Meta Data Model
 
-[![](https://mermaid.ink/img/pako:eNqFVF2P2jAQ_CuWpXsjNITkLomqSkhUVaWeVB2oD23uYY8sEJU4lrNBpcB_75ojhib3kTfvzM6Ox3b2clHlKFOJZlrAykCZqUwJ_m5uxNibPUy9GQEVC-8Bl2hQLdCbAsEzJyf9K5N2TTuNmXw8l7e1LeMWN5UuUZGwGk3tCLpcMeE78DgkNOKLqRp9QcFco66-hc1_XT9g01yGOtehN51PTia9uQFVLytT8g4q5U0Mno3jhljqq1phbRHx-dvcCQFZbEJkiqeG8OI6r-m82xrpajPGljuj2CU5RpPXfcZZ50IqdZ90D1oXanUhwQuznNVOFpyyOBw8r9rbSEUqMrkG9u1SblEOtou6Hb_AETxagPr4ZD58KtoIMync4bc9tt3pdiUP9hDekWzvIkfcanJMXa98YG-gttSiQG_19tFeCtZIh3OF8jn3Ujavob1ua6WrTfoVVA5kiXwBipzf7t6yM0lrLPkOWFYO5relHZkHDVWznVrIlEyDA8lvbbWW6RI2Na8anQPh-e27qgb1s6rKtoWXMt3LPzIdjcKhHyRhEgR-EsTxOBrInUyDYRDFo7Hv-0Hs3yVREB0H8u9JwR_G4yS-HY2iMIpug7swHEjMC6rM_fOf5_QDOv4DFCJuCw?type=png)](https://mermaid.live/edit#pako:eNqFVF2P2jAQ_CuWpXsjNITkLomqSkhUVaWeVB2oD23uYY8sEJU4lrNBpcB_75ojhib3kTfvzM6Ox3b2clHlKFOJZlrAykCZqUwJ_m5uxNibPUy9GQEVC-8Bl2hQLdCbAsEzJyf9K5N2TTuNmXw8l7e1LeMWN5UuUZGwGk3tCLpcMeE78DgkNOKLqRp9QcFco66-hc1_XT9g01yGOtehN51PTia9uQFVLytT8g4q5U0Mno3jhljqq1phbRHx-dvcCQFZbEJkiqeG8OI6r-m82xrpajPGljuj2CU5RpPXfcZZ50IqdZ90D1oXanUhwQuznNVOFpyyOBw8r9rbSEUqMrkG9u1SblEOtou6Hb_AETxagPr4ZD58KtoIMync4bc9tt3pdiUP9hDekWzvIkfcanJMXa98YG-gttSiQG_19tFeCtZIh3OF8jn3Ujavob1ua6WrTfoVVA5kiXwBipzf7t6yM0lrLPkOWFYO5relHZkHDVWznVrIlEyDA8lvbbWW6RI2Na8anQPh-e27qgb1s6rKtoWXMt3LPzIdjcKhHyRhEgR-EsTxOBrInUyDYRDFo7Hv-0Hs3yVREB0H8u9JwR_G4yS-HY2iMIpug7swHEjMC6rM_fOf5_QDOv4DFCJuCw)
+[![](https://mermaid.ink/img/pako:eNqFlFFr2zAUhf-KEBRaiNeWZukSxiCQMgYtjCbsYcse1PjGMYstI12HpUn---6VJTmpU-Y3XR0dfTq61k4udApyJMFMcpUZVczLeSnou7gQd8n0eZJMUWG-SJ5hCQbKBSQTharRpFj9mkse47aCufztyxvLZdjAWlcFlCjYo7ZRUBUZCb4r2g4QjPhqdF21s8ocz8b6Rq1PVv1Q67rdNFL3k8ls7CCTmVGlXWpT0Al0mYwNeHBYI1l9KzOwPCMeHmfRSCHPjRFN_lIjtNSpRX9aC3h0GMPlN1sRJUZFndquwvu0oqLqip5UVeVl1orUmb0i6pssKGWx3yeJ3nGkYiTmcqWs0CUIbUShDS2IiQclheyUuRW1hVSgFkQpFE_UcGmvPr-Y6y-XC10u86w2jkDkCAVNXQW_mFfHNSbuSZxbpBGxf8JC9vA4jEGHblXBfs_X6VTO7WQPV3mYPYqiSVJcC1fy_Oj4rTuAZfp4pQGAriXmgfk6f2WTJkJnxODBnCIICVATnXPgRD0UKpNxsOHyPHvwCka8OhgpbI0Yw-raLKA5UPR5B-J4bQvhHf4H0blPDojtKEabW6SrXDYYR83VnPKkVbnR0AbXIz_6Q05T7iCmze8SAE99Yx-bs46dsLyZj6pDw7n5vyWyYvXOrOzJAogjT-kV3bF6LnEFBbUzq1Jl_rDsQDpVo55uy4UcLdXaQk_Ss5et4qiuiAv8MxyrlSp_ak1jNHUzlKOd_CtHg8GH_qD_8Wb4aXjbvxve3_fkVo5uDj356vS3PQlpjto8NS-8e-gP_wCKRfXZ?type=png)](https://mermaid.live/edit#pako:eNqFlFFr2zAUhf-KEBRaiNeWZukSxiCQMgYtjCbsYcse1PjGMYstI12HpUn---6VJTmpU-Y3XR0dfTq61k4udApyJMFMcpUZVczLeSnou7gQd8n0eZJMUWG-SJ5hCQbKBSQTharRpFj9mkse47aCufztyxvLZdjAWlcFlCjYo7ZRUBUZCb4r2g4QjPhqdF21s8ocz8b6Rq1PVv1Q67rdNFL3k8ls7CCTmVGlXWpT0Al0mYwNeHBYI1l9KzOwPCMeHmfRSCHPjRFN_lIjtNSpRX9aC3h0GMPlN1sRJUZFndquwvu0oqLqip5UVeVl1orUmb0i6pssKGWx3yeJ3nGkYiTmcqWs0CUIbUShDS2IiQclheyUuRW1hVSgFkQpFE_UcGmvPr-Y6y-XC10u86w2jkDkCAVNXQW_mFfHNSbuSZxbpBGxf8JC9vA4jEGHblXBfs_X6VTO7WQPV3mYPYqiSVJcC1fy_Oj4rTuAZfp4pQGAriXmgfk6f2WTJkJnxODBnCIICVATnXPgRD0UKpNxsOHyPHvwCka8OhgpbI0Yw-raLKA5UPR5B-J4bQvhHf4H0blPDojtKEabW6SrXDYYR83VnPKkVbnR0AbXIz_6Q05T7iCmze8SAE99Yx-bs46dsLyZj6pDw7n5vyWyYvXOrOzJAogjT-kV3bF6LnEFBbUzq1Jl_rDsQDpVo55uy4UcLdXaQk_Ss5et4qiuiAv8MxyrlSp_ak1jNHUzlKOd_CtHg8GH_qD_8Wb4aXjbvxve3_fkVo5uDj356vS3PQlpjto8NS-8e-gP_wCKRfXZ)
 
 A metadata model is a framework that defines the structure and relationships of data elements within a system, here above a high over Entity Diagram is shown as example. To capture requirements in a metadata model, you need to identify the key data elements, such as datasets, attributes, transformations, and business keys. By defining these elements and their relationships, you create a comprehensive model that serves as a single source of truth for the project's requirements.
 
@@ -76,7 +76,7 @@ When ingesting datasets, it is essential to capture "*Source*" information, incl
 <p style="text-align: center; backcolor: gray;"><i>
     "Simplicity is the key to scalability,<br> 
     complex logic where everything is done all at once because it can (or is demanded)<br>
-    is not scalable, repeatable and often difficult to explain (on a later stage), <br>
+    is not scalable, repeatable and often difficult to explain (in a later stage), <br>
     let alone knowledge wise transferable to new engineers."
 </i></p>
 
@@ -89,11 +89,12 @@ Registering trigger schemes will provide insights into what is running and shoul
 ### 3.2. Git-Repository and the development process
 Using a Git repository for version control ensures that all changes to the metadata model are tracked and documented. By storing the metadata in a Git repository, you can maintain a history of modifications, revert to previous versions if needed, and collaborate with team members more effectively. Git also supports branching and merging, allowing multiple team members to work on different aspects of the model simultaneously without conflicts.
 
+![Development process](./attachments/development-process.png) "Development process")
 
-
-The *development*-process as show here above has integrated the Git-repository with a *Frond-end*-tool, describe in the next section.
+The *development*-process as show here above has integrated the Git-repository with a *Frond-end*-tool (which describe in the next section).
 
 ### 3.3 A Front-End tool
+
 A Front-end tool is technically not needed, however due to the relationship between datasets, attributes, parameters, transformations and every entry should be uniquely identifiable, a simple front-end tool is and would be nice. 
 
 Microsoft Access makes a good candidate for a Front-End tool, programming is VBA well documented by Microsoft and the Microsoft Office suit is broadly adopted in many companies, if not a runtime-version is provided by Microsoft.
@@ -105,13 +106,16 @@ This front-end tool is if-self stored in the Git-repository, so updating the fun
 Microsoft Access makes a good candidate for a Front-End tool, programming is VBA well documented by Microsoft and the Microsoft Office suit is broadly adopted in many companies, if not a runtime-version is provided by Microsoft. The referenced Git repository, holds an example.
 
 ## 4. Conclusion
+
 By capturing data ingestion and transformation requirements into a metadata model, you can achieve standardization, improved insight, and automation. This structured approach not only enhances the development process but also ensures that all requirements are accurately captured, managed, and utilized throughout the project lifecycle.
 
 ##### Attachment:
--	Git Repository: [demo-analytic-data-platform](https://github.com/mehmetmisset/demo-analytic-data-platform/tree/adding-a-meta-data-model)(use the “adding-a-meta-data-model”-branch)
+
+- Git Repository: [demo-analytic-data-platform](https://github.com/mehmetmisset/demo-analytic-data-platform/tree/adding-a-meta-data-model)(use the “adding-a-meta-data-model”-branch)
 
 ## 5. Next topic
--	Extending the Meta Data Model with Data Quality Requirements and Controls
--	A technical walkthrough in parsing SQL queries to extract data lineage information.
--	Utilizing the Meta Data to Generate Procedures for Incremental Data Transformations.
--	Building a Data Pipeline in Azure Data Factory
+
+1. Extending the Meta Data Model with Data Quality Requirements and Controls
+2. A technical walkthrough in parsing SQL queries to extract data lineage information.
+3. Utilizing the Meta Data to Generate Procedures for Incremental Data Transformations.
+4. Building a Data Pipeline in Azure Data Factory
