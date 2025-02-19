@@ -87,6 +87,7 @@ The __*data engineer/modeler*__ can write the query to do this. Remember Simplic
 
 The framework already can provided "__*Data Lineage*__" based on the parsing of "__*Transformations*__". By ider providing "__*Business/Functional*__"-names and -descriptions "__*Data Definition*__" are covert. The *meta-data-model* can be used to reference "__*Busines Objects*__" from the "__*Data Glossary*__" this can be done by "__*ingestion*__" of the "__*Data Glossary*__" as datasets them selfs.
 Integrating "__*Data Quality*__" is a logical next extention of the "*meta-data-model*", the aspects of this will be descussed in the next article (see [next topics](#5-next-topic)).
+Extending the __*Dataset*__-information with "__*Data Owner*__ and __*User groups*__ data should have read access "__Data Security__"-component of the __*Data management*__ is covert as well.
 
 ### 3.2. Git-Repository and the development process
 
