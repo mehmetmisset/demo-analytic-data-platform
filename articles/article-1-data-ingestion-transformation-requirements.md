@@ -119,7 +119,7 @@ By capturing data ingestion and transformation requirements into a metadata mode
 
 ## 5. Next topic
 
-1. Extending the Meta Data Model with Data Quality Requirements and Controls
+1. Data Quality Requirements
 2. A technical walkthrough in parsing SQL queries to extract data lineage information.
 3. Utilizing the Meta Data to Generate Procedures for Incremental Data Transformations.
 4. Building a Data Pipeline in Azure Data Factory
