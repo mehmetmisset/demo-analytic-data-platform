@@ -6,7 +6,7 @@ by Mehmet (P.R.M.) Misset
 ##  __1. The General Idea__
 
 <p style="text-align: center;"><i>
-    "Let agree that the implementation of a `Data Quality`-control is in essence the same thing as a `Data Transformation`, with the special feature that the all the results end up in the same `target`-dataset."
+    "Let agree that the implementation of a `Data Quality`-requirement is in essence the same thing as a `Data Transformation`, with the special feature that the all the results end up in the same `target`-dataset."
 </i></p>
 
 ---
@@ -28,7 +28,9 @@ Storing requirements in a structured way saves time and reduces the risk of miss
 
 At the end of the article the a conclusion was given as follows, *"Capturing data ingestion and transformation requirements into a metadata model enhances the development process. Ensures requirements are accurately captured, managed, and utilized throughout the project lifecycle."*
 
-With the above in mind, the same priciples should be applied to gathering __Data Quality Requirement__. Where in de previous [article](article-1-data-ingestion-transformation-requirements.md) the main __*Requirements*__ were related to __*Datasets*__ and __*Attributes**__ in the case of __*Ingestion*__ parameters were involved. However with __*Data Quality*__ 6 more types of __*Requirements*__ are needed. The list below will provide nice short and compact overview. The first 3 are fairly static and are mostly used ider describe properties of the __*DAta Quality Controls*__ or how the __*Results*__ should interpreted.
+## 1.2. __*Data Quality*__ requirements
+
+With the above in mind, the same priciples should be applied to gathering __Requirement__ for __*Data Quality*__. Where in de previous [article](article-1-data-ingestion-transformation-requirements.md) the main __*Requirements*__ were related to __*Datasets*__ and __*Attributes**__ in the case of __*Ingestion*__ parameters were involved, for __*Data Quality*__ 6 more types of __*Requirements*__ are needed. The list below will provide nice short and compact overview. The first 3 are fairly static and are mostly used ider describe properties of the __*DAta Quality Controls*__ or how the __*Results*__ should interpreted.
 
 | __Name__   | __Description__ | Is Static | Responsiblily |
 |:-----------|:----------------|:----------|:-------------|
@@ -39,19 +41,34 @@ With the above in mind, the same priciples should be applied to gathering __Data
 | Control | __*Data Quality Control*__ refers to the implementation of the __*Data Quality Requirement*__ on specific dataset(s)/record(s). The __*Data Quality Control*__ is also linked to the __*Data Quality Dimension*__ and containts the __*Query*__ that should be executed to determine the __*Data Quality Results*__. | No | Business / Data Engineer |
 | Threshold | Data Quality Thresholds are predefined limits or criteria that data must meet to be considered acceptable for its intended use. These thresholds are set based on the specific quality dimensions, such as accuracy, completeness, and consistency. They serve as benchmarks to evaluate whether data meets the required standards. For example, a threshold might specify that no more than 2% of data entries can be missing for the dataset to be deemed complete. By establishing these thresholds, organizations can systematically assess and ensure the quality of their data. | No | Business |
 
+We should hold in mind that __*Data Quality Controls*__ are related to a __*Dataset*__ the __*Data Quality Requirements*__ are NOT. The entity diagram of the next section shows the relationship between the diffent __*Requirements*__.
+The final to 2 entities in the __*Datamodel*__ are __*Data Quality Results*__ and __*Data Quality Totals*__, these are NOT requirements that need to be gather, but are the __*target*__-datasets of any __*Data Quality Control*__. Here the __*Data Quality Results*__ is where the outcome of the measurement for the __*Data Quality Control*__ is strored, here to reference to individual records by __*businesskey*__ is posible (the struction of the table should support multiple businesskey, how many depends on business requirements, for example if there are many __*Data Quality Controls*__ with 4 involved __*datasets*__ all should support max 4 __*businesskeys*__). The results are counted and aggregated over the __*Data Quality Result Status*__ into __*Data Quality Totals*__. By joining the __*Data Quality Totals*__ with the __*Data Quality Thresholds*__ a interpretation can be done and the __*Data Quality*__ of the __*Dataset*__  classified on the level of a __*Data Quality Control*__ and for __*Dataset*__ as a whole. 
+
+In short the "__*Target*__"-datasets for __*Data Quality Results*__ and __*Data Quality Totals*__ have a perdictable format,see listing below (inline with the 4 __*businesskeys*__-example to illustate ther required attributes). 
+ 
+ - __*Data Quality Results*__ 
+   - Businesskey Value of Dataset 1 (Main dataset being measured)
+   - Businesskey Value of Dataset 2 (If 2nd dataset is involved reference the related Businesskey.)
+   - Businesskey Value of Dataset 3 (If 3rd dataset is involved reference the related Businesskey.)
+   - Businesskey Value of Dataset 4 (If 4th dataset is involved reference the related Businesskey.)
+   - Data Quality Result Status (OKE, NOK or OOS)
+    
+ - __*Data Quality Totals*__
+   - \# OKE (count of records that reference "OKE")
+   - \# NOK (count of records that reference "NOK")
+   - \# OOS (count of records that reference "OOS")
+
+Now we that we know what __*Requirements*__ are needed, the __*meta-data-mode*__ needs to be extented.  
+
+### Extented meta-data-model with __*Data Quality*__-requirements
+<mermiad-er-diagram>
 
 
 
+# 2 How to use these __*Requirements*__?
+
+text about how data quality controls are nothing more the transformations
+
+## 2.1. Mapping __*Data Quality Control*__ to __*Dataset*__
 
 
-
-
-
-
-
-Will need something that describe the general properties and/or aims of __*Data Quality Control*__,  I would like to add another "__*General Idea*__", "*The implementation of a __Data Quality Requirement__ into __Data Quality Control__ which would measure the level of compliance and stores the result. In essence this is nothing more then a __Data Transformation__*".<br>
-Of course there other requirements related to __*Data Quality*__ must be gathered and stored, but the excution requires very little. A __*Transformation*__-query would do. Most of these other requirements must be provided by the __business__, but these can be structure as well and some relationship between them can be implemneted.
-
-# 2. Extending the meta-data-model
-
-__*Data Quality*__ is implemented by building __*Data Quality Control*__, however this is not everthing, the __*result*__ of the __*measurements*__ need to be interperted, the interpertation can differ from different perspectives. For example the marketing department would be ok if 60 % of there mail campaings would reacht the customers, thus a level of complaince above 60 % is good data quality. However the finance department would have a very differenc appinion about this.
