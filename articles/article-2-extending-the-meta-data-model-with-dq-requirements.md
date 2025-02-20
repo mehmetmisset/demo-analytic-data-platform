@@ -62,26 +62,59 @@ Now we that we know what __*Requirements*__ are needed, the __*meta-data-mode*__
 
 ### Extented meta-data-model with __*Data Quality*__-requirements
 
-[![](https://mermaid.ink/img/pako:eNp1k8GSmzAMhl_F4zObJlnwAtPZmU5zbA_t9tTSgxNrwROwE1nuNE3y7jUksJSk3CR_-mX9Rke-sQp4zgFXWpYom8IUhoVPOfpR8JUk6YAK_vOSldRmPxChXnuCLn85wW195dkXL2tNB_ZVuy37BL-gHurVXk2plW7AgHHamhGGN2Kw9xohsDTCNlPsozWEdtyQpsi3CsFVtlaj26t9c9vQ-XrcS94IWZK1Gwgkd1-DvZAk7_5ph-x0eng4HdsZWM4Krh3Tza7uBgTFdDBjsGzKVtIxa5hF1liEFhzerEfDQ_XoIPR2OmragHQeQ8f1oeBseE1yb2zTs95Nbra5AzmyqE35fo3vnq_i7Uzuf4XyXqEsS4RSBie6EDsfe4k7IjTyBcbGXH_NKdkPQzZoEuAOsKd5xBvARmoV1uLY5gpOVZih4G2lkrht0XPgpCf7cjAbnr-GHwEijtaX1RD5nQoTXPdqyO6k-W5tiAn9JeT5kf_m-SKJZyLLntK5EHGSiMcs4geeZ4tZlmZPi1g8inSZLuJzxP90AvOZmKdxIpJkOV-mIhERB6WDi58vO92t9vkvHFNCGA?type=png)](https://mermaid.live/edit#pako:eNp1k8GSmzAMhl_F4zObJlnwAtPZmU5zbA_t9tTSgxNrwROwE1nuNE3y7jUksJSk3CR_-mX9Rke-sQp4zgFXWpYom8IUhoVPOfpR8JUk6YAK_vOSldRmPxChXnuCLn85wW195dkXL2tNB_ZVuy37BL-gHurVXk2plW7AgHHamhGGN2Kw9xohsDTCNlPsozWEdtyQpsi3CsFVtlaj26t9c9vQ-XrcS94IWZK1Gwgkd1-DvZAk7_5ph-x0eng4HdsZWM4Krh3Tza7uBgTFdDBjsGzKVtIxa5hF1liEFhzerEfDQ_XoIPR2OmragHQeQ8f1oeBseE1yb2zTs95Nbra5AzmyqE35fo3vnq_i7Uzuf4XyXqEsS4RSBie6EDsfe4k7IjTyBcbGXH_NKdkPQzZoEuAOsKd5xBvARmoV1uLY5gpOVZih4G2lkrht0XPgpCf7cjAbnr-GHwEijtaX1RD5nQoTXPdqyO6k-W5tiAn9JeT5kf_m-SKJZyLLntK5EHGSiMcs4geeZ4tZlmZPi1g8inSZLuJzxP90AvOZmKdxIpJkOV-mIhERB6WDi58vO92t9vkvHFNCGA)
+![meta-data-model-for-dq](./attachments/meta-data-model-for-dq.png)
 
-### front-end tooling
+## 1.3. front-end tooling
 
-In the previous article a front-end tool was discussed, what good candidate was and why we should want on. The same arguments are here also valid, even morea so where datamodel is abit more complex
+In the previous article a front-end tool was discussed, what good candidate was and why we should want on. The same arguments are here also valid, even more so where meta-data-model is a bit more complex. To summarize a short list:
+> 1. __*User-Friendly Interface*__: Access provides a straightforward, user-friendly interface for creating forms, queries, and reports, making it easy to manage and interact with your data.
+> 2. __*VBA Integration*__: With Visual Basic for Applications (VBA), you can automate tasks, create custom functions, and enhance the functionality of your tool.
+> 3. __*Broad Adoption*__: Microsoft Office, including Access, is widely used in many organizations, ensuring compatibility and ease of use for many users.
+> 4. __*Runtime Version*__: Microsoft offers a runtime version of Access, allowing users without the full Office suite to run Access applications.
+> 5. __*Standalone Operation*__: Access applications can run independently with minimal additional software requirements, making them convenient for users.
 
-
-
+A effort should be undertaken to adjust the Microsoft Access Application so it can handle the additional tables so easy maintaince of the metadata for the __*Requirements*__ related to __*Data Quality*__ is feasiable. The referenced git-repository [demo-analytic-data-platform]([https://github.com/mehmetmisset/demo-analytic-data-platform/tree/adding-a-meta-data-model](https://github.com/mehmetmisset/linkedin-article-1-data-ingestion-transformation-requirements/tree/main)) from the previous [article](article-1-data-ingestion-transformation-requirements.md) proivide a fair bare minimal version, specific adjustsment to suit business need is allowed within the provided licence.
 
 # 2 How to use these __*Requirements*__?
 
-text about how data quality controls are nothing more the transformations
+Let`s say we have extented the datamodel in the database and adjusted the front-end tooling, we have it all in place. we start defining __*Data Quality Control*__ and related __*Requirements*__, after we have added a number of them, how will we ensure when processing them all the __*Source*__-dataset have been updated first? We can do this by reuasing the existing processing logic that is needed for the __*Data Transfromations*__. For this to work the __*Requirements*__ of the __*Data Quality Controls*__ need to be converted into __*Dataset*__- and __*Attribute*__-metadata definitions. Fortunately the stucture of the __*Dataset/Attribute*__-target is very perdictable, so this can be done on the automatic when deplying the __*metadata*__-definitions to the database. We'll need to do this in 3 stages. First the __*Data Quality Control*__ need convertion to __*Dataset/Attributes*__-definitions. The 2nd stage would be to generate __*Dataset/Attribute*__-defintions where two individual __*Data Quality Result*__-datasets are unioned till the point there 2 left. Then in last stage these 2 aggregated __*Datasets*__ are transformed into a __*Transformation*__ which has as __*target*__ the final __*Data Quality Result*__-dataset. The same stages should apply to aggregate the individual __*Data Quality Totals*__-datasets into the final __*Data Quality Totals*__-dataset.
+
+<add image to illustare the above>
 
 ## 2.1. Example for __*Data Quality Control*__
 
-some text on what to do
+Where is is all somewhat abstract, lets make an example for transforming a __*Data Quality Control*__-definition into __*Dataset/Attributes*__-definition.
 
-table is attributes (nasme and description) and example values
+First the __*Dataset*__-definition.
 
-## Why should we do this, in this way?
+| Mapping from __*Data Quality Control*__ | Attribute of __*Dataset*__ | Column Name |
+|:----------------------------------------|:---------------------------|:------------|
+| hash the "ID DQ Control" into char(32) lower case | ID Dataset | id_dataset
+| ID Development Status | ID Development Status | id_development_status    
+| Functional Name of DQ Control | Functional Name of Dataset | fn_dataset
+| "Is `Dataset`-definition for `DQ Control`-result of `" + id_dq_control + "`" | Functional Description Dataset | fd_dataset 
+| "dq_result" | Target Schema Name | nm_target_schema
+| "dqr_" + id_dq_-_control |  Target Table Name | nm_target_table
+| tx_dq_control_query | Source Query Text | tx_dq_control_query
+
+The query should be cleanup so it will be standarized, the "OKE", "NOK" and "OOS" are replaced by the __*Businesskey*__-hashes and small type of the __*Data Engineers*__ are correct automatically. The format of the __*DQ Query*__ is also tested at this stage. It should match with :
+```SQL
+  SELECT @vld = CASE
+    WHEN @tx_dq_control_query LIKE 'SELECT'
+                                 + '% AS id_dataset_1_bk,'
+                                 + '% AS id_dataset_2_bk,'
+                                 + '% AS id_dataset_3_bk,'
+                                 + '% AS id_dataset_4_bk,'
+                                 + '%CASE%WHEN%THEN%ELSE%END AS id_dq_result_status'
+                                 + '%FROM%'
+    THEN 1
+    ELSE 0
+  END 
+```
+This not a garantee, reviewing by a follow __*Data Engineer*__ is advicable.
+
+
+## 2.2. Why should we do this, in this way?
 
 some text on Why should we do this, in this way? listing benifits and what business value is will deliver.
 
