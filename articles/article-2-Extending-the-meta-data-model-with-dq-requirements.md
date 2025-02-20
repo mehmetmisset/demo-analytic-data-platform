@@ -64,11 +64,20 @@ Now we that we know what __*Requirements*__ are needed, the __*meta-data-mode*__
 <mermiad-er-diagram>
 
 
-
 # 2 How to use these __*Requirements*__?
 
 text about how data quality controls are nothing more the transformations
 
-## 2.1. Mapping __*Data Quality Control*__ to __*Dataset*__
+## 2.1. Example for __*Data Quality Control*__
 
+some text on what to do
 
+table is attributes (nasme and description) and example values
+
+## 2.1. Mapping __*Data Quality Control*__ to __*Dataset (for DQ Result)*__
+
+mermaid diagram and mapping from DQ control/result to dataset / attribute definitions
+
+## 2.1. Mapping __*Data Quality Result*__ to __*Dataset (for DQ Totals)*__
+
+mermaid diagram and mapping from DQ control/totals to dataset / attribute definitions
