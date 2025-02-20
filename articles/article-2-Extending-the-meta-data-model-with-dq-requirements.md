@@ -74,10 +74,22 @@ some text on what to do
 
 table is attributes (nasme and description) and example values
 
-## 2.1. Mapping __*Data Quality Control*__ to __*Dataset (for DQ Result)*__
+## Why should we do this, in this way?
+
+some text on Why should we do this, in this way? listing benifits and what business value is will deliver.
+
+# 3 Automatically mapping __*Datasets*__ and __*Attributes*__ for __*Data Quality*__
+
+## 3.1 Mapping for individual __*Data Quality Controls*__
+
+### 3.1.1. Mapping __*Data Quality Control*__ to __*Dataset (for DQ Result)*__
 
 mermaid diagram and mapping from DQ control/result to dataset / attribute definitions
 
-## 2.1. Mapping __*Data Quality Result*__ to __*Dataset (for DQ Totals)*__
+### 3.1.2. Mapping __*Data Quality Result*__ to __*Dataset (for DQ Totals)*__
+
+mermaid diagram and mapping from DQ control/totals to dataset / attribute definitions
+
+## 3.2 Mapping the aggregation of individual __*Data Quality Results/Totals*__ to final __*Data Quality Result/Totals*__
 
 mermaid diagram and mapping from DQ control/totals to dataset / attribute definitions
