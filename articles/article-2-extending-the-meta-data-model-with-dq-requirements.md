@@ -113,10 +113,22 @@ The query should be cleanup so it will be standarized, the "OKE", "NOK" and "OOS
 ```
 This not a garantee, reviewing by a follow __*Data Engineer*__ is advicable.
 
-
 ## 2.2. Why should we do this, in this way?
 
+The benefits of maintaining the __*Requirements*__ related to the __*Data Quality*__ can be listed as below, in general by automation of the execution and scheduling (incremental loading) of the __*Data Quality Controls*__ the Business (Data Stewards) and Data Engineer can focus on building the correct __*Queries*__ that measure the __*Data Quality Requirements*__. Having the framework (discussed in the previous article [Data Ingestion / Transformation Requirements](article-1-data-ingestion-transformation-requirements.md)) avialable pre-processed dataset can be created when ever needed.<br>
+Additional deployment logica can be introduced to extract not only the __*Data Lineage*__, but also the __*Involved Data Item*__ per __*Data Quality Controls*__ and __*Data Quality Result Status*__ providing detail insights on the __*Attribute*__-level. Due to the fact all __*Data Quality Controls*__ should be designed to be stand alone, they can be processed in parallel in combination with incremental loading (all dataset should have technical valid from and till datetimes). With the perdictable structure of the datassets aggregating the result can be automated in simular way of generating the required __*Dataset/Attribute*__-metadata definitions.
+
+
+
 some text on Why should we do this, in this way? listing benifits and what business value is will deliver.
+- Processing is order is automatically determined
+- ETL for Incremental loading is generate in a generic way
+- Data Lineage is Extracted in same way as other __*Data Transformations*__
+- Extraction of __*Involved Data Items*__ can be automated
+- Execution of __*Data Quality Controls*__ can be done in parallele
+- Aggregation is ETL is automatically generated which is less error prone.
+- vender independent
+- maximal flexibility
 
 # 3 Automatically mapping __*Datasets*__ and __*Attributes*__ for __*Data Quality*__
 
