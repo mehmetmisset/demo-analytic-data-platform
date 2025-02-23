@@ -3,7 +3,7 @@
 
 by Mehmet (P.R.M.) Misset
 
-##  __1. The General Idea__
+##  __The General Idea__
 
 
 <p style="text-align: center;"><i>
@@ -13,18 +13,18 @@ by Mehmet (P.R.M.) Misset
 
 ---
 
-### __1.1. Requirements need gathering always__
+### __Requirements need gathering always__
 
 In any (data) project, gathering requirements is a fundamental step. However, these requirements often remain scattered across various documents, emails, and meeting notes. By storing them in a structured way, such as a metadata model, you can ensure that all requirements are easily accessible, traceable, and manageable. This structured approach not only saves time but also reduces the risk of missing or misinterpreting requirements.
 
-###	__1.2. It should be part of the development process__
+###	__It should be part of the development process__
 
 Integrating the structured storage of requirements as part of the development process ensures that all team members have a clear understanding of what needs to be achieved. This integration promotes consistency and alignment across the project lifecycle, from initial planning to final deployment. By making it a standard practice, you can enhance collaboration and streamline the development process.
 
 
-## __2. Why should you want to do this__
+## __Why should you want to do this__
 
-### __2.1 Standardization__
+### __Standardization__
 
 Standardizing the way requirements are captured and stored helps in maintaining uniformity across projects. It ensures that all team members follow the same procedures, making it easier to onboard new members and scale projects. Standardization also facilitates better communication and understanding among stakeholders, as everyone is on the same page regarding the project's goals and requirements.
 
@@ -38,12 +38,12 @@ Standardizing the way requirements are captured and stored helps in maintaining 
 
 > __Vendor Independence:__<br>The solution can be implemented on various SQL engines like Databricks, Microsoft Fabric, Azure SQL Server, SkySQL,  DuckDB, any SQL Engine will do. This will ensuring vendor independence. Any SQL processing engine will be able to process the data pipeline that can be generated from the model.
 
-### __2.2	Improved insight/visibility__
+### __Improved insight/visibility__
 
 A structured approach to capturing requirements provides improved insight and visibility into the project's progress. It allows for easy tracking of changes, dependencies, and potential issues. With all requirements stored in a centralized location, stakeholders can quickly access and review them, leading to more informed decision-making and better project outcomes.<br>
 Extraction of key Data management information like Datal Lineage and mapping to Business Data Glossaries is possible.
 
-### __2.3. Automation__
+### __Automation__
 Automation is a key benefit of storing requirements in a structured way. By leveraging tools and technologies, you can automate various aspects of the development process, such as generating documentation, validating requirements, and tracking changes. Automation reduces manual effort, minimizes errors, and accelerates the overall development timeline.
 
 ### *Some key aspects are*
@@ -89,7 +89,7 @@ The framework already can provided "__*Data Lineage*__" based on the parsing of 
 Integrating "__*Data Quality*__" is a logical next extention of the "*meta-data-model*", the aspects of this will be descussed in the next article (see [next topics](#5-next-topic)).
 Extending the __*Dataset*__-information with "__*Data Owner*__ and __*User groups*__ that should have read access, the "__Data Security__"-component can be covert this way.
 
-### 3.2. Git-Repository and the development process
+### Git-Repository and the development process
 
 Using a Git repository for version control ensures that all changes to the metadata model are tracked and documented. By storing the metadata in a Git repository, you can maintain a history of modifications, revert to previous versions if needed, and collaborate with team members more effectively. Git also supports branching and merging, allowing multiple team members to work on different aspects of the model simultaneously without conflicts.
 
@@ -97,7 +97,7 @@ Using a Git repository for version control ensures that all changes to the metad
 
 The *development*-process as show here above has integrated the Git-repository with a *Frond-end*-tool (which describe in the next section).
 
-### 3.3 A Front-End tool
+### A Front-End tool
 
 A Front-end tool is technically not needed, however due to the relationship between datasets, attributes, parameters, transformations and every entry should be uniquely identifiable, a simple front-end tool is and would be nice. 
 
@@ -107,17 +107,17 @@ This front-end tool is if-self stored in the Git-repository, so updating the fun
 
 Microsoft Access makes a good candidate for a Front-End tool, programming is VBA well documented by Microsoft and the Microsoft Office suit is broadly adopted in many companies, if not a runtime-version is provided by Microsoft. The referenced Git repository, holds an example.
 
-## 4. Conclusion
+## Conclusion
 
 By capturing data ingestion and transformation requirements into a metadata model, you can achieve standardization, improved insight and automation. This structured approach not only enhances the development process but also ensures that all requirements are accurately captured, managed, and utilized throughout the project lifecycle.
 
 ### *Attachment*:
 
-- Git Repository: [demo-analytic-data-platform]([https://github.com/mehmetmisset/demo-analytic-data-platform/tree/adding-a-meta-data-model](https://github.com/mehmetmisset/linkedin-article-1-data-ingestion-transformation-requirements/tree/main))
+- Git Repository: [demo-analytic-data-platform](https://github.com/mehmetmisset/linkedin-article-1-data-ingestion-transformation-requirements/tree/main)
 
-## 5. Next topic
+## Next topic
 
-1. Data Quality Requirements
+1. [Data Quality Requirements](article-2-extending-the-meta-data-model-with-dq-requirements.md)
 2. A technical walkthrough in parsing SQL queries to extract data lineage information.
 3. Utilizing the Meta Data to Generate Procedures for Incremental Data Transformations.
 4. Building a Data Pipeline in Azure Data Factory

@@ -34,7 +34,7 @@ With the above in mind, the same priciples should be applied to gathering __Requ
 
 | __Name__   | __Description__ | Is Static | Responsiblily |
 |:-----------|:----------------|:----------|:-------------|
-| Result Status | This is the posible outcome of the __*Mesurement*__ done by the __*Data Qualiaty Control*__, there a mainly 4 results, "OKE", "NOK", "OOS" (Out of Scope) and "UNK" (Unknown/Invalid). | Yes | Data Engineering |
+| Result Status | This is the posible outcome of the __*Mesurement*__ done by the __*Data Quality Control*__, there a mainly 4 results, "OKE", "NOK", "OOS" (Out of Scope) and "UNK" (Unknown/Invalid). | Yes | Data Engineering |
 | Risk Level | __*Data Quality Risk Level*__ refers to the potential impact and likelihood of data quality issues affecting an organization's operations, decision-making, and overall objectives. It assesses the severity of risks associated with poor data quality, such as inaccuracies, incompleteness, or inconsistencies, and helps prioritize areas that need attention. By evaluating the data quality risk level, organizations can implement appropriate measures to mitigate these risks and ensure reliable and accurate data for their needs. | Yes | Data Engineering |
 | Dimensions | A __*Data Quality Dimension*__ is a specific aspect or characteristic used to evaluate the quality of data. These dimensions provide a framework for assessing how well data meets the needs of its intended use. Each dimension focuses on a different attribute of data, such as accuracy, completeness, consistency, and timeliness, among others. By examining these dimensions, organizations can ensure their data is reliable, accurate, and fit for purpose. | Yes | Data Engineering |
 | Requirements | A __*Data Quality Requirement*__ is a specific criterion or standard that data must meet to be considered acceptable for its intended use. These requirements are defined based on the needs of the organization and the context in which the data will be used. They ensure that data is fit for purpose by specifying the necessary levels of accuracy, completeness, consistency, timeliness, and other quality dimensions. Meeting these requirements is crucial for reliable data analysis, decision-making, and operational efficiency. | No | Business |
@@ -77,71 +77,33 @@ A effort should be undertaken to adjust the Microsoft Access Application so it c
 
 # 2 How to use these __*Requirements*__?
 
-Let`s say we have extented the datamodel in the database and adjusted the front-end tooling, we have it all in place. we start defining __*Data Quality Control*__ and related __*Requirements*__, after we have added a number of them, how will we ensure when processing them all the __*Source*__-dataset have been updated first? We can do this by reuasing the existing processing logic that is needed for the __*Data Transfromations*__. For this to work the __*Requirements*__ of the __*Data Quality Controls*__ need to be converted into __*Dataset*__- and __*Attribute*__-metadata definitions. Fortunately the stucture of the __*Dataset/Attribute*__-target is very perdictable, so this can be done on the automatic when deplying the __*metadata*__-definitions to the database. We'll need to do this in 3 stages. First the __*Data Quality Control*__ need convertion to __*Dataset/Attributes*__-definitions. The 2nd stage would be to generate __*Dataset/Attribute*__-defintions where two individual __*Data Quality Result*__-datasets are unioned till the point there 2 left. Then in last stage these 2 aggregated __*Datasets*__ are transformed into a __*Transformation*__ which has as __*target*__ the final __*Data Quality Result*__-dataset. The same stages should apply to aggregate the individual __*Data Quality Totals*__-datasets into the final __*Data Quality Totals*__-dataset.
+After extending the data model in the database and adjusting the front-end tooling, we are ready to proceed. The next step involves defining Data Quality Controls and their associated requirements. Once several requirements have been added, a crucial question arises: how can we ensure that all source datasets are updated before processing them?
 
-<add image to illustare the above>
+The solution lies in reusing the existing processing logic required for data transformations. To achieve this, the requirements of the Data Quality Controls must be converted into dataset and attribute metadata definitions. Fortunately, the structure of the dataset/attribute target is highly predictable, allowing for automatic deployment of these metadata definitions to the database.
 
-## 2.1. Example for __*Data Quality Control*__
+This process can be broken down into three stages:
 
-Where is is all somewhat abstract, lets make an example for transforming a __*Data Quality Control*__-definition into __*Dataset/Attributes*__-definition.
+1. Conversion: Convert the Data Quality Control requirements into dataset and attribute definitions.
+2. Generation: Generate dataset and attribute definitions by uniting individual Data Quality Result datasets until only two remain.
+3. Transformation: Transform these two aggregated datasets into a final Data Quality Result dataset. The same stages apply to aggregate individual Data Quality Totals datasets into the final Data Quality Totals dataset.
 
-First the __*Dataset*__-definition.
+By following these stages, we can ensure that the source datasets are updated and the Data Quality Controls are effectively implemented. The SQL solution for this can be found in the [git repository](https://github.com/mehmetmisset/linkedin-article-1-data-ingestion-transformation-requirements/blob/main/demo-analytic-data-platform/2-meta-data-definitions/9-Depoyment/1-Scripts/0-Temporal-Objects/Script.usp_insert_dq_controls_as_datasets.sql) mentioned below, the script is located here `\2-meta-data-definitions\9-Depoyment\1-Scripts\0-Temporal-Objects\Script.usp_insert_dq_controls_as_datasets.sql`
 
-| Mapping from __*Data Quality Control*__ | Attribute of __*Dataset*__ | Column Name |
-|:----------------------------------------|:---------------------------|:------------|
-| hash the "ID DQ Control" into char(32) lower case | ID Dataset | id_dataset
-| ID Development Status | ID Development Status | id_development_status    
-| Functional Name of DQ Control | Functional Name of Dataset | fn_dataset
-| "Is `Dataset`-definition for `DQ Control`-result of `" + id_dq_control + "`" | Functional Description Dataset | fd_dataset 
-| "dq_result" | Target Schema Name | nm_target_schema
-| "dqr_" + id_dq_-_control |  Target Table Name | nm_target_table
-| tx_dq_control_query | Source Query Text | tx_dq_control_query
+While this approach offers great flexibility for parallel or individual processing of Data Quality Controls, it results in two datasets per control. These intermediate datasets are placed into separate schemas and have technical names. Managing hundreds or even thousands of such datasets is impractical.
 
-The query should be cleanup so it will be standarized, the "OKE", "NOK" and "OOS" are replaced by the __*Businesskey*__-hashes and small type of the __*Data Engineers*__ are correct automatically. The format of the __*DQ Query*__ is also tested at this stage. It should match with :
-```SQL
-  SELECT @vld = CASE
-    WHEN @tx_dq_control_query LIKE 'SELECT'
-                                 + '% AS id_dataset_1_bk,'
-                                 + '% AS id_dataset_2_bk,'
-                                 + '% AS id_dataset_3_bk,'
-                                 + '% AS id_dataset_4_bk,'
-                                 + '%CASE%WHEN%THEN%ELSE%END AS id_dq_result_status'
-                                 + '%FROM%'
-    THEN 1
-    ELSE 0
-  END 
-```
-This not a garantee, reviewing by a follow __*Data Engineer*__ is advicable.
+The solution is to aggregate all these datasets into a single Data Quality Result dataset and a Data Quality Totals dataset, both of which should be readable by data stewards, analysts, and scientists. Given that the definitions of individual Data Quality Control transformations are known (as mentioned in the conversion process), a script can be implemented to automatically create dataset and attribute definitions for transforming and uniting the individual Data Quality Result datasets in pairs. This union process continues until only two datasets remain. Finally, a last union transformation is created, targeting the final Data Quality Result dataset. The SQL solution for this can be found in the [git repository](https://github.com/mehmetmisset/linkedin-article-1-data-ingestion-transformation-requirements/blob/main/demo-analytic-data-platform/2-meta-data-definitions/9-Depoyment/1-Scripts/0-Temporal-Objects/Script.usp_insert_dq_aggregates_as_datasets.sql) mentioned below, the script is located here `\2-meta-data-definitions\9-Depoyment\1-Scripts\0-Temporal-Objects\Script.usp_insert_dq_aggregates_as_datasets.sql`
 
 ## 2.2. Why should we do this, in this way?
 
 The benefits of maintaining the __*Requirements*__ related to the __*Data Quality*__ can be listed as below, in general by automation of the execution and scheduling (incremental loading) of the __*Data Quality Controls*__ the Business (Data Stewards) and Data Engineer can focus on building the correct __*Queries*__ that measure the __*Data Quality Requirements*__. Having the framework (discussed in the previous article [Data Ingestion / Transformation Requirements](article-1-data-ingestion-transformation-requirements.md)) avialable pre-processed dataset can be created when ever needed.<br>
 Additional deployment logica can be introduced to extract not only the __*Data Lineage*__, but also the __*Involved Data Item*__ per __*Data Quality Controls*__ and __*Data Quality Result Status*__ providing detail insights on the __*Attribute*__-level. Due to the fact all __*Data Quality Controls*__ should be designed to be stand alone, they can be processed in parallel in combination with incremental loading (all dataset should have technical valid from and till datetimes). With the perdictable structure of the datassets aggregating the result can be automated in simular way of generating the required __*Dataset/Attribute*__-metadata definitions.
 
-
-
-some text on Why should we do this, in this way? listing benifits and what business value is will deliver.
+The benefits can be listed as follows:
 - Processing is order is automatically determined
 - ETL for Incremental loading is generate in a generic way
 - Data Lineage is Extracted in same way as other __*Data Transformations*__
 - Extraction of __*Involved Data Items*__ can be automated
 - Execution of __*Data Quality Controls*__ can be done in parallele
 - Aggregation is ETL is automatically generated which is less error prone.
-- vender independent
-- maximal flexibility
-
-# 3 Automatically mapping __*Datasets*__ and __*Attributes*__ for __*Data Quality*__
-
-## 3.1 Mapping for individual __*Data Quality Controls*__
-
-### 3.1.1. Mapping __*Data Quality Control*__ to __*Dataset (for DQ Result)*__
-
-mermaid diagram and mapping from DQ control/result to dataset / attribute definitions
-
-### 3.1.2. Mapping __*Data Quality Result*__ to __*Dataset (for DQ Totals)*__
-
-mermaid diagram and mapping from DQ control/totals to dataset / attribute definitions
-
-## 3.2 Mapping the aggregation of individual __*Data Quality Results/Totals*__ to final __*Data Quality Result/Totals*__
-
-mermaid diagram and mapping from DQ control/totals to dataset / attribute definitions
+- Vendor independent, this will work in any SQL processing engine (SQL Server, Databrick, Fabric)
+- flexibility is maximized
