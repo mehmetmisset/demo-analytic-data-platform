@@ -115,9 +115,9 @@ By capturing data ingestion and transformation requirements into a metadata mode
 
 - Git Repository: [demo-analytic-data-platform](https://github.com/mehmetmisset/linkedin-article-1-data-ingestion-transformation-requirements/tree/main)
 
-## Next topic
+### Next topic
 
-1. [Data Quality Requirements](article-2-extending-the-meta-data-model-with-dq-requirements.md)
+1. [Data Quality Requirements](article-2-data-quality-requirements.md)
 2. A technical walkthrough in parsing SQL queries to extract data lineage information.
 3. Utilizing the Meta Data to Generate Procedures for Incremental Data Transformations.
 4. Building a Data Pipeline in Azure Data Factory

@@ -6,7 +6,7 @@ by Mehmet (P.R.M.) Misset
 ##  __1. The General Idea__
 
 <p style="text-align: center;"><i>
-    "Let agree that the implementation of a `Data Quality`-requirement is in essence the same thing as a `Data Transformation`, with the special feature that the all the results end up in the same `target`-dataset."
+    "Let agree that the implementation of a `Data Quality`-requirement is in essence the same thing as a `Data Transformation`, with the special feature that the all the results of all the `Controls` end up in the same `target`-dataset."
 </i></p>
 
 ---
@@ -93,17 +93,39 @@ While this approach offers great flexibility for parallel or individual processi
 
 The solution is to aggregate all these datasets into a single Data Quality Result dataset and a Data Quality Totals dataset, both of which should be readable by data stewards, analysts, and scientists. Given that the definitions of individual Data Quality Control transformations are known (as mentioned in the conversion process), a script can be implemented to automatically create dataset and attribute definitions for transforming and uniting the individual Data Quality Result datasets in pairs. This union process continues until only two datasets remain. Finally, a last union transformation is created, targeting the final Data Quality Result dataset. The SQL solution for this can be found in the [git repository](https://github.com/mehmetmisset/linkedin-article-1-data-ingestion-transformation-requirements/blob/main/demo-analytic-data-platform/2-meta-data-definitions/9-Depoyment/1-Scripts/0-Temporal-Objects/Script.usp_insert_dq_aggregates_as_datasets.sql) mentioned below, the script is located here `\2-meta-data-definitions\9-Depoyment\1-Scripts\0-Temporal-Objects\Script.usp_insert_dq_aggregates_as_datasets.sql`
 
-## 2.2. Why should we do this, in this way?
+## Why should we do this, in this way?
 
-The benefits of maintaining the __*Requirements*__ related to the __*Data Quality*__ can be listed as below, in general by automation of the execution and scheduling (incremental loading) of the __*Data Quality Controls*__ the Business (Data Stewards) and Data Engineer can focus on building the correct __*Queries*__ that measure the __*Data Quality Requirements*__. Having the framework (discussed in the previous article [Data Ingestion / Transformation Requirements](article-1-data-ingestion-transformation-requirements.md)) avialable pre-processed dataset can be created when ever needed.<br>
-Additional deployment logica can be introduced to extract not only the __*Data Lineage*__, but also the __*Involved Data Item*__ per __*Data Quality Controls*__ and __*Data Quality Result Status*__ providing detail insights on the __*Attribute*__-level. Due to the fact all __*Data Quality Controls*__ should be designed to be stand alone, they can be processed in parallel in combination with incremental loading (all dataset should have technical valid from and till datetimes). With the perdictable structure of the datassets aggregating the result can be automated in simular way of generating the required __*Dataset/Attribute*__-metadata definitions.
+Maintaining the requirements related to Data Quality offers several benefits. By storing these requirements within the dataset, many tasks can be automated, including execution and scheduling through incremental loading. This automation frees up time for business data stewards and data engineers, allowing them to focus on building accurate queries to measure Data Quality Requirements. With the framework discussed in the previous article (Data Ingestion / Transformation Requirements), pre-processed datasets can be created whenever needed.
 
-The benefits can be listed as follows:
-- Processing is order is automatically determined
-- ETL for Incremental loading is generate in a generic way
-- Data Lineage is Extracted in same way as other __*Data Transformations*__
-- Extraction of __*Involved Data Items*__ can be automated
-- Execution of __*Data Quality Controls*__ can be done in parallele
-- Aggregation is ETL is automatically generated which is less error prone.
-- Vendor independent, this will work in any SQL processing engine (SQL Server, Databrick, Fabric)
-- flexibility is maximized
+Additional deployment logic can be introduced to extract not only the Data Lineage but also the Involved Data Items per Data Quality Control and Data Quality Result Status, providing detailed insights at the attribute level. Since all Data Quality Controls are designed to be standalone, they can be processed in parallel with incremental loading (all datasets should have technically valid from and till datetimes). Given the predictable structure of the datasets, aggregating the results can be automated similarly to generating the required dataset/attribute metadata definitions.
+
+The benefits can be summarized as follows:
+
+- Processing order is automatically determined.
+- ETL for incremental loading is generated in a generic way.
+- Data Lineage is extracted in the same way as other Data Transformations.
+- Extraction of Involved Data Items can be automated.
+- Execution of Data Quality Controls can be done in parallel.
+- Aggregation in ETL is automatically generated, reducing errors.
+- Vendor independence: this approach works with any SQL processing engine (SQL Server, Databricks, Fabric).
+- Maximized flexibility.
+
+# Conclusion
+
+Capturing data quality requirements into a metadata model is a crucial step in ensuring the reliability and accuracy of data within an organization. By documenting these requirements in a structured and accessible manner, we can streamline the development process, enhance collaboration, and maintain consistency across projects. The integration of data quality controls into the metadata model allows for automated processing, improved tracking, and better visibility of data quality issues.
+
+Implementing this approach offers numerous benefits, including automation of tasks, standardization of processes, and vendor independence. By leveraging tools like Microsoft Access for managing metadata, organizations can ensure that data quality requirements are effectively captured, managed, and utilized throughout the project lifecycle. This not only saves time and reduces errors but also provides a scalable and flexible framework for maintaining high data quality standards.
+
+In summary, embedding data quality requirements into a metadata model is a strategic move that enhances the overall data management process, ensuring that data remains fit for purpose and supports informed decision-making.
+
+
+### *Attachment*:
+
+- Git Repository: [demo-analytic-data-platform](https://github.com/mehmetmisset/linkedin-article-1-data-ingestion-transformation-requirements/tree/main)
+- [Data Ingestion / Transfromation Requirements](demo-analytic-data-platform\articles\article-1-data-ingestion-transformation-requirements.md)
+
+### Next topic
+
+1. A technical walkthrough in parsing SQL queries to extract data lineage information.
+2. Utilizing the Meta Data to Generate Procedures for Incremental Data Transformations.
+3. Building a Data Pipeline in Azure Data Factory
