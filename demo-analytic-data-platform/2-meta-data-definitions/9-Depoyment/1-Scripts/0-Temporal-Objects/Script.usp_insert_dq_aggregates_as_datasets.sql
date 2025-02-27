@@ -436,4 +436,3 @@ CREATE PROCEDURE ##usp_dq_aggregates_as_datasets_for_totals AS BEGIN DECLARE
   END
 END
 GO
-

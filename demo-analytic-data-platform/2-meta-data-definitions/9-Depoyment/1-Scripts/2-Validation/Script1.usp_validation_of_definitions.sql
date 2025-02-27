@@ -5,17 +5,20 @@ DROP TABLE IF EXISTS mdm.validation_issues;
 GO
 CREATE TABLE mdm.validation_issues (
   id_dataset          CHAR(32)      NULL,
+  nm_dataset          NVARCHAR(128) NULL,
   id_attribute        CHAR(32)      NULL,
+  nm_attribute        NVARCHAR(128) NULL,
   nm_validation_issue NVARCHAR(128) NULL,
   ds_validation_issue NVARCHAR(999) NULL,
 )
 GO
-
 IF (1=1 /* Validate that all "utilized" datasets in "Transformations" have a "Alias" assigned. */) BEGIN
-  INSERT INTO mdm.validation_issues (id_dataset, id_attribute, nm_validation_issue, ds_validation_issue)
+  INSERT INTO mdm.validation_issues (id_dataset, nm_dataset, id_attribute, nm_attribute, nm_validation_issue, ds_validation_issue)
   SELECT 
     id_dataset          = tgt.id_dataset,
+    nm_dataset          = tgt.nm_target_schema + '.' + tgt.nm_target_table,
     id_attribute        = NULL,
+    nm_attribute        = NULL,
     nm_validation_issue = 'Missing "Alias"!',
     ds_validation_issue = 'For "Transformation" named "' + tgt.fn_dataset + '" the utilized dataset "' + src.fn_dataset + '" has NO "Alias".'
 
@@ -30,8 +33,27 @@ GO
 
 IF ((SELECT COUNT(*) FROM mdm.validation_issues) > 0) BEGIN
   
-  SELECT * FROM mdm.validation_issues;
-  RAISERROR('Various Error where detected in the Definitions of the metadata!', 16, 1);
+  DECLARE @tx NVARCHAR(MAX) = (SELECT * FROM mdm.validation_issues FOR JSON AUTO),
+          @ni INT,
+          @mx INT,
+          @mg NVARCHAR(999);
+  BEGIN
+
+    SET @mx = mdm.json_count(@tx); SET @ni = 0; WHILE (@ni < @mx) BEGIN 
+      
+      SET @mg  = CHAR(10) + 'id_dataset          : ' + ISNULL(mdm.json_value(@ni, @tx, 'id_dataset'),          'n/a')
+      SET @mg += CHAR(10) + 'nm_dataset          : ' + ISNULL(mdm.json_value(@ni, @tx, 'nm_dataset'),          'n/a')
+      SET @mg += CHAR(10) + 'id_attribute        : ' + ISNULL(mdm.json_value(@ni, @tx, 'id_attribute'),        'n/a')
+      SET @mg += CHAR(10) + 'nm_attribute        : ' + ISNULL(mdm.json_value(@ni, @tx, 'nm_attribute'),        'n/a')
+      SET @mg += CHAR(10) + 'nm_validation_issue : ' + ISNULL(mdm.json_value(@ni, @tx, 'nm_validation_issue'), 'n/a')
+      SET @mg += CHAR(10) + 'ds_validation_issue : ' + ISNULL(mdm.json_value(@ni, @tx, 'ds_validation_issue'), 'n/a')
+      EXEC gnc_commen.to_concol_window @mg;
+      
+    SET @ni += 1; END    
+
+    --RAISERROR('Various Error where detected in the Definitions of the metadata!', 16, 1);
+
+  END
 
 END;
 GO

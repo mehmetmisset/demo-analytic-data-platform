@@ -66,7 +66,7 @@
     <Folder Include="9-Depoyment\1-Scripts\1-Transformations" />
     <Folder Include="9-Depoyment\1-Scripts\2-Validation" />
     <Folder Include="9-Depoyment\1-Scripts\3-documentation" />
-    <Folder Include="9-Depoyment\2-Depolyment" />
+    <Folder Include="9-Depoyment\2-Deployment\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\1-meta-data-model\1-meta-data-model.sqlproj">
@@ -89,8 +89,7 @@
     <None Include="1-Frontend\Development-Version\Readme.md" />
     <None Include="1-Frontend\ms-access-frontend.accdb" />
     <None Include="2-Definitions\readme.md" />
-    <None Include="9-Depoyment\2-Depolyment\2-definitions.synology.publish.xml" />
-    <None Include="9-Depoyment\2-Depolyment\2-meta-data-definitions-blank-profiel.publish.xml" />
+    <None Include="9-Depoyment\2-Deployment\2-meta-data-definitions.synology.publish.xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="9-Depoyment\1-Scripts\0-Temporal-Objects\Script.insert_meta_attributes_into_dataset_attributes.sql" />
