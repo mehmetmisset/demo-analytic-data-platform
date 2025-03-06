@@ -129,6 +129,7 @@
     <Build Include="8-Commen-Features\Procedures\usp_html_file_text.sql" />
     <Build Include="8-Commen-Features\Procedures\usp_html_print_to_console.sql" />
     <Build Include="8-Commen-Features\Schemas\gnc_commen.sql" />
+    <Build Include="1-Meta-Data-Model\4-DTA-Data-Transformation-Area\schedule.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="9-Publish\2-Depolyment\1-meta.synology.publish.xml" />
