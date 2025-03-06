@@ -29,7 +29,7 @@ AS BEGIN
             WHEN @ip_is_only_metadata = 1 AND TABLE_SCHEMA = 'dqm' AND TABLE_NAME IN ('dq_control', 'dq_requirement', 'dq_threshold')
             THEN 1
 
-            WHEN @ip_is_only_metadata = 1 AND TABLE_SCHEMA = 'dta' AND TABLE_NAME IN ('attribute', 'dataset', 'ingestion_etl', 'parameter_value')
+            WHEN @ip_is_only_metadata = 1 AND TABLE_SCHEMA = 'dta' AND TABLE_NAME IN ('attribute', 'dataset', 'ingestion_etl', 'parameter_value', 'schedule')
             THEN 1
 
             WHEN @ip_is_only_metadata = 1 AND TABLE_SCHEMA = 'srd'
