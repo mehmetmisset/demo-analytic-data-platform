@@ -8,11 +8,15 @@ from selenium                     import webdriver
 from bs4                          import BeautifulSoup
 from io                           import StringIO
 
-def webtable(# Source Parameters":
-             wtb_1_any_ds_url, wtb_2_any_ds_path, wtb_3_any_ni_index,
-
-             # Debugging
-             is_debugging):
+def webtable(
+        # Source Parameters":
+        wtb_1_any_ds_url,
+        wtb_2_any_ds_path,
+        wtb_3_any_ni_index,
+        
+        # Debugging
+        is_debugging
+    ):
 
     # If is Debugging then show imput parameters
     if (is_debugging == 1):
@@ -29,16 +33,16 @@ def webtable(# Source Parameters":
     # Wait for the page to load (you might need to adjust the sleep time)
     time.sleep(2)
 
-    try:
-        # Find and click the "Accept Cookies" button (adjust the selector as needed)
+    try: # Find and click the "Accept Cookies" button (adjust the selector as needed)
         accept_button = driver.find_element(By.XPATH, '//button[text()="Alles accepteren"]')
         accept_button.click()
+
+        # Wait for the page to load after accepting cookies
+        time.sleep(2)
+
     except Exception as e:
         # Code to handle any other exceptions
         print(f"An unexpected error occurred: {e}")        
-
-    # Wait for the page to load after accepting cookies
-    time.sleep(2)
 
     # Get the page source after accepting cookies
     page_source = driver.page_source
@@ -62,4 +66,5 @@ def webtable(# Source Parameters":
     if (is_debugging == 1):
         print(df)
 
+    # Return the webtable as a DataFrame
     return df
