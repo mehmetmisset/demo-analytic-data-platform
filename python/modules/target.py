@@ -1,7 +1,7 @@
 # Import Custom Modules
-import credentials as sa
-import session     as ss
-import secret      as sc 
+from modules import credentials as sa
+from modules import session     as ss
+from modules import secret      as sc 
 
 def load_tsl(
     

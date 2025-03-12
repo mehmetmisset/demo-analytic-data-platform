@@ -1,5 +1,5 @@
-import session     as ss
-import credentials as sa
+from modules import credentials as sa
+from modules import session     as ss
 
 def get_secret(nm_secret, is_debugging):
 

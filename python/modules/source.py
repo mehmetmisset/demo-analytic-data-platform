@@ -4,10 +4,13 @@
 # - sql_user_password : Load data from a SQL Server database into a Spark DataFrame.
 # - web_table_anonymous_web : Load a table from a webpage into a Spark DataFrame.
 
+import sys
+sys.path.append('modules')
+
 # Import Custom Modules
-import credentials as sa
-import session     as ss
-import secret      as sc 
+from modules import credentials as sa
+from modules import session     as ss
+from modules import secret      as sc 
 
 # Import for web_table_anonymous_web
 import pandas as pd
