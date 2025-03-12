@@ -25,33 +25,37 @@ def blob_csv_to_df(
     is_debugging
 ):
 
-    # Azure Blob Helpers
-    tx_blob_name   = abs_4_csv_tx_folder + abs_5_csv_nm_file
-    tx_account_url = "https://" + abs_1_csv_nm_account + ".blob.core.windows.net"
-
-    # Create BlobServiceClient
-    ob_blob_service_client = BlobServiceClient(account_url=tx_account_url, credential=abs_2_csv_tx_sas_token)
-
-    # Get the blob client
-    ob_blob_client = ob_blob_service_client.get_blob_client(container=abs_3_csv_nm_container, blob=tx_blob_name)
-
-    # Download the blob content
-    ob_blob_content = ob_blob_client.download_blob().readall()
-
-    # Convert the blob content to a pandas DataFrame
-    ob_csv_string = ob_blob_content.decode(abs_6_csv_nm_decode)
-    df = pd.read_csv(StringIO(ob_csv_string))
-
-    # Convert the first row to header
-    if (abs_7_csv_is_1st_header == "1"): 
-        df.columns = df.iloc[0]
-        df = df[1:]
-
+    # Helper SAS Token URL
+    tx_sas_url = "spark.hadoop.fs.azure.sas." + abs_3_csv_nm_container + "." + abs_1_csv_nm_account + ".blob.core.windows.net"
+    header        = "true" if (abs_7_csv_is_1st_header == "1") else "false"
+    
     # Initialize Spark session
-    spark = SparkSession.builder.appName("BlobCsvToSparkDataFrame").getOrCreate()
+    spark = SparkSession.builder.appName("Load CSV from Blob").getOrCreate()
 
-    # Return Converted the pandas DataFrame to a Spark DataFrame
-    return spark.createDataFrame(df)
+    # Define the path to the CSV file in the blob container
+    tx_blob_container_path =  "wasbs://" + abs_3_csv_nm_container+  "@" + abs_1_csv_nm_account + ".blob.core.windows.net/"
+    tx_blob_container_path =+ abs_4_csv_tx_folder + "/" + abs_5_csv_nm_file + ".csv"
+
+    # Load the CSV file into a DataFrame using the SAS token
+    df = spark.read.format("csv") \
+         .option("header", header) \
+         .option("encoding", abs_6_csv_nm_decode) \
+         .option(tx_sas_url, abs_2_csv_tx_sas_token) \
+         .load(tx_blob_container_path)
+
+    if (is_debugging == "1"): 
+        print("abs_1_csv_nm_account    : '" + abs_1_csv_nm_account + "'")
+        print("abs_2_csv_tx_sas_token  : '********'")
+        print("abs_3_csv_nm_container  : '" + abs_3_csv_nm_container + "'")
+        print("abs_4_csv_tx_folder     : '" + abs_4_csv_tx_folder + "'")
+        print("abs_5_csv_nm_file       : '" + abs_5_csv_nm_file + "'")
+        print("abs_6_csv_nm_decode     : '" + abs_6_csv_nm_decode + "'")
+        print("abs_7_csv_is_1st_header : '" + abs_7_csv_is_1st_header + "'")
+        print("DataFrame:")
+        df.show(10)
+
+    # All done
+    return df
 
 def blob_excel_to_df(
         
