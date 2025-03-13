@@ -5,9 +5,8 @@ def get_secret(nm_secret, is_debugging):
 
     # Database credentials
     ds_url  = f"jdbc:sqlserver://{sa.secret_db['server']};"
-    ds_url += f"databaseName={sa.secret_db['database']}"
-    #ds_url += f"user={sa.secret_db['username']};"
-    #ds_url += f"password={sa.secret_db['password']}"
+    ds_url += f"databaseName={sa.secret_db['database']};"
+    ds_url += f"encrypt=false;trustServerCertificate=false"
     
     # Build SQL Statement
     tx_query = f"SELECT ds_secret FROM dbo.secrets WHERE nm_secret = '{nm_secret}'"
