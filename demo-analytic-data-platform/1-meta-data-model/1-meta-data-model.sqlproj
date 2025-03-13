@@ -132,8 +132,8 @@
     <Build Include="1-Meta-Data-Model\4-DTA-Data-Transformation-Area\schedule.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="9-Publish\2-Depolyment\1-meta.synology.publish.xml" />
     <None Include="9-Publish\2-Depolyment\1-meta-data-model-blank-profiel.publish.xml" />
+    <None Include="9-Publish\2-Depolyment\1-meta.synology.publish.xml" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include="$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\130\SqlSchemas\master.dacpac">

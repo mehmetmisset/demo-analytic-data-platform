@@ -89,7 +89,7 @@
     <None Include="1-Frontend\Development-Version\Readme.md" />
     <None Include="1-Frontend\ms-access-frontend.accdb" />
     <None Include="2-Definitions\readme.md" />
-    <None Include="9-Depoyment\2-Deployment\2-meta-data-definitions.synology.publish.xml" />
+    <None Include="9-Depoyment\2-Deployment\2-meta-data-definitions.publish.xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="9-Depoyment\1-Scripts\0-Temporal-Objects\Script.insert_meta_attributes_into_dataset_attributes.sql" />

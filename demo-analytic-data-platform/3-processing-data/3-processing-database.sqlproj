@@ -65,7 +65,6 @@
     <Folder Include="2-RDP-Run-Data-Processing\Schemas" />
     <Folder Include="2-RDP-Run-Data-Processing\Tables" />
     <Folder Include="9-Deployment\" />
-    <Folder Include="9-Deployment\2-Deployment\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="2-RDP-Run-Data-Processing\Functions\get_id_run.sql" />
@@ -82,7 +81,7 @@
     <Build Include="2-RDP-Run-Data-Processing\Tables\run.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="9-Deployment\2-Deployment\3-processing-database.synology.publish.xml" />
+    <None Include="9-Deployment\3-processing-database.synology.publish.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\1-meta-data-model\1-meta-data-model.sqlproj">
