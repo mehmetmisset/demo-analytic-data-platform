@@ -52,7 +52,9 @@ def truncate_table(
     connection.prepareCall(tx_truncate_table).execute()
     connection.close()
 
-
+    # Stop Spark Session
+    spark.stop()
+    
 # Test getSparkSession function
 #spark = getSparkSession('Test')
 
