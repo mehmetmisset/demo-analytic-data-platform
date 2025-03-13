@@ -4,10 +4,10 @@ from modules import session     as ss
 def get_secret(nm_secret, is_debugging):
 
     # Database credentials
-    ds_url  = f"jdbc:sqlserver://{sa.secret_db['server']};"
-    ds_url += f"databaseName={sa.secret_db['database']};"
-    ds_url += f"encrypt=false;trustServerCertificate=false"
-    
+    ds_jdbc_url = ss.jdbc_url(sa.secret_db)
+    nm_username = sa.secret_db['username']
+    cd_password = sa.secret_db['password']
+
     # Build SQL Statement
     tx_query = f"SELECT ds_secret FROM dbo.secrets WHERE nm_secret = '{nm_secret}'"
 
@@ -15,10 +15,9 @@ def get_secret(nm_secret, is_debugging):
     spark = ss.getSparkSession("GetSecretFunction")
     
     # Run SQL query
-    df = spark.read.format("jdbc").option("url", ds_url).option("driver", "com.microsoft.sqlserver.jdbc.SQLServerDriver").option("encrypt", "false").option("trustServerCertificate", "false")\
-        .option("user",     sa.secret_db['username'])\
-        .option("password", sa.secret_db['password'])\
-        .option("query",    tx_query).load()
+    df = spark.read.format("jdbc").option("url", ds_jdbc_url).option("driver", "com.microsoft.sqlserver.jdbc.SQLServerDriver")\
+        .option("user", nm_username).option("password", cd_password)\
+        .option("query", tx_query).load()
 
     # Show input Parameter(s)
     if (is_debugging == "1"):

@@ -2,10 +2,13 @@
 from modules import credentials as sa
 from modules import session     as ss 
 
+
+
+
 def load_tsl(
     
     # Input Parameters
-    source_df,          # SparkDataFrame containing the data to be loaded
+    df_source_dataset,  # SparkDataFrame containing the data to be loaded
     nm_target_schema,   # Target schema name
     nm_target_table,    # Target table name
     
@@ -13,25 +16,21 @@ def load_tsl(
     is_debugging = "0"
     
 ):
-    
-    # Database credentials
-    ds_url  = f"jdbc:sqlserver://{sa.target_db.server};"
-    ds_url += f"databaseName={sa.target_db.database}"
 
     # Truncate Target Table
-    spark = ss.getSparkSession("TruncateTableFunction")
-    spark.read.format("jdbc").option("url", ds_url).option("driver", "com.microsoft.sqlserver.jdbc.SQLServerDriver").option("encrypt", "false").option("trustServerCertificate", "false")\
-        .option("user",     sa.secret_db['username'])\
-        .option("password", sa.secret_db['password'])\
+    ss.truncate_table(sa.target_db, nm_target_schema, nm_target_table)
+
+    # Database credentials
+    ds_jdbc_url = ss.jdbc_url(sa.secret_db)
+    nm_username = sa.target_db['username']
+    cd_password = sa.target_db['password']
+    
+    # Load Source DataFrame to SQL Schema / Table
+    result = df_source_dataset.write.format("jdbc").option("url", ds_jdbc_url).option("driver", "com.microsoft.sqlserver.jdbc.SQLServerDriver")\
+        .option("user",     nm_username)\
+        .option("password", cd_password)\
         .option("schema",   nm_target_schema) \
         .option("dbtable",  nm_target_table) \
-        .load().createOrReplaceTempView(f"{nm_target_schema}_{nm_target_table}")
-    spark.sql(f"TRUNCATE TABLE {nm_target_schema}_{nm_target_table}")        
-
-    # Load Source DataFrame to SQL Schema / Table
-    result = source_df.write.format("jdbc").option("url", ds_url) \
-        .option("schema",  nm_target_schema) \
-        .option("dbtable", nm_target_table) \
         .mode("append").save()
 
     # Show Input Parameter(s)
