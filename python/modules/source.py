@@ -4,18 +4,14 @@
 # - sql_user_password : Load data from a SQL Server database into a Spark DataFrame.
 # - web_table_anonymous_web : Load a table from a webpage into a Spark DataFrame.
 
-import sys
-sys.path.append('modules')
-
 # Import Custom Modules
-from modules import credentials as sa
 from modules import session     as ss
 from modules import secret      as sc 
 
 # Import for web_table_anonymous_web
 import pandas as pd
 import time
-from selenium.webdriver.common.by import By
+from selenium.webdriver.common.by import By as by
 from selenium                     import webdriver
 from bs4                          import BeautifulSoup
 from io                           import StringIO
@@ -188,7 +184,7 @@ def web_table_anonymous_web(
     time.sleep(2)
 
     try: # Find and click the "Accept Cookies" button (adjust the selector as needed)
-        accept_button = driver.find_element(By.XPATH, '//button[text()="Alles accepteren"]')
+        accept_button = driver.find_element(by.XPATH, '//button[text()="Alles accepteren"]')
         accept_button.click()
 
         # Wait for the page to load after accepting cookies
