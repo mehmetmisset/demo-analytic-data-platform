@@ -2,13 +2,13 @@
 from modules import credentials as sa
 from modules import session     as ss 
 
-
-
+import pandas as pd
+from sqlalchemy import create_engine
 
 def load_tsl(
     
     # Input Parameters
-    df_source_dataset,  # SparkDataFrame containing the data to be loaded
+    df_source_dataset,  # DataFrame
     nm_target_schema,   # Target schema name
     nm_target_table,    # Target table name
     
@@ -21,17 +21,14 @@ def load_tsl(
     ss.truncate_table(sa.target_db, nm_target_schema, nm_target_table)
 
     # Database credentials
-    ds_jdbc_url = ss.jdbc_url(sa.secret_db)
+    nm_server   = sa.target_db['server']
+    nm_database = sa.target_db['database']
     nm_username = sa.target_db['username']
-    cd_password = sa.target_db['password']
+    cd_password = sa.target_db['password'].replace("@", "%40")
     
     # Load Source DataFrame to SQL Schema / Table
-    result = df_source_dataset.write.format("jdbc").option("url", ds_jdbc_url).option("driver", "com.microsoft.sqlserver.jdbc.SQLServerDriver")\
-        .option("user",     nm_username)\
-        .option("password", cd_password)\
-        .option("schema",   nm_target_schema) \
-        .option("dbtable",  nm_target_table) \
-        .mode("append").save()
+    engine = create_engine(f'mssql+pyodbc://{nm_username}:{cd_password}@{nm_server}/{nm_database}?driver=ODBC+Driver+17+for+SQL+Server&Encrypt=no&TrustServerCertificate=no&Connection Timeout=30')
+    result = df_source_dataset.to_sql(nm_target_table, con=engine, schema=nm_target_schema, if_exists='replace', index=False)
 
     # Show Input Parameter(s)
     if (is_debugging == "1"):

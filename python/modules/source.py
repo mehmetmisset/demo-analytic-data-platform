@@ -212,19 +212,13 @@ def web_table_anonymous_web(
     # Read the table into a pandas DataFrame
     pandas_df = pd.read_html(table.getvalue())[int(wtb_3_any_ni_index)]
 
-    # Initialize Spark session
-    spark = ss.getSparkSession("WebTableToSparkDataFrame")
-
-    # Convert the pandas DataFrame to a Spark DataFrame
-    df = spark.createDataFrame(pandas_df)
-
     # If is Debugging then show imput parameters
     if (is_debugging == 1):
         print("wtb_1_any_ds_url   : '" + wtb_1_any_ds_url + "'")
         print("wtb_2_any_ds_path  : '" + wtb_2_any_ds_path + "'")
         print("wtb_3_any_ni_index : '" + wtb_3_any_ni_index + "'")
         print("DataFrame:")
-        df.show(10)
+        pandas_df.head(10)
 
     # Return the webtable as a DataFrame
-    return df
+    return pandas_df

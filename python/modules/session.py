@@ -45,15 +45,15 @@ def truncate_table(
     cd_password = dc_credentials_db['password']
 
     # Start Spark Session for Truncate Table
-    spark = getSparkSession("TruncateTableFunction")
+    spark_truncate = getSparkSession("TruncateTableFunction")
     tx_truncate_table = f"TRUNCATE TABLE {nm_target_schema}.{nm_target_table}"
-    driver_manager = spark._sc._gateway.jvm.java.sql.DriverManager
+    driver_manager = spark_truncate._sc._gateway.jvm.java.sql.DriverManager
     connection = driver_manager.getConnection(ds_jdbc_url, nm_username, cd_password)
     connection.prepareCall(tx_truncate_table).execute()
     connection.close()
 
     # Stop Spark Session
-    spark.stop()
+    spark_truncate.stop()
     
 # Test getSparkSession function
 #spark = getSparkSession('Test')
