@@ -305,8 +305,8 @@ BEGIN
 			SET @qry += @emp +   '[main].[meta_dt_valid_from] AS [meta_dt_valid_from],';
 			SET @qry += @nwl + '  [main].[meta_dt_valid_till] AS [meta_dt_valid_till],';
 			SET @qry += @nwl + '  CONVERT(BIT, IIF([main].[meta_dt_valid_till] >= CONVERT(DATETIME, "9999-12-31"),1,0)) AS [meta_is_active],';
-			SET @qry += @nwl + '  CONVERT(CHAR(32), HASHBYTES("MD5", ' + @rwh + ', 2) AS [meta_ch_rh]';
-			SET @qry += @nwl + '  CONVERT(CHAR(32), HASHBYTES("MD5", ' + @bks + ', 2) AS [meta_ch_bk]';
+			SET @qry += @nwl + '  CONVERT(CHAR(32), HASHBYTES("MD5", ' + @rwh + ', 2) AS [meta_ch_rh],';
+			SET @qry += @nwl + '  CONVERT(CHAR(32), HASHBYTES("MD5", ' + @bks + ', 2) AS [meta_ch_bk],';
 			SET @qry += @nwl + '  CONVERT(CHAR(32), HASHBYTES("MD5", ' + @pks + ', 2) AS [meta_ch_pk]';
 			SET @qry += @nwl + 'FROM (';
 						
@@ -420,9 +420,6 @@ BEGIN
     SET @sql += @nwl + '  WHERE id_dataset           = "' + @id_dataset + '"'
     SET @sql += @nwl + '  AND   id_processing_status = gnc_commen.id_processing_status("Finished")'
     SET @sql += @nwl + ')'
-    SET @sql += @nwl + ''
-    SET @sql += @nwl + '/* Set curr "Calculation"-date. */'
-    SET @sql += @nwl + 'SELECT @dt_curr_calculation = GETDATE();'
 
     /* Set SQL Statement for "Calculation"-dates */
     SET @tx_query_calculation = @sql
