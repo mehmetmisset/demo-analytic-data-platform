@@ -74,7 +74,7 @@ AS DECLARE /* Local Variables */
 	@dt_current_stand	 NVARCHAR(32),
 	@ni_previous_epoch NVARCHAR(32),
 	@ni_current_epoch	 NVARCHAR(32),
-	@tx_sql_between    NVARCHAR(MAX) = 'BETWEEN CONVERT(DATETIME, "<@dt_previous_stand>") AND CONVERT(DATETIME, "<@dt_current_stand>")',
+	@tx_sql_between    NVARCHAR(MAX) = 'BETWEEN CONVERT(DATETIME, @dt_previous_stand) AND CONVERT(DATETIME, @dt_current_stand)',
 
 	/* Local Varaibles for "SQL" for "Metadata"-attributes. */
   @rwh NVARCHAR(MAX) = '',
@@ -285,7 +285,8 @@ BEGIN
 								+@nwl+'      SELECT [meta_ch_bk] FROM ['+dst.nm_target_schema+'].['+dst.nm_target_table+']'
 								+@nwl+'      WHERE ([meta_dt_valid_from] '+@tx_sql_between+')'
 								+@nwl+'         OR ([meta_dt_valid_till] '+@tx_sql_between+')'
-								+@nwl+'  ) AS ['+tds.cd_alias+']'
+								+@nwl+'    )'
+                +@nwl+'  ) AS ['+tds.cd_alias+']'
 								ELSE '  ' + tds.cd_join_type+' ['+dst.nm_target_schema+'].['+dst.nm_target_table+'] AS [' + tds.cd_alias + ']' + IIF(LEN(ISNULL(tds.tx_join_criteria,'-')) > 1, ' ON ' + REPLACE(ISNULL(tds.tx_join_criteria, ' '), '''', '"'), '')
 					END AS tx_sql_for_replace_from_dataset
 				INTO #transformation_dataset 
@@ -376,9 +377,8 @@ BEGIN
 		END
 		
     IF (1=1 /* Build INSERT-Statement */) BEGIN
-      SET @qry = 'INSERT INTO ' + @tsa + ' (' + REPLACE(@tx_attributes, 's.', '') 
-               + ' meta_dt_valid_from, meta_dt_valid_till, meta_is_active, meta_ch_rh, meta_ch_bk, meta_ch_pk' 
-               + ')' + @nwl + @qry;
+      SET @qry = 'INSERT INTO ' + @tsa + ' (' + REPLACE(@tx_attributes, 's.', '') + 'meta_dt_valid_from, meta_dt_valid_till, meta_is_active, meta_ch_rh, meta_ch_bk, meta_ch_pk)' 
+               + @nwl + @qry;
       SET @tx_query_source = REPLACE(@qry, '"', '''');
     END
 
@@ -409,8 +409,8 @@ BEGIN
             
     /* Build SQL Statement */
     SET @sql  = @emp + '/* The `Target`-dataset(s) ARE historized. */'
-    SET @sql += @nwl + 'SELECT @dt_last_calculation = CONVERT(DATETIME2(7), MAX(run.dt_previous_stand))'
-    SET @sql += @nwl + '     , @dt_curr_calculation = CONVERT(DATETIME2(7), MAX(run.dt_current_stand))'
+    SET @sql += @nwl + 'SELECT @dt_previous_stand = CONVERT(DATETIME2(7), MAX(run.dt_previous_stand))'
+    SET @sql += @nwl + '     , @dt_current_stand  = CONVERT(DATETIME2(7), MAX(run.dt_current_stand))'
     SET @sql += @nwl + 'FROM rdp.run AS run'
     SET @sql += @nwl + 'WHERE run.id_dataset = "' + @id_dataset + '"'
     SET @sql += @nwl + 'AND   run.dt_run_started = ('
@@ -475,8 +475,8 @@ BEGIN
     SET @tx_sql += @nwl + '  @nm_target_schema    NVARCHAR(128) = "' + @ip_nm_target_schema + '", '
     SET @tx_sql += @nwl + '  @nm_target_table     NVARCHAR(128) = "' + @ip_nm_target_table + '", '
     SET @tx_sql += @nwl + '  @tx_error_message    NVARCHAR(MAX),'
-    SET @tx_sql += @nwl + '  @dt_last_calculation DATETIME2(7),'
-    SET @tx_sql += @nwl + '  @dt_curr_calculation DATETIME2(7),'
+    SET @tx_sql += @nwl + '  @dt_previous_stand   DATETIME2(7),'
+    SET @tx_sql += @nwl + '  @dt_current_stand    DATETIME2(7),'
     SET @tx_sql += @nwl + '  @id_run              CHAR(32)       = NULL,'
     SET @tx_sql += @nwl + '  @is_transaction      BIT            = 0, -- Helper to keep track if a transaction has been started.'
     SET @tx_sql += @nwl + '  @ni_before           INT            = 0, -- # Record "Before" processing.'
