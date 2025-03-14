@@ -56,29 +56,7 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
     <Folder Include="Properties" />
-    <Folder Include="2-RDP-Run-Data-Processing" />
-    <Folder Include="2-RDP-Run-Data-Processing\Functions" />
-    <Folder Include="2-RDP-Run-Data-Processing\Procedures" />
-    <Folder Include="2-RDP-Run-Data-Processing\Procedures\Build-Show-and-Execute-SQL-for" />
-    <Folder Include="2-RDP-Run-Data-Processing\Procedures\DQ-Procedures" />
-    <Folder Include="2-RDP-Run-Data-Processing\Procedures\Ingestions" />
-    <Folder Include="2-RDP-Run-Data-Processing\Schemas" />
-    <Folder Include="2-RDP-Run-Data-Processing\Tables" />
     <Folder Include="9-Deployment\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Build Include="2-RDP-Run-Data-Processing\Functions\get_id_run.sql" />
-    <Build Include="2-RDP-Run-Data-Processing\Procedures\Build-Show-and-Execute-SQL-for\create_column_store_index.sql" />
-    <Build Include="2-RDP-Run-Data-Processing\Procedures\Build-Show-and-Execute-SQL-for\create_get.sql" />
-    <Build Include="2-RDP-Run-Data-Processing\Procedures\Build-Show-and-Execute-SQL-for\create_schema.sql" />
-    <Build Include="2-RDP-Run-Data-Processing\Procedures\Build-Show-and-Execute-SQL-for\create_temporal_staging_area_table.sql" />
-    <Build Include="2-RDP-Run-Data-Processing\Procedures\Build-Show-and-Execute-SQL-for\create_user_specified_procedure.sql" />
-    <Build Include="2-RDP-Run-Data-Processing\Procedures\Ingestions\run_info.sql" />
-    <Build Include="2-RDP-Run-Data-Processing\Procedures\run_failed.sql" />
-    <Build Include="2-RDP-Run-Data-Processing\Procedures\run_finish.sql" />
-    <Build Include="2-RDP-Run-Data-Processing\Procedures\run_start.sql" />
-    <Build Include="2-RDP-Run-Data-Processing\Schemas\rdp.sql" />
-    <Build Include="2-RDP-Run-Data-Processing\Tables\run.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="9-Deployment\3-processing-database.synology.publish.xml" />

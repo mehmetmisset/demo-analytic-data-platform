@@ -24,28 +24,6 @@ DECLARE
 
 BEGIN
 
-	IF (@id_dataset!='n/a' /* Generate "Temporal Staging Area" -table, -View and -Procedure. */) BEGIN
-
-		/* Extract "Target"-schema and -table names, Indicator "Ingestion". */
-		SELECT @nm_target_schema = ISNULL(nm_target_schema, 'n/a')
-				 , @nm_target_table  = ISNULL(nm_target_table,  'n/a')
-		FROM dta.dataset WHERE meta_is_active = 1;
-
-		/* Create "Temporal Staging Area"-table, -view and -Update Procedure. */
-		EXEC rdp.create_schema @nm_target_schema;
-		EXEC rdp.create_temporal_staging_area_table @id_dataset, @nm_target_schema, @nm_target_table;
-		EXEC rdp.create_user_specified_procedure @nm_target_schema, @nm_target_table;
-
-	END
-
-	--IF (@id_dq_control != 'n/a' /* Generate "Data Quality". */) BEGIN
-	--
-	--	
-	--
-	--
-	--	-- code for generation schema, table per DQ result/totals.
-	--END
-
 	IF (1=1 /* "Start" run. */) BEGIN
 
 		/* Finish "runs" that are NOT "finished". */

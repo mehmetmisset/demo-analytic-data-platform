@@ -75,6 +75,8 @@
     <Folder Include="8-Commen-Features\Procedures\Build-Show-and-Execute-SQL-for" />
     <Folder Include="8-Commen-Features\Procedures\Documentation" />
     <Folder Include="8-Commen-Features\Procedures\Generic" />
+    <Folder Include="8-Commen-Features\Procedures\Run" />
+    <Folder Include="8-Commen-Features\Tables" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="1-Meta-Data-Model\1-MDM-Meta-Data-Model\html_file_name.sql" />
@@ -139,6 +141,13 @@
     <Build Include="8-Commen-Features\Procedures\Generic\to_concol_window.sql" />
     <Build Include="8-Commen-Features\Procedures\Generic\tx_parameter_value.sql" />
     <Build Include="8-Commen-Features\Procedures\Build-Show-and-Execute-SQL-for\deploy_dataset.sql" />
+    <Build Include="8-Commen-Features\Schemas\rdp.sql" />
+    <Build Include="8-Commen-Features\Tables\run.sql" />
+    <Build Include="8-Commen-Features\Procedures\Run\run_failed.sql" />
+    <Build Include="8-Commen-Features\Procedures\Run\run_finish.sql" />
+    <Build Include="8-Commen-Features\Procedures\Run\run_start.sql" />
+    <Build Include="8-Commen-Features\Functions\get_id_run.sql" />
+    <Build Include="8-Commen-Features\Procedures\Build-Show-and-Execute-SQL-for\run_info.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="9-Publish\2-Depolyment\1-meta-data-model-blank-profiel.publish.xml" />

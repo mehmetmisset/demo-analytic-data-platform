@@ -12,8 +12,25 @@
 AS BEGIN
 
   /* Local Variables */
+  DECLARE @NOW DATETIME = GETDATE();
+  
+  BEGIN
 
+	  IF (@ip_id_dataset != 'n/a' /* Generate "Presisten/Temporal Staging Area"- or "Data Transformation Area"-tables, -Views and -Procedures. */) BEGIN
 
+		  /* Create "Schemas" if needed. */
+		  EXEC mdm.create_schema @ip_nm_target_schema;
 
-  SELECT @param1, @param2
-RETURN 0
+      /* Create "Presisten/Temporal Staging Area"- or "Data Transformation Area"-tables. */
+		  EXEC mdm.create_temporal_staging_area_table @ip_id_dataset, @ip_nm_target_schema, @ip_nm_target_table;
+
+      /* Create "Procedures" for processing data changes. */
+		  EXEC mdm.create_user_specified_procedure @ip_nm_target_schema, @ip_nm_target_table;
+
+	  END
+  END
+  /* All Done */
+  RETURN 0
+
+END
+GO
