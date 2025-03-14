@@ -33,7 +33,7 @@ BEGIN
     JOIN dta.dataset   AS dst ON dst.meta_is_active = 1 AND dst.id_dataset  = att.id_dataset AND dst.nm_target_schema = @ip_nm_target_schema AND dst.nm_target_table = @ip_nm_target_table
     JOIN srd.datatype  AS dtp ON dtp.meta_is_active = 1 AND dtp.id_datatype = att.id_datatype
 
-    WHERE att.meta_is_active = 1
+    WHERE att.meta_is_active = 1 AND att.nm_target_column NOT IN ('meta_dt_valid_from', 'meta_dt_valid_till', 'meta_is_active', 'meta_ch_rh', 'meta_ch_bk', 'meta_ch_pk')
     ORDER BY ni_ordering ASC;
 
   END

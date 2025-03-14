@@ -31,6 +31,7 @@ AS DECLARE /* Local Variables */
 	@emp NVARCHAR(1)   = '',
   @sql NVARCHAR(MAX) = '',
 	
+  @tsa NVARCHAR(MAX),
   @src NVARCHAR(MAX),
   @tgt NVARCHAR(MAX),
 	@col NVARCHAR(MAX) = '',
@@ -87,7 +88,8 @@ BEGIN
 
 	IF (1=1 /* Extract schema and Table. */) BEGIN
 	  
-    SELECT @src = '[tsa_' + dst.nm_target_schema + '].[get_' + dst.nm_target_table + ']',
+    SELECT @tsa = '[tsa_' + dst.nm_target_schema + '].[tsa_' + dst.nm_target_table + ']',
+				   @src = '[tsa_' + dst.nm_target_schema + '].[get_' + dst.nm_target_table + ']',
 				   @tgt = '[' +     dst.nm_target_schema + '].['     + dst.nm_target_table + ']',
 				   @ptp = CASE WHEN dst.is_ingestion = 1 THEN etl.nm_processing_type ELSE 'Incremental' END,
            @is_ingestion = dst.is_ingestion,
@@ -111,7 +113,7 @@ BEGIN
            nm_target_column
     INTO ##columns 
     FROM dta.attribute
-    WHERE meta_is_active = 1 
+    WHERE meta_is_active = 1 AND nm_target_column NOT IN ('meta_dt_valid_from', 'meta_dt_valid_till', 'meta_is_active', 'meta_ch_rh', 'meta_ch_bk', 'meta_ch_pk')
     AND   id_dataset = @id_dataset 
     ORDER BY ni_ordering ASC;
 
@@ -373,12 +375,17 @@ BEGIN
 
 		END
 		
+    IF (1=1 /* Build INSERT-Statement */) BEGIN
+      SET @qry = 'INSERT INTO ' + @tsa + ' (' + REPLACE(@tx_attributes, 's.', '') 
+               + ' meta_dt_valid_from, meta_dt_valid_till, meta_is_active, meta_ch_rh, meta_ch_bk, meta_ch_pk' 
+               + ')' + @nwl + @qry;
+    END
+
 		/* Replace the "double"-qouts for a "double-double"-quots. This is needed, because the @tx_query_source is to be passed into the "return"-resultset as a string. */
 		SET @tx_query_source = REPLACE(@qry, '"', '""');
 		IF (@ip_is_debugging = 1) BEGIN PRINT('@sql : ' + @qry); END
 
 	END
-
 
   IF (1=1 /* Add "SQL" for "Update"-query for "Target processing type is "Fullload". */) BEGIN
     SET @sql  = @emp + 'UPDATE t SET';
@@ -390,8 +397,8 @@ BEGIN
   END
   
   IF (1=1 /* Add "SQL" for "Insert"-query for "Target processing type is "Fullload". */) BEGIN
-    SET @sql  = @emp + 'INSERT INTO ' + @tgt + ' (' + REPLACE(@col, 's.', '') + ' meta_dt_valid_from, meta_dt_valid_till, meta_is_active, meta_ch_rh, meta_ch_bk, meta_ch_pk)';
-    SET @sql += @nwl + 'SELECT ' + @col + ' s.meta_dt_valid_from, s.meta_dt_valid_till, s.meta_is_active, s.meta_ch_rh, s.meta_ch_bk, s.meta_ch_pk';
+    SET @sql  = @emp + 'INSERT INTO ' + @tgt + ' (' + REPLACE(@tx_attributes, 's.', '') + ' meta_dt_valid_from, meta_dt_valid_till, meta_is_active, meta_ch_rh, meta_ch_bk, meta_ch_pk)';
+    SET @sql += @nwl + 'SELECT ' + @tx_attributes + ' s.meta_dt_valid_from, s.meta_dt_valid_till, s.meta_is_active, s.meta_ch_rh, s.meta_ch_bk, s.meta_ch_pk';
     SET @sql += @nwl + 'FROM ' + @src + ' AS s LEFT JOIN ' + @tgt + ' AS t ON t.meta_is_active = 1 AND t.meta_ch_rh = s.meta_ch_rh';
     SET @sql += @nwl + 'WHERE t.meta_ch_pk IS NULL'
     SET @tx_query_insert = REPLACE(@sql, '"', '''');
@@ -496,8 +503,7 @@ BEGIN
       SET @tx_sql += @nwl + '  BEGIN TRY'
       SET @tx_sql += @nwl + '  '
       SET @tx_sql += @nwl + '    /* Execute `Transformation`-query and insert result into `Temporal Staging Area`-table. */'
-      SET @tx_sql += @nwl + '    '
-      SET @tx_sql += @nwl + '    '
+      SET @tx_sql += @nwl + '    ' + @tx_query_source
       SET @tx_sql += @nwl + '    '
       SET @tx_sql += @nwl + '  END TRY'
       SET @tx_sql += @nwl + '  '
