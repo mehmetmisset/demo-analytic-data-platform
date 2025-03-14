@@ -397,7 +397,7 @@ BEGIN
   END
   
   IF (1=1 /* Add "SQL" for "Insert"-query for "Target processing type is "Fullload". */) BEGIN
-    SET @sql  = @emp + 'INSERT INTO ' + @tgt + ' (' + REPLACE(@tx_attributes, 's.', '') + ' meta_dt_valid_from, meta_dt_valid_till, meta_is_active, meta_ch_rh, meta_ch_bk, meta_ch_pk)';
+    SET @sql  = @emp + 'INSERT INTO ' + @tgt + ' (' + REPLACE(@tx_attributes, 's.', '') + 'meta_dt_valid_from, meta_dt_valid_till, meta_is_active, meta_ch_rh, meta_ch_bk, meta_ch_pk)';
     SET @sql += @nwl + 'SELECT ' + @tx_attributes + ' s.meta_dt_valid_from, s.meta_dt_valid_till, s.meta_is_active, s.meta_ch_rh, s.meta_ch_bk, s.meta_ch_pk';
     SET @sql += @nwl + 'FROM ' + @src + ' AS s LEFT JOIN ' + @tgt + ' AS t ON t.meta_is_active = 1 AND t.meta_ch_rh = s.meta_ch_rh';
     SET @sql += @nwl + 'WHERE t.meta_ch_pk IS NULL'
