@@ -72,6 +72,9 @@
     <Folder Include="8-Commen-Features\Functions" />
     <Folder Include="8-Commen-Features\Procedures" />
     <Folder Include="8-Commen-Features\Schemas" />
+    <Folder Include="8-Commen-Features\Procedures\Build-Show-and-Execute-SQL-for" />
+    <Folder Include="8-Commen-Features\Procedures\Documentation" />
+    <Folder Include="8-Commen-Features\Procedures\Generic" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="1-Meta-Data-Model\1-MDM-Meta-Data-Model\html_file_name.sql" />
@@ -119,17 +122,22 @@
     <Build Include="8-Commen-Features\Functions\json_value.sql" />
     <Build Include="8-Commen-Features\Functions\svf_minify.sql" />
     <Build Include="8-Commen-Features\Functions\svf_strip_comments.sql" />
-    <Build Include="8-Commen-Features\Procedures\html_code_block_body_part.sql" />
-    <Build Include="8-Commen-Features\Procedures\html_code_block_body_script.sql" />
-    <Build Include="8-Commen-Features\Procedures\html_code_block_head_part.sql" />
-    <Build Include="8-Commen-Features\Procedures\show_and_execute_sql.sql" />
-    <Build Include="8-Commen-Features\Procedures\to_concol_window.sql" />
-    <Build Include="8-Commen-Features\Procedures\tx_parameter_value.sql" />
-    <Build Include="8-Commen-Features\Procedures\usp_html_file_name.sql" />
-    <Build Include="8-Commen-Features\Procedures\usp_html_file_text.sql" />
-    <Build Include="8-Commen-Features\Procedures\usp_html_print_to_console.sql" />
     <Build Include="8-Commen-Features\Schemas\gnc_commen.sql" />
     <Build Include="1-Meta-Data-Model\4-DTA-Data-Transformation-Area\schedule.sql" />
+    <Build Include="8-Commen-Features\Procedures\Build-Show-and-Execute-SQL-for\create_column_store_index.sql" />
+    <Build Include="8-Commen-Features\Procedures\Build-Show-and-Execute-SQL-for\create_get_view.sql" />
+    <Build Include="8-Commen-Features\Procedures\Build-Show-and-Execute-SQL-for\create_schema.sql" />
+    <Build Include="8-Commen-Features\Procedures\Build-Show-and-Execute-SQL-for\create_temporal_staging_area_table.sql" />
+    <Build Include="8-Commen-Features\Procedures\Build-Show-and-Execute-SQL-for\create_user_specified_procedure.sql" />
+    <Build Include="8-Commen-Features\Procedures\Documentation\html_code_block_head_part.sql" />
+    <Build Include="8-Commen-Features\Procedures\Documentation\html_code_block_body_part.sql" />
+    <Build Include="8-Commen-Features\Procedures\Documentation\html_code_block_body_script.sql" />
+    <Build Include="8-Commen-Features\Procedures\Documentation\usp_html_file_name.sql" />
+    <Build Include="8-Commen-Features\Procedures\Documentation\usp_html_print_to_console.sql" />
+    <Build Include="8-Commen-Features\Procedures\Documentation\usp_html_file_text.sql" />
+    <Build Include="8-Commen-Features\Procedures\Generic\show_and_execute_sql.sql" />
+    <Build Include="8-Commen-Features\Procedures\Generic\to_concol_window.sql" />
+    <Build Include="8-Commen-Features\Procedures\Generic\tx_parameter_value.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="9-Publish\2-Depolyment\1-meta-data-model-blank-profiel.publish.xml" />
