@@ -138,6 +138,7 @@
     <Build Include="8-Commen-Features\Procedures\Generic\show_and_execute_sql.sql" />
     <Build Include="8-Commen-Features\Procedures\Generic\to_concol_window.sql" />
     <Build Include="8-Commen-Features\Procedures\Generic\tx_parameter_value.sql" />
+    <Build Include="8-Commen-Features\Procedures\Build-Show-and-Execute-SQL-for\deploy_dataset.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="9-Publish\2-Depolyment\1-meta-data-model-blank-profiel.publish.xml" />
