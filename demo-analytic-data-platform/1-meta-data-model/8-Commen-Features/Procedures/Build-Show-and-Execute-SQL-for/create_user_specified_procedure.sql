@@ -94,7 +94,7 @@ BEGIN
 				   @ptp = CASE WHEN dst.is_ingestion = 1 THEN etl.nm_processing_type ELSE 'Incremental' END,
            @is_ingestion = dst.is_ingestion,
            @nm_ingestion = CASE WHEN dst.is_ingestion = 1 THEN 'Ingestion' ELSE 'Transformation' END,
-           @tx_query_source = dst.tx_source_query,
+           @tx_query_source = REPLACE(dst.tx_source_query, '<newline>', @nwl),
            @nm_processing_type            = IIF(dst.nm_target_schema = 'dq_totals', 'Fullload', IIF(ISNULL(dst.is_ingestion, 0)=1, etl.nm_processing_type, 'Incremental')),
            @tx_sql_for_meta_dt_valid_from = REPLACE(ISNULL(etl.tx_sql_for_meta_dt_valid_from,'n/a'), @sqt, '"'),
            @tx_sql_for_meta_dt_valid_till = REPLACE(ISNULL(etl.tx_sql_for_meta_dt_valid_till,'n/a'), @sqt, '"')
@@ -139,7 +139,7 @@ BEGIN
 				c = att.nm_target_column 
 			INTO #columns FROM dta.attribute AS att
 			WHERE att.id_dataset     = @id_dataset
-			AND   att.meta_is_active = 1
+			AND   att.meta_is_active = 1 AND nm_target_column NOT IN ('meta_dt_valid_from', 'meta_dt_valid_till', 'meta_is_active', 'meta_ch_rh', 'meta_ch_bk', 'meta_ch_pk')
 			ORDER BY ni_ordering ASC;
     
 			DROP TABLE IF EXISTS #busineskeys; SELECT 
@@ -147,7 +147,7 @@ BEGIN
 				c = att.nm_target_column 
 			INTO #busineskeys FROM dta.attribute AS att 
 			WHERE att.id_dataset     = @id_dataset
-			AND   att.meta_is_active = 1
+			AND   att.meta_is_active = 1 AND nm_target_column NOT IN ('meta_dt_valid_from', 'meta_dt_valid_till', 'meta_is_active', 'meta_ch_rh', 'meta_ch_bk', 'meta_ch_pk')
 			AND   att.is_businesskey = 1
 			ORDER BY ni_ordering ASC;
 
@@ -198,8 +198,8 @@ BEGIN
 			SET @qry += @emp +   '[main].[meta_dt_valid_from] AS [meta_dt_valid_from],';
 			SET @qry += @nwl + '  [main].[meta_dt_valid_till] AS [meta_dt_valid_till],';
 			SET @qry += @nwl + '  CONVERT(BIT, 1) AS [meta_is_active],';
-			SET @qry += @nwl + '  CONVERT(CHAR(32), HASHBYTES("MD5", ' + @rwh + ', 2) AS [meta_ch_rh]';
-			SET @qry += @nwl + '  CONVERT(CHAR(32), HASHBYTES("MD5", ' + @bks + ', 2) AS [meta_ch_bk]';
+			SET @qry += @nwl + '  CONVERT(CHAR(32), HASHBYTES("MD5", ' + @rwh + ', 2) AS [meta_ch_rh],';
+			SET @qry += @nwl + '  CONVERT(CHAR(32), HASHBYTES("MD5", ' + @bks + ', 2) AS [meta_ch_bk],';
 			SET @qry += @nwl + '  CONVERT(CHAR(32), HASHBYTES("MD5", ' + @pks + ', 2) AS [meta_ch_pk]';
 			SET @qry += @nwl + 'FROM (';
 			SET @qry += @nwl + '  ' + SUBSTRING(@tx_query_source, 1, @idx-1);
@@ -379,10 +379,11 @@ BEGIN
       SET @qry = 'INSERT INTO ' + @tsa + ' (' + REPLACE(@tx_attributes, 's.', '') 
                + ' meta_dt_valid_from, meta_dt_valid_till, meta_is_active, meta_ch_rh, meta_ch_bk, meta_ch_pk' 
                + ')' + @nwl + @qry;
+      SET @tx_query_source = REPLACE(@qry, '"', '''');
     END
 
 		/* Replace the "double"-qouts for a "double-double"-quots. This is needed, because the @tx_query_source is to be passed into the "return"-resultset as a string. */
-		SET @tx_query_source = REPLACE(@qry, '"', '""');
+		--SET @tx_query_source = REPLACE(@qry, '"', '""');
 		IF (@ip_is_debugging = 1) BEGIN PRINT('@sql : ' + @qry); END
 
 	END
@@ -434,6 +435,8 @@ BEGIN
     SET @tx_message = '-- Dropping procedure if exists "'+ @ip_nm_target_schema +'"."' + @ip_nm_target_table + '"';
     SET @tx_sql     = 'DROP PROCEDURE IF EXISTS [' + @ip_nm_target_schema +'].[usp_' + @ip_nm_target_table + ']'; 
     EXEC gnc_commen.show_and_execute_sql @tx_message, @tx_sql, @ip_is_debugging, @ip_is_testing;
+    PRINT('GO');
+    PRINT('');
 
     /* Build SQL Statement for creation of "Stored Procedure" */
     SET @tx_message = '-- Create procedure for updating "Target"-dataset';
@@ -611,6 +614,8 @@ BEGIN
     SET @tx_sql += @nwl + 'END'
     SET @tx_sql = REPLACE(@tx_sql, '"', '''');
     EXEC gnc_commen.show_and_execute_sql @tx_message, @tx_sql, @ip_is_debugging, @ip_is_testing;
+    PRINT('GO');
+    PRINT('');
 
   END	
 
