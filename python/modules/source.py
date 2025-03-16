@@ -7,6 +7,7 @@
 # Import Custom Modules
 from modules import session     as ss
 from modules import secret      as sc 
+from modules import run         as rn
 
 # Import for web_table_anonymous_web
 import pandas as pd
@@ -138,17 +139,20 @@ def sql_user_password(
     # Debugging
     is_debugging
 ):
-    # Database credentials
-    ds_url  = f"jdbc:sqlserver://{sa.secret_db.server};"
-    ds_url += f"databaseName={sa.secret_db.database};"
-    ds_url += f"user={sa.secret_db.username};"
-    ds_url += f"password={sa.secret_db.password}"
+    
+    # Helper SAS Token URL
+    sql_6_cd_password = sc.get_secret(sql_3_nm_secret, is_debugging)
 
-    # Initialize Spark session
-    spark = ss.getSparkSession("SqlServerToSparkDataFrame")
+    # Database credentials
+    credentials_db = {
+        "server"   : sql_1_nm_server,
+        "database" : sql_3_nm_secret,
+        "username" : sql_2_nm_username,
+        "password" : sql_6_cd_password
+    }
 
     # Run SQL query
-    df = spark.read.format("jdbc").option("url", ds_url).option("query", sql_5_tx_query).load()
+    df = rn.query(credentials_db, sql_5_tx_query)
 
     # Show input Parameter(s)
     if (is_debugging == "1"):
@@ -158,7 +162,7 @@ def sql_user_password(
         print("sql_4_nm_database : '" + sql_4_nm_database + "'")
         print("sql_5_tx_query    : '" + sql_5_tx_query    + "'")
         print("DataFrame:")
-        df.show(10)
+        df.head(10)
         
     # Show the result
     return df
