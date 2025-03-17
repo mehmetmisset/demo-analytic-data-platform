@@ -10,8 +10,8 @@ def load_tsl(
     
     # Input Parameters
     df_source_dataset,  # DataFrame
-    nm_target_schema,   # Target schema name
-    nm_target_table,    # Target table name
+    nm_tsl_schema,   # Target schema name
+    nm_tsl_table,    # Target table name
     
     # Debugging
     is_debugging = "0"
@@ -19,22 +19,16 @@ def load_tsl(
 ):
 
     # Truncate Target Table
-    run.truncate_table(sa.target_db, nm_target_schema, nm_target_table)
-
-    # Database credentials
-    nm_server   = sa.target_db['server']
-    nm_database = sa.target_db['database']
-    nm_username = sa.target_db['username']
-    cd_password = sa.target_db['password'].replace("@", "%40")
+    run.truncate_table(sa.target_db, nm_tsl_schema, nm_tsl_table)
     
     # Load Source DataFrame to SQL Schema / Table
     engine = run.engine(sa.target_db)
-    result = df_source_dataset.to_sql(nm_target_table, con=engine, schema=nm_target_schema, if_exists='replace', index=False)
+    result = df_source_dataset.to_sql(nm_tsl_table, con=engine, schema=nm_tsl_schema, if_exists='replace', index=False)
 
     # Show Input Parameter(s)
     if (is_debugging == "1"):
-        print(f"nm_target_schema : '{nm_target_schema}'")
-        print(f"nm_target_table  : '{nm_target_table}'")
+        print(f"nm_target_schema : '{nm_tsl_schema}'")
+        print(f"nm_target_table  : '{nm_tsl_table}'")
         print(f"ni_ingested      : # {str(result)}")
         
     # return the result

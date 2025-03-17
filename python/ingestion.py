@@ -7,6 +7,7 @@ import modules.source      as src
 import modules.target      as tgt
 import modules.run         as run
 
+# Set Debugging to "1" => true
 is_debugging = "1"
 
 def update_dataset(id_dataset, is_ingestion, nm_procedure, nm_tsl_schema, nm_tsl_table):
@@ -113,17 +114,16 @@ while (ni_index < mx_index):
     nm_tgt_schema = todo.loc[ni_index]['nm_tgt_schema'] 
     nm_tgt_table  = todo.loc[ni_index]['nm_tgt_table']
 
-    # Show what dataset is being processed
-    print("--- " + ("Ingestion ----" if (is_ingestion == 1) else "Transformation ") + "--------------------------------------")
-    print(f"nm_tgt_schema : '{nm_tgt_schema}'")
-    print(f"nm_tgt_table  : '{nm_tgt_table}'")
-    print("")
+    if (is_debugging == "1"): # Show what dataset is being processed
+        print("--- " + ("Ingestion ----" if (is_ingestion == 1) else "Transformation ") + "--------------------------------------")
+        print(f"nm_tgt_schema : '{nm_tgt_schema}'")
+        print(f"nm_tgt_table  : '{nm_tgt_table}'")
+        print("")
 
     # Update dataset "NVIDIA Corporation (NVDA)"
     result = update_dataset(id_dataset, is_ingestion, nm_procedure, nm_tsl_schema, nm_tsl_table)
 
     # Next Index
     ni_index += 1
-
  
 print("all done")
