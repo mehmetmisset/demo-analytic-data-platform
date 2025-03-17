@@ -88,7 +88,7 @@ def update_dataset(id_dataset, is_ingestion, nm_procedure, nm_tsl_schema, nm_tsl
         tgt.load_tsl(source_df, nm_tsl_schema, nm_tsl_table, is_debugging)
         
     # Start sql procedure specific for the "Target"-dataset on database side.
-    run.execute(sa.target_db, nm_procedure)
+    run.execute_procedure(sa.target_db, nm_procedure)
 
     # All is well
     return result
@@ -102,7 +102,7 @@ todo = run.query(sa.target_db, "SELECT ni_process_group, id_dataset, is_ingestio
 ni_index = 0
 mx_index = todo.shape[0]
 
-while (ni_index <= mx_index):
+while (ni_index < mx_index):
 
     # Parameter for "update_dataset"
     id_dataset    = todo.loc[ni_index]['id_dataset']  
@@ -114,7 +114,7 @@ while (ni_index <= mx_index):
     nm_tgt_table  = todo.loc[ni_index]['nm_tgt_table']
 
     # Show what dataset is being processed
-    print("---------------------------------------------------------")
+    print("--- " + ("Ingestion ----" if (is_ingestion == 1) else "Transformation ") + "--------------------------------------")
     print(f"nm_tgt_schema : '{nm_tgt_schema}'")
     print(f"nm_tgt_table  : '{nm_tgt_table}'")
     print("")

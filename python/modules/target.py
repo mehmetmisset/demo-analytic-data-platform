@@ -1,6 +1,7 @@
 # Import Custom Modules
 from modules import credentials as sa
 from modules import session     as ss 
+from modules import run         as run
 
 import pandas as pd
 from sqlalchemy import create_engine
@@ -18,7 +19,7 @@ def load_tsl(
 ):
 
     # Truncate Target Table
-    ss.truncate_table(sa.target_db, nm_target_schema, nm_target_table)
+    run.truncate_table(sa.target_db, nm_target_schema, nm_target_table)
 
     # Database credentials
     nm_server   = sa.target_db['server']
@@ -27,7 +28,7 @@ def load_tsl(
     cd_password = sa.target_db['password'].replace("@", "%40")
     
     # Load Source DataFrame to SQL Schema / Table
-    engine = create_engine(f'mssql+pyodbc://{nm_username}:{cd_password}@{nm_server}/{nm_database}?driver=ODBC+Driver+17+for+SQL+Server&Encrypt=no&TrustServerCertificate=no&Connection Timeout=30')
+    engine = run.engine(sa.target_db)
     result = df_source_dataset.to_sql(nm_target_table, con=engine, schema=nm_target_schema, if_exists='replace', index=False)
 
     # Show Input Parameter(s)
