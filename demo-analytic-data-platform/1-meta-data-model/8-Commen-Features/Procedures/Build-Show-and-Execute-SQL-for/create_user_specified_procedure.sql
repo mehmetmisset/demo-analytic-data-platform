@@ -387,7 +387,7 @@ BEGIN
 		END
 		
     IF (1=1 /* Build INSERT-Statement */) BEGIN
-      SET @qry = 'INSERT INTO ' + @tsa + ' (' + REPLACE(@tx_attributes, 's.', '') + 'meta_dt_valid_from, meta_dt_valid_till, meta_is_active, meta_ch_rh, meta_ch_bk, meta_ch_pk)' 
+      SET @qry = 'INSERT INTO ' + @tsa + ' (' + REPLACE(@tx_attributes, 's.[', '[') + 'meta_dt_valid_from, meta_dt_valid_till, meta_is_active, meta_ch_rh, meta_ch_bk, meta_ch_pk)' 
                + @nwl + @qry;
       SET @tx_query_source = REPLACE(@qry, '"', '''');
     END

@@ -8,6 +8,7 @@
 :r ".\0-Temporal-Objects\Script.usp_insert_dq_controls_as_datasets.sql"
 :r ".\0-Temporal-Objects\Script.usp_insert_dq_aggregates_as_datasets.sql"
 :r ".\0-Temporal-Objects\Script.insert_meta_attributes_into_dataset_attributes.sql"
+:r ".\0-Temporal-Objects\Script.deploy_datasets.sql"
 
 /* 1-Transformations */
 :r ".\1-Transformations\Script.usp_transformation_part.sql"

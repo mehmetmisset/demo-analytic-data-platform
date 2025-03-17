@@ -1,4 +1,4 @@
-﻿DROP PROCEDURE IF EXISTS ##deploy_datasets;
+﻿DROP PROCEDURE IF EXISTS ##deploy_datasets
 GO
 CREATE PROCEDURE ##deploy_datasets
 
@@ -17,22 +17,22 @@ BEGIN
     
   IF (1=1 /* Extract all "datasets". */) BEGIN
 
-    DROP TABLE IF EXISTS ##dst; SELECT 
+    DROP TABLE IF EXISTS ##to_deploy; SELECT 
       dst.id_dataset, 
       dst.nm_target_schema, 
       dst.nm_target_table
-    INTO ##dst FROM tsa_dta.tsa_dataset AS dst;        
+    INTO ##to_deploy FROM tsa_dta.tsa_dataset AS dst;        
 
   END
 
-  WHILE ((SELECT COUNT(*) FROM ##dst) > 0) BEGIN
+  WHILE ((SELECT COUNT(*) FROM ##to_deploy) > 0) BEGIN
     
     /* Fetch Next "dataset" and remove from temp-table.. */
     SELECT @id_dataset       = id_dataset,
            @nm_target_schema = nm_target_schema,
            @nm_target_table  = nm_target_table 
-    FROM (SELECT TOP 1 * FROM ##dst) AS dst;
-    DELETE FROM ##dst WHERE id_dataset = @id_dataset;
+    FROM (SELECT TOP 1 * FROM ##to_deploy) AS dst;
+    DELETE FROM ##to_deploy WHERE id_dataset = @id_dataset;
 
     /* Show what is being deployed. */
     PRINT('----------------------------------------------------------------');
