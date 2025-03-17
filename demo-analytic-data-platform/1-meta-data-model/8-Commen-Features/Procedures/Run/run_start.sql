@@ -2,7 +2,8 @@
   
   /* Input Parameters */
 	@ip_id_dataset_or_dq_control CHAR(32),
-	@ip_ds_external_reference_id NVARCHAR(999) = 'n/a'
+	@ip_ds_external_reference_id NVARCHAR(999) = 'n/a',
+	@ip_is_debugging             CHAR(1) = '0'
 	
 AS DECLARE /* Local Variables. */
 	@dt_run_started DATETIME = GETDATE();

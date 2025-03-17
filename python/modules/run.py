@@ -18,14 +18,13 @@ def get_param_value(nm_parameter_value, params):
     return params.loc[params['nm_parameter_value'] == nm_parameter_value].values[0][3]
 
 def start(id_dataset, is_debugging):
-    
-    # Set Parameter for rdp.run_start
-    params  = []
-    params += [["ip_id_dataset_or_dq_control", id_dataset]]
-    params += [["ip_ds_external_reference_id", 'n/a']]
-   
+      
     # Execute "rdp.run_start"
-    return execute_procedure(sa.target_db, 'rdp.run_start', params, is_debugging)
+    return execute_procedure(sa.target_db, 'rdp.run_start',\
+        ip_id_dataset_or_dq_control = id_dataset,\
+        ip_ds_external_reference_id = 'n/a',\
+        ip_is_debugging             = is_debugging\
+    )
 
 def truncate_table(credentials_db, nm_schema, nm_table):
     
@@ -97,24 +96,25 @@ def execute_sql(credentials_db, tx_sql_statement, is_debugging = "0"):
 
 
 # Function to execute a stored procedure
-def execute_procedure(credentials, nm_procedure, params = [], is_debugging = "0"):
+def execute_procedure(credentials, nm_procedure, **params):
 
-    # Build SQL Statement
-    ni_index = 0
-    mx_index = len(params)
-    tx_sql_statement = f"BEGIN\n  EXEC {nm_procedure} "
-    while (ni_index < mx_index):
-        tx_sql_statement += ("" if (ni_index == 0) else ",") + "\n"
-        #tx_sql_statement += f"  @{params[ni_index][0]} = '{params[ni_index][1]}'"
-        tx_sql_statement += f"  '{params[ni_index][1]}'"
-        ni_index += 1
-    tx_sql_statement += ";\nEND\n"
-    
-    if (is_debugging=="1"):
-        print(f"tx_sql_statement : '{tx_sql_statement}'")
+    # Check if debugging is enabled
+    if params.get('ip_is_debugging') == "1":
+        print(f"Executing stored procedure: {nm_procedure}")
+        print("Parameters:")
+        for key, value in params.items():
+            print(f"{key}: '{value}'")
 
-    # Execute SQL Statement
-    result = execute_sql(credentials, tx_sql_statement)
-    
+    # Build the stored procedure call with parameters
+    #param_list = ", ".join([f"@{key}= :{key}" for key in params.keys()])
+    param_list = ", ".join([f"@{key} = '{value}'" for key, value in params.items()])
+    stored_procedure = f"EXEC {nm_procedure} {param_list}"
+
+    # Execute the stored procedure
+    with engine(credentials).connect() as connection:
+        with connection.connection.cursor() as cursor:
+            result = cursor.execute(stored_procedure)
+            #result = connection.execute(stored_procedure, **params)
+            
     # Done
     return result
