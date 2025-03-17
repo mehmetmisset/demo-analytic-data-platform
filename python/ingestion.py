@@ -89,11 +89,10 @@ def update_dataset(id_dataset, is_ingestion, nm_procedure, nm_tsl_schema, nm_tsl
         tgt.load_tsl(source_df, nm_tsl_schema, nm_tsl_table, is_debugging)
         
     # Start sql procedure specific for the "Target"-dataset on database side.
-    run.execute_procedure(sa.target_db, nm_procedure)
+    run.usp_dataset(nm_procedure, is_debugging)
 
     # All is well
     return result
-
 
 # fetch all dataset tobe processed
 todo = run.query(sa.target_db, "SELECT ni_process_group, id_dataset, is_ingestion, nm_procedure, nm_tsl_schema, nm_tsl_table, nm_tgt_schema, nm_tgt_table "\

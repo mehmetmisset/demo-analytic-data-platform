@@ -1,6 +1,5 @@
-from modules import credentials as sa
-
-from sqlalchemy import create_engine, text
+from modules      import credentials as sa
+from sqlalchemy   import create_engine, text
 from urllib.parse import quote
 
 import pandas as pd
@@ -25,6 +24,23 @@ def start(id_dataset, is_debugging):
         ip_ds_external_reference_id = 'n/a',\
         ip_is_debugging             = is_debugging\
     )
+
+def usp_dataset(nm_procedure, is_debugging):
+
+    # Build the stored procedure call with parameters
+    stored_procedure = f"EXEC {nm_procedure}"
+
+    # Show excuted "procedure"
+    if (is_debugging == "1") :
+        print(f"Executing stored procedure: {nm_procedure}")
+
+    # Execute the stored procedure
+    with engine(sa.target_db).connect() as connection:
+        with connection.connection.cursor() as cursor:
+            result = cursor.execute(stored_procedure)
+            
+    # Done
+    return result
 
 def truncate_table(credentials_db, nm_schema, nm_table):
     
@@ -94,9 +110,8 @@ def execute_sql(credentials_db, tx_sql_statement, is_debugging = "0"):
         # Fetch results if the stored procedure returns data
         return result
 
-
 # Function to execute a stored procedure
-def execute_procedure(credentials, nm_procedure, **params):
+def execute_procedure(credentials_db, nm_procedure, **params):
 
     # Check if debugging is enabled
     if params.get('ip_is_debugging') == "1":
@@ -106,15 +121,13 @@ def execute_procedure(credentials, nm_procedure, **params):
             print(f"{key}: '{value}'")
 
     # Build the stored procedure call with parameters
-    #param_list = ", ".join([f"@{key}= :{key}" for key in params.keys()])
     param_list = ", ".join([f"@{key} = '{value}'" for key, value in params.items()])
     stored_procedure = f"EXEC {nm_procedure} {param_list}"
 
     # Execute the stored procedure
-    with engine(credentials).connect() as connection:
+    with engine(credentials_db).connect() as connection:
         with connection.connection.cursor() as cursor:
             result = cursor.execute(stored_procedure)
-            #result = connection.execute(stored_procedure, **params)
             
     # Done
     return result
