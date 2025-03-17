@@ -17,7 +17,7 @@ def get_parameters(id_dataset):
 def get_param_value(nm_parameter_value, params):
     return params.loc[params['nm_parameter_value'] == nm_parameter_value].values[0][3]
 
-def start(id_dataset):
+def start(id_dataset, is_debugging):
     
     # Set Parameter for rdp.run_start
     params  = []
@@ -25,7 +25,7 @@ def start(id_dataset):
     params += [["ip_ds_external_reference_id", 'n/a']]
    
     # Execute "rdp.run_start"
-    return execute_procedure(sa.target_db, 'rdp.run_start', params)
+    return execute_procedure(sa.target_db, 'rdp.run_start', params, is_debugging)
 
 def truncate_table(credentials_db, nm_schema, nm_table):
     
@@ -97,16 +97,21 @@ def execute_sql(credentials_db, tx_sql_statement, is_debugging = "0"):
 
 
 # Function to execute a stored procedure
-def execute_procedure(credentials, nm_procedure, params = []):
+def execute_procedure(credentials, nm_procedure, params = [], is_debugging = "0"):
 
     # Build SQL Statement
-    tx_sql_statement = f"EXEC {nm_procedure} "
     ni_index = 0
     mx_index = len(params)
+    tx_sql_statement = f"BEGIN\n  EXEC {nm_procedure} "
     while (ni_index < mx_index):
-        tx_sql_statement += ("" if (tx_sql_statement == f"EXEC {nm_procedure} ") else ",") + "\n"
-        tx_sql_statement += f"  @{params[ni_index][0]} = '{params[ni_index][1]}'"
+        tx_sql_statement += ("" if (ni_index == 0) else ",") + "\n"
+        #tx_sql_statement += f"  @{params[ni_index][0]} = '{params[ni_index][1]}'"
+        tx_sql_statement += f"  '{params[ni_index][1]}'"
         ni_index += 1
+    tx_sql_statement += ";\nEND\n"
+    
+    if (is_debugging=="1"):
+        print(f"tx_sql_statement : '{tx_sql_statement}'")
 
     # Execute SQL Statement
     result = execute_sql(credentials, tx_sql_statement)

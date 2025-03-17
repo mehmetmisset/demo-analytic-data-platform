@@ -1,6 +1,10 @@
-from modules import secret      as sc 
+import sys
+sys.path.append('modules')
 
-# test get_secret
-s = sc.get_secret("Yahoo-Blob-SAS-Token", "1")
-print("none" if s == None else s) # none
+# Import Custom Modules
+import modules.credentials as sa
+import modules.source      as src
+import modules.target      as tgt
+import modules.run         as run
 
+run.start('07090900040c09010908080200140a03', "1")

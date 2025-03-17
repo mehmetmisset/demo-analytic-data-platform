@@ -19,7 +19,7 @@ def update_dataset(id_dataset, is_ingestion, nm_procedure, nm_tsl_schema, nm_tsl
     if is_ingestion == 1:
 
         # for "Ingestion" the run must be started, if "Transformation" the run is started in the "procedure" itself.
-        run.start(id_dataset)
+        run.start(id_dataset, is_debugging)
 
         # Get the parameters
         params = run.get_parameters(id_dataset)
@@ -93,6 +93,7 @@ def update_dataset(id_dataset, is_ingestion, nm_procedure, nm_tsl_schema, nm_tsl
 
     # All is well
     return result
+
 
 # fetch all dataset tobe processed
 todo = run.query(sa.target_db, "SELECT ni_process_group, id_dataset, is_ingestion, nm_procedure, nm_tsl_schema, nm_tsl_table, nm_tgt_schema, nm_tgt_table "\
