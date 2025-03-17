@@ -28,7 +28,12 @@ CREATE PROCEDURE ##usp_create_tmp AS BEGIN
   
     DROP TABLE IF EXISTS ##def; SELECT nm_schema = TABLE_SCHEMA, nm_table  = TABLE_NAME INTO ##def FROM INFORMATION_SCHEMA.TABLES 
     WHERE TABLE_SCHEMA IN ('srd' , 'ohg', 'dta', 'dqm') AND TABLE_NAME NOT LIKE 'get_%' AND TABLE_NAME NOT LIKE 'tsa_%' AND TABLE_TYPE = 'BASE TABLE'
-    AND  NOT (TABLE_SCHEMA = 'dqm' AND TABLE_NAME IN ('dq_result', 'dq_total'));
+    AND   TABLE_NAME   IN (
+      'transformation_attribute', 'transformation_dataset', 'transformation_mapping', 'transformation_part',
+      'dq_involved_attribute', 'dq_control', 'dq_requirement', 'dq_threshold', 
+      'attribute', 'dataset', 'ingestion_etl', 'parameter_value', 'schedule',
+      'datatype', 'development_status', 'dq_dimension', 'dq_result_status', 'dq_review_status', 'dq_risk_level', 'parameter', 'parameter_group', 'processing_status', 'processing_step',
+      'group', 'hierarchy', 'related');
     
     WHILE ((SELECT COUNT(*) FROM ##def) > 0) BEGIN
 

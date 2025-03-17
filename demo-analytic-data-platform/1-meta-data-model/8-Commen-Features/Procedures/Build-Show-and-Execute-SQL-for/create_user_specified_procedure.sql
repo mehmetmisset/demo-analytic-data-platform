@@ -86,10 +86,16 @@ AS DECLARE /* Local Variables */
 
 BEGIN
 
+  /* Turn off Effected Row */
+  SET NOCOUNT ON;
+   
+  /* Turn off Warnings */
+  SET ANSI_WARNINGS OFF;
+
 	IF (1=1 /* Extract schema and Table. */) BEGIN
 	  
     SELECT @tsa = '[tsa_' + dst.nm_target_schema + '].[tsa_' + dst.nm_target_table + ']',
-				   @src = '[tsa_' + dst.nm_target_schema + '].[get_' + dst.nm_target_table + ']',
+				   @src = '[tsa_' + dst.nm_target_schema + '].[tsa_' + dst.nm_target_table + ']',
 				   @tgt = '[' +     dst.nm_target_schema + '].['     + dst.nm_target_table + ']',
 				   @ptp = CASE WHEN dst.is_ingestion = 1 THEN etl.nm_processing_type ELSE 'Incremental' END,
            @is_ingestion = dst.is_ingestion,
@@ -157,7 +163,8 @@ BEGIN
 		END
 		IF (1=1 /* String all the "Colums" in the "temp"-table together with "s."-alias, after drop the "temp"-table. */) BEGIN
 	  
-			SET @rwh += 'CONCAT(CONVERT(NVARCHAR(MAX), ""),'+ @nwl + '  CONCAT(';
+			/* Build SQL Statment for Column "meta_ch_rh. */
+      SET @rwh += 'CONCAT(CONVERT(NVARCHAR(MAX), ""),'+ @nwl + '  CONCAT(';
 			SET @idx = 0; WHILE ((SELECT COUNT(*) FROM #columns) > 0) BEGIN 
 				SELECT @col=c, @ord=o FROM (SELECT TOP 1 * FROM #columns ORDER BY o ASC) AS rec; 
 				DELETE FROM #columns WHERE o = @ord; 
@@ -168,6 +175,7 @@ BEGIN
 			END /* WHILE */ DROP TABLE IF EXISTS #columns; 
 			SET @rwh += '"|")' + @nwl + '))';
 
+      /* Build SQL Statment for Column "meta_ch_bk"  and "meta_ch_pk". */
 			SET @bks += 'CONCAT(CONVERT(NVARCHAR(MAX), ""),'+ @nwl + '  CONCAT(';
 			SET @idx = 0; WHILE ((SELECT COUNT(*) FROM #busineskeys) > 0) BEGIN 
 				SELECT @col=c, @ord=o FROM (SELECT TOP 1 * FROM #busineskeys ORDER BY o ASC) AS rec; 
@@ -183,9 +191,11 @@ BEGIN
 			SET @pks = REPLACE(@pks, @nwl, @nwl + '                       ');
 			SET @bks = REPLACE(@bks, @nwl, @nwl + '                       ');
 			
-			PRINT(@rwh);
-			PRINT(@pks);
-			PRINT(@bks);
+      IF (@ip_is_debugging=1) BEGIN 
+			  PRINT(@rwh);
+			  PRINT(@pks);
+			  PRINT(@bks);
+      END
 
 		END	
 
@@ -384,7 +394,7 @@ BEGIN
 
 		/* Replace the "double"-qouts for a "double-double"-quots. This is needed, because the @tx_query_source is to be passed into the "return"-resultset as a string. */
 		--SET @tx_query_source = REPLACE(@qry, '"', '""');
-		IF (@ip_is_debugging = 1) BEGIN PRINT('@sql : ' + @qry); END
+		IF (@ip_is_debugging = 1) BEGIN PRINT('@tx_query_source : ' + @tx_query_source); END
 
 	END
 
@@ -480,8 +490,10 @@ BEGIN
     SET @tx_sql += @nwl + '  @ni_ingested         INT            = 0, -- # Record that were "Ingested".'
     SET @tx_sql += @nwl + '  @ni_inserted         INT            = 0, -- # Record that were "Inserted".'
     SET @tx_sql += @nwl + '  @ni_updated          INT            = 0, -- # Record that were "Updated".'
-    SET @tx_sql += @nwl + '  @ni_after            INT            = 0; -- # Record "After" processing.'
-    SET @tx_sql += @nwl + ''
+    SET @tx_sql += @nwl + '  @ni_after            INT            = 0, -- # Record "After" processing.'
+    SET @tx_sql += @nwl + '  @cd_procedure_step   NVARCHAR(32),'
+    SET @tx_sql += @nwl + '  @ds_procedure_step   NVARCHAR(999);'
+    SET @tx_sql += @nwl + '  '
     SET @tx_sql += @nwl + 'BEGIN'
     SET @tx_sql += @nwl + '  ' 
     SET @tx_sql += @nwl + '  /* Turn off Effected Row */' 
@@ -496,49 +508,47 @@ BEGIN
     SET @tx_sql += @nwl + '      '
     SET @tx_sql += @nwl + '  END' 
     SET @tx_sql += @nwl + '  ' 
-    IF (@is_ingestion = 1) BEGIN SET @tx_sql += @emp + ''; END; IF (@is_ingestion = 0) BEGIN /* In case of "Transformation" */
-      SET @tx_sql += @nwl + '  /* Start Run */'
-      SET @tx_sql += @nwl + '  EXEC rdp.run_start @id_dataset, ip_ds_external_reference_id'
-      SET @tx_sql += @nwl + '  '
-      SET @tx_sql += @nwl + '  BEGIN TRY'
-      SET @tx_sql += @nwl + '  '
-      SET @tx_sql += @nwl + '    /* Execute `Transformation`-query and insert result into `Temporal Staging Area`-table. */'
-      SET @tx_sql += @nwl + '    ' + @tx_query_source
-      SET @tx_sql += @nwl + '    '
-      SET @tx_sql += @nwl + '  END TRY'
-      SET @tx_sql += @nwl + '  '
-      SET @tx_sql += @nwl + '  BEGIN CATCH'
-      SET @tx_sql += @nwl + '    '
-      SET @tx_sql += @nwl + '    /* An `Error` occured!, register the `Error` in the Logging. */'
-      SET @tx_sql += @nwl + '    EXEC rdp.run_failed @id_dataset'
-      SET @tx_sql += @nwl + '    '
-      SET @tx_sql += @nwl + '    /* Ended in `Error` ! */'
-      SET @tx_sql += @nwl + '    PRINT("Data `Transformation` for Dataset `' + @ip_nm_target_schema + '`.`' + @ip_nm_target_table + '` has ended in `Error`.")'
-      SET @tx_sql += @nwl + '    '
-      SET @tx_sql += @nwl + '  END CATCH'
-      SET @tx_sql += @nwl + '  ' 
-    END
     SET @tx_sql += @nwl + '  BEGIN TRY'
-    SET @tx_sql += @nwl + '    '
-    SET @tx_sql += @nwl + '    /* Check that there is an "Run-Dataset"-process running. */'
-    SET @tx_sql += @nwl + '    SET @id_run = rdp.get_id_run(@id_dataset); IF (@id_run IS NULL) BEGIN'
-    SET @tx_sql += @nwl + '      ' 
-    SET @tx_sql += @nwl + '      /* Raise Error to indicate that the process of `Adding` and "Ending" of records was not logged as started! */'
-    SET @tx_sql += @nwl + '      SET @tx_error_message = "ERROR: NO running `process` for dataset `' + @ip_nm_target_schema + '.' + @ip_nm_target_table + '`!"'
-    SET @tx_sql += @nwl + '      RAISERROR(@tx_error_message, 18, 1)'
-    SET @tx_sql += @nwl + '      ' 
+    SET @tx_sql += @nwl + '    ' 
+    IF (@is_ingestion = 1) BEGIN SET @tx_sql += @emp + ''; END; IF (@is_ingestion = 0) BEGIN /* In case of "Transformation" */
+      SET @tx_sql += @nwl + '    SET @cd_procedure_step = "STR";'
+      SET @tx_sql += @nwl + '    IF (1=1) BEGIN SET @ds_procedure_step = "Start Run (only for `Transformations` needed, with `Ingestions` the `Run` is started via the `orchastration`-tool like `Azure Data Factory` for instance.)";'
+      SET @tx_sql += @nwl + '      EXEC rdp.run_start @id_dataset, @ip_ds_external_reference_id;'
+      SET @tx_sql += @nwl + '    END'
+      SET @tx_sql += @nwl + '    '  
+    END
+    SET @tx_sql += @nwl + '    SET @cd_procedure_step = "RUN";'
+    SET @tx_sql += @nwl + '    IF (1=1) BEGIN SET @ds_procedure_step = "Check that there is an `Run-Dataset`-process running.";'
+    SET @tx_sql += @nwl + '      '  
+    SET @tx_sql += @nwl + '      /* Fetch the Latest `Run ID`. */' 
+    SET @tx_sql += @nwl + '      SET @id_run = rdp.get_id_run(@id_dataset);' 
+    SET @tx_sql += @nwl + '      '  
+    SET @tx_sql += @nwl + '      /* Raise Error to indicate that the process of `Adding` and `Ending` of records was not logged as started! */'
+    SET @tx_sql += @nwl + '      IF (@id_run IS NULL) BEGIN'
+    SET @tx_sql += @nwl + '        SET @tx_error_message = "ERROR: NO running `process` for dataset `' + @ip_nm_target_schema + '.' + @ip_nm_target_table + '`!"'
+    SET @tx_sql += @nwl + '        RAISERROR(@tx_error_message, 18, 1)'
+    SET @tx_sql += @nwl + '      END' 
+    SET @tx_sql += @nwl + '      '  
     SET @tx_sql += @nwl + '    END' 
     SET @tx_sql += @nwl + '    ' 
     SET @tx_sql += @nwl + '    /* Calculate # Records "before" Processing. */'
     SET @tx_sql += @nwl + '    SELECT @ni_before = COUNT(1) FROM [' + @ip_nm_target_schema + '].[' + @ip_nm_target_table + '] WHERE [meta_is_active] = 1'
-    SET @tx_sql += @nwl + '    ' 
-    SET @tx_sql += @nwl + '    /* Calculate # Records "Ingestion" Processing. */'
-    SET @tx_sql += @nwl + '    SELECT @ni_ingested = COUNT(1) FROM [tsa_' + @ip_nm_target_schema + '].[tsa_' + @ip_nm_target_table + ']'
+    SET @tx_sql += @nwl + '    '
+    SET @tx_sql += @nwl + '    SET @cd_procedure_step = "SRC";'
+    SET @tx_sql += @nwl + '    IF (1=1) BEGIN SET @ds_procedure_step = "Execute `Source`-query and insert result into `Temporal Staging Area`-table.";'
+    SET @tx_sql += @nwl + '      '
+    SET @tx_sql += @nwl + '      ' + REPLACE(@tx_query_source, @nwl, @tb3)
+    SET @tx_sql += @nwl + '      '
+    SET @tx_sql += @nwl + '      /* Set # Ended records. */'
+    SET @tx_sql += @nwl + '      SET @ni_ingested = @@ROWCOUNT;'
+    SET @tx_sql += @nwl + '      '
+    SET @tx_sql += @nwl + '    END'
     SET @tx_sql += @nwl + '    '
     SET @tx_sql += @nwl + '    /* Start the `Transaction`. */' 
     SET @tx_sql += @nwl + '    BEGIN TRANSACTION; SET @is_transaction = 1;'
     SET @tx_sql += @nwl + '    '
-    SET @tx_sql += @nwl + '    IF (1=1 /* `End` records that are nolonger in `Source` and still in `Target`. */) BEGIN'
+    SET @tx_sql += @nwl + '    SET @cd_procedure_step = "END";'
+    SET @tx_sql += @nwl + '    IF (1=1) BEGIN SET @ds_procedure_step = "`End` records that are nolonger in `Source` and still in `Target`.;"'
     SET @tx_sql += @nwl + '      '
     SET @tx_sql += @nwl + '      ' + REPLACE(@tx_query_update, @nwl, @tb3)
     SET @tx_sql += @nwl + '      '
@@ -547,7 +557,8 @@ BEGIN
     SET @tx_sql += @nwl + '      '
     SET @tx_sql += @nwl + '    END'
     SET @tx_sql += @nwl + '    '
-    SET @tx_sql += @nwl + '    IF (1=1 /* `Add` records that are in the `Source` and NOT in `Target`. */) BEGIN'
+    SET @tx_sql += @nwl + '    SET @cd_procedure_step = "ADD";'
+    SET @tx_sql += @nwl + '    IF (1=1) BEGIN SET @ds_procedure_step = "`Add` records that are in the `Source` and NOT in `Target`.";'
     SET @tx_sql += @nwl + '      '
     SET @tx_sql += @nwl + '      ' + REPLACE(@tx_query_insert, @nwl, @tb3)
     SET @tx_sql += @nwl + '      '
@@ -564,21 +575,25 @@ BEGIN
     SET @tx_sql += @nwl + '      /* Local Variable for Executing Check(s) */'
     SET @tx_sql += @nwl + '      DECLARE @ni_expected INT, @ni_measured INT;'
     SET @tx_sql += @nwl + '      '
-    SET @tx_sql += @nwl + '      /* Execute Check if `meta_ch_pk`-attribute values are unique. */'
-    SET @tx_sql += @nwl + '      SELECT @ni_expected = COUNT(1), @ni_measured = COUNT(DISTINCT meta_ch_pk) FROM ' + @ip_nm_target_schema + '.' + @ip_nm_target_table
-    SET @tx_sql += @nwl + '      IF (@ni_expected != @ni_measured) BEGIN'
-    SET @tx_sql += @nwl + '          SET @tx_error_message = "ERROR: meta_ch_pk NOT unique for ' + @ip_nm_target_schema + '.' + @ip_nm_target_table + '!"'
-    SET @tx_sql += @nwl + '          RAISERROR(@tx_error_message, 18, 1)'
+    SET @tx_sql += @nwl + '      SET @cd_procedure_step = "CPK";'
+    SET @tx_sql += @nwl + '      IF (1=1) BEGIN SET @ds_procedure_step = "Execute Check if `meta_ch_pk`-attribute values are unique.";'
+    SET @tx_sql += @nwl + '        SELECT @ni_expected = COUNT(1), @ni_measured = COUNT(DISTINCT meta_ch_pk) FROM ' + @ip_nm_target_schema + '.' + @ip_nm_target_table
+    SET @tx_sql += @nwl + '        IF (@ni_expected != @ni_measured) BEGIN'
+    SET @tx_sql += @nwl + '            SET @tx_error_message = "ERROR: meta_ch_pk NOT unique for ' + @ip_nm_target_schema + '.' + @ip_nm_target_table + '!"'
+    SET @tx_sql += @nwl + '            RAISERROR(@tx_error_message, 18, 1)'
+    SET @tx_sql += @nwl + '        END'
     SET @tx_sql += @nwl + '      END'
     SET @tx_sql += @nwl + '      '
-    SET @tx_sql += @nwl + '      /* Accuracy only 1 `Active` record per `Primarykey`. */' 
-    SET @tx_sql += @nwl + '      SELECT @ni_expected = COUNT(         CONCAT("|"' + @tx_pk_fields + '))'
-    SET @tx_sql += @nwl + '           , @ni_measured = COUNT(DISTINCT CONCAT("|"' + @tx_pk_fields + '))'
-    SET @tx_sql += @nwl + '      FROM ' + @ip_nm_target_schema + '.' + @ip_nm_target_table + ' AS s'
-    SET @tx_sql += @nwl + '      WHERE s.meta_is_active = 1' 
-    SET @tx_sql += @nwl + '      IF (@ni_expected != @ni_measured) BEGIN'
-    SET @tx_sql += @nwl + '          SET @tx_error_message = "ERROR: There should only be 1 record per `Primarykey(s)` for ' + @ip_nm_target_schema + '.' + @ip_nm_target_table + '!"'
-    SET @tx_sql += @nwl + '          RAISERROR(@tx_error_message, 18, 1)'
+    SET @tx_sql += @nwl + '      SET @cd_procedure_step = "APK";'
+    SET @tx_sql += @nwl + '      IF (1=1) BEGIN SET @ds_procedure_step = "Accuracy only 1 `Active` record per `Primarykey`.";'
+    SET @tx_sql += @nwl + '        SELECT @ni_expected = COUNT(         CONCAT("|"' + @tx_pk_fields + '))'
+    SET @tx_sql += @nwl + '             , @ni_measured = COUNT(DISTINCT CONCAT("|"' + @tx_pk_fields + '))'
+    SET @tx_sql += @nwl + '        FROM ' + @ip_nm_target_schema + '.' + @ip_nm_target_table + ' AS s'
+    SET @tx_sql += @nwl + '        WHERE s.meta_is_active = 1' 
+    SET @tx_sql += @nwl + '        IF (@ni_expected != @ni_measured) BEGIN'
+    SET @tx_sql += @nwl + '            SET @tx_error_message = "ERROR: There should only be 1 record per `Primarykey(s)` for ' + @ip_nm_target_schema + '.' + @ip_nm_target_table + '!"'
+    SET @tx_sql += @nwl + '            RAISERROR(@tx_error_message, 18, 1)'
+    SET @tx_sql += @nwl + '        END'
     SET @tx_sql += @nwl + '      END'
     SET @tx_sql += @nwl + '      '
     SET @tx_sql += @nwl + '    END'
@@ -602,9 +617,9 @@ BEGIN
     SET @tx_sql += @nwl + '    /* An `Error` occured`, rollback the transaction and register the `Error` in the Logging. */'
     SET @tx_sql += @nwl + '    IF (@@TRANCOUNT > 0) BEGIN ROLLBACK TRANSACTION; EXEC rdp.run_failed @id_dataset; END;'
     SET @tx_sql += @nwl + '    '
-    SET @tx_sql += @nwl + '    /* Ended in `Error` !!!! */'
-    SET @tx_sql += @nwl + '    PRINT(@tx_error_message)'
-    SET @tx_sql += @nwl + '    PRINT("Data Ingestion for Dataset `' + @ip_nm_target_schema + '`.`' + @ip_nm_target_table + '` has ended in `Error`.")'
+    SET @tx_sql += @nwl + '    /* Ended in `Error` ! */'
+    SET @tx_sql += @nwl + '    PRINT("Data `' + CASE WHEN @is_ingestion = 1 THEN 'Ingestion' ELSE 'Transformation' END + '` for Dataset `' + @ip_nm_target_schema + '`.`' + @ip_nm_target_table + '` has ended in `Error`.")'
+    SET @tx_sql += @nwl + '    PRINT(ISNULL(@tx_error_message, "ERROR (" + @cd_procedure_step + ") : " + @ds_procedure_step))'
     SET @tx_sql += @nwl + '    '
     SET @tx_sql += @nwl + '  END CATCH'
     SET @tx_sql += @nwl + '  '

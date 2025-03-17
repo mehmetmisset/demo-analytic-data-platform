@@ -18,7 +18,7 @@ AS BEGIN
     DROP TABLE IF EXISTS ##sql; SELECT 
       tx_sql = 'BEGIN EXECUTE tsa_' + TABLE_SCHEMA + '.usp_' + TABLE_NAME + '; END' 
     INTO ##sql FROM INFORMATION_SCHEMA.TABLES 
-    WHERE TABLE_SCHEMA IN ('srd' , 'ohg', 'dta', 'dqm') 
+    WHERE TABLE_SCHEMA IN ('srd' , 'ohg', 'dta', 'dqm')
     AND   CASE 
             WHEN @ip_is_only_metadata = 0 AND TABLE_SCHEMA = 'dta' AND TABLE_NAME IN ('transformation_attribute', 'transformation_dataset', 'transformation_mapping', 'transformation_part') 
             THEN 1

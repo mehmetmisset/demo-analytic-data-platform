@@ -86,3 +86,10 @@ PRINT('/* ----------------------------------------------------------------------
 GO
 :r ".\2-Validation\Script1.usp_validation_of_definitions.sql"
 GO
+
+PRINT('/* ------------------------------------------------------------------------- */');
+PRINT('/* Execute all "Validation" of "metadata"-definitions.                       */');
+PRINT('/* ------------------------------------------------------------------------- */');
+GO
+BEGIN EXEC ##deploy_datasets @ip_is_debugging = 0; END;
+GO
