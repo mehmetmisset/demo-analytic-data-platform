@@ -7,10 +7,12 @@ import modules.source      as src
 import modules.target      as tgt
 import modules.run         as run
 
+from datetime import datetime as dt
+
 # Set Debugging to "1" => true
 is_debugging = "1"
 
-def update_dataset(id_dataset, is_ingestion, nm_procedure, nm_tsl_schema, nm_tsl_table):
+def update_dataset(ds_external_reference_id, id_dataset, is_ingestion, nm_procedure, nm_tsl_schema, nm_tsl_table):
     
     # Local Vairables
     result = 'OK'
@@ -19,7 +21,7 @@ def update_dataset(id_dataset, is_ingestion, nm_procedure, nm_tsl_schema, nm_tsl
     if is_ingestion == 1:
 
         # for "Ingestion" the run must be started, if "Transformation" the run is started in the "procedure" itself.
-        run.start(id_dataset, is_debugging)
+        run.start(id_dataset, is_debugging, ds_external_reference_id)
 
         # Get the parameters
         params = run.get_parameters(id_dataset)
@@ -88,9 +90,13 @@ def update_dataset(id_dataset, is_ingestion, nm_procedure, nm_tsl_schema, nm_tsl
         # Load "Source"-dataframe to "Temporal Staging Landing"-table.
         tgt.load_tsl(source_df, nm_tsl_schema, nm_tsl_table, is_debugging)
         
-    # Start sql procedure specific for the "Target"-dataset on database side.
-    run.usp_dataset(nm_procedure, is_debugging)
-
+        # Start sql procedure specific for the "Target"-dataset on database side.
+        run.usp_dataset_ingestion(nm_procedure, is_debugging)
+    
+    # If "Transformation" start the run and the procedure
+    else:
+        run.usp_dataset_transformation(nm_procedure, ds_external_reference_id)
+        
     # All is well
     return result
 
@@ -104,6 +110,9 @@ ni_index = 0
 mx_index = todo.shape[0]
 
 while (ni_index < mx_index):
+
+    # External Reference ID
+    ds_external_reference_id = 'python-'+todo.loc[ni_index]['id_dataset']+dt.now().strftime('%Y%m%d%H%M%S')
 
     # Parameter for "update_dataset"
     id_dataset    = todo.loc[ni_index]['id_dataset']  
@@ -121,7 +130,7 @@ while (ni_index < mx_index):
         print("")
 
     # Update dataset "NVIDIA Corporation (NVDA)"
-    result = update_dataset(id_dataset, is_ingestion, nm_procedure, nm_tsl_schema, nm_tsl_table)
+    result = update_dataset(ds_external_reference_id, id_dataset, is_ingestion, nm_procedure, nm_tsl_schema, nm_tsl_table)
 
     # Next Index
     ni_index += 1

@@ -16,16 +16,16 @@ def get_parameters(id_dataset):
 def get_param_value(nm_parameter_value, params):
     return params.loc[params['nm_parameter_value'] == nm_parameter_value].values[0][3]
 
-def start(id_dataset, is_debugging):
+def start(id_dataset, is_debugging, ds_external_reference_id):
       
     # Execute "rdp.run_start"
     return execute_procedure(sa.target_db, 'rdp.run_start',\
         ip_id_dataset_or_dq_control = id_dataset,\
-        ip_ds_external_reference_id = 'n/a',\
+        ip_ds_external_reference_id = ds_external_reference_id,\
         ip_is_debugging             = is_debugging\
     )
 
-def usp_dataset(nm_procedure, is_debugging):
+def usp_dataset_ingestion(nm_procedure, is_debugging):
 
     # Build the stored procedure call with parameters
     stored_procedure = f"EXEC {nm_procedure}"
@@ -41,6 +41,11 @@ def usp_dataset(nm_procedure, is_debugging):
             
     # Done
     return result
+
+def usp_dataset_transformation(nm_procedure, ds_external_reference_id):
+
+    return execute_procedure(sa.target_db, nm_procedure, ip_ds_external_reference_id = ds_external_reference_id)
+
 
 def truncate_table(credentials_db, nm_schema, nm_table):
     
