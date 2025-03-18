@@ -93,10 +93,10 @@
     <None Include="9-Publish\2-Deployment\2-meta-data-definitions.synology.publish.xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="9-Publish\1-Scripts\Script.PostDeployment.sql" />
+    <PostDeploy Include="9-Publish\1-Scripts\Script.PostDeployment.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="9-Publish\1-Scripts\Script.PreDeployment.sql" />
+    <PreDeploy Include="9-Publish\1-Scripts\Script.PreDeployment.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="9-Publish\1-Scripts\0-Temporal-Objects\Script.deploy_datasets.sql" />
