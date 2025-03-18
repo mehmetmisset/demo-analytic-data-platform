@@ -31,6 +31,28 @@ IF (1=1 /* Validate that all "utilized" datasets in "Transformations" have a "Al
 END
 GO
 
+IF (1=1 /* Validate that all "Ingerstion" have paramters for the dataset assigned. */) BEGIN
+  INSERT INTO mdm.validation_issues (id_dataset, nm_dataset, id_attribute, nm_attribute, nm_validation_issue, ds_validation_issue)
+  SELECT 
+    id_dataset          = dst.id_dataset,
+    nm_dataset          = dst.nm_target_schema + '.' + dst.nm_target_table,
+    id_attribute        = NULL,
+    nm_attribute        = NULL,
+    nm_validation_issue = 'Missing "Parameters"!',
+    ds_validation_issue = 'For "Ingestion" named "' + dst.fn_dataset + '" the "Parameters" are missing!'
+
+  FROM tsa_dta.tsa_dataset AS dst
+
+  LEFT JOIN tsa_dta.tsa_parameter_value AS par
+  ON par.id_dataset = dst.id_dataset
+  
+  WHERE par.id_dataset IS NULL
+  AND   dst.is_ingestion = 1;
+
+END
+GO
+
+
 IF ((SELECT COUNT(*) FROM mdm.validation_issues) > 0) BEGIN
   
   DECLARE @tx NVARCHAR(MAX) = (SELECT * FROM mdm.validation_issues FOR JSON AUTO),
