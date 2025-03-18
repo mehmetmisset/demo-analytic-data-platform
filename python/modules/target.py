@@ -1,6 +1,5 @@
 # Import Custom Modules
 from modules import credentials as sa
-from modules import session     as ss 
 from modules import run         as run
 
 import pandas as pd

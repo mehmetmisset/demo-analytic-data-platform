@@ -13,6 +13,21 @@ def get_parameters(id_dataset):
     # Load data into a pandas DataFrame
     return query(sa.target_db, tx_sql_statement)
 
+def get_secret(nm_secret, is_debugging):
+
+    # Show input Parameter(s)
+    if (is_debugging == "1"):
+        print("nm_secret : '" + nm_secret + "'")
+
+    # Build SQL Statement
+    tx_query = f"SELECT ds_secret FROM dbo.secrets WHERE nm_secret = '{nm_secret}'"
+    
+    # Run SQL query
+    df = query(sa.secret_db, tx_query)
+
+    # Show the result
+    return None if len(df) == 0 else df['ds_secret'].iloc[0]
+
 def get_param_value(nm_parameter_value, params):
     return params.loc[params['nm_parameter_value'] == nm_parameter_value].values[0][3]
 

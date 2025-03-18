@@ -6,8 +6,10 @@
 
 # Import Custom Modules
 from modules import session     as ss
-from modules import secret      as sc 
 from modules import run         as rn
+
+from azure.storage.blob import BlobServiceClient
+from pyspark.sql        import SparkSession
 
 # Import for web_table_anonymous_web
 import pandas as pd
@@ -33,41 +35,41 @@ def abs_sas_url_csv(
     # Debugging
     is_debugging
 ):
-
-    # Helper SAS Token URL
-    tx_sas_token = sc.get_secret(abs_2_csv_nm_secret, is_debugging)
-    tx_sas_url   = "spark.hadoop.fs.azure.sas." + abs_3_csv_nm_container + "." + abs_1_csv_nm_account + ".blob.core.windows.net"
-    is_header    = "true" if (abs_7_csv_is_1st_header == "1") else "false"
-    
-    # Define the path to the CSV file in the blob container
-    tx_blob_container_path =  "wasbs://" + abs_3_csv_nm_container+  "@" + abs_1_csv_nm_account + ".blob.core.windows.net/"
-    tx_blob_container_path =+ abs_4_csv_ds_folderpath + "/" + abs_5_csv_ds_filename
-
-    # Initialize Spark session
-    spark = ss.getSparkSession("Load CSV from Blob")
-
-    # Load the CSV file into a DataFrame using the SAS token
-    df = spark.read.format("csv").load(tx_blob_container_path) \
-         .option(tx_sas_url,  tx_sas_token) \
-         .option("header",    is_header) \
-         .option("encoding",  abs_6_csv_nm_decode) \
-         .option("delimiter", abs_8_csv_cd_delimiter_value) \
-         .option("quote",     abs_9_csv_cd_delimter_text)
-
     # Show input Parameter(s)
     if (is_debugging == "1"):
         print("abs_1_csv_nm_account         : '" + abs_1_csv_nm_account + "'")
         print("abs_2_csv_nm_secret          : '" + abs_2_csv_nm_secret + "'")
         print("abs_3_csv_nm_container       : '" + abs_3_csv_nm_container + "'")
-        print("abs_4_csv_tx_folder          : '" + abs_4_csv_ds_folderpath + "'")
-        print("abs_5_csv_nm_file            : '" + abs_5_csv_ds_filename + "'")
+        print("abs_4_csv_ds_folderpath      : '" + abs_4_csv_ds_folderpath + "'")
+        print("abs_5_csv_ds_filename        : '" + abs_5_csv_ds_filename + "'")
         print("abs_6_csv_nm_decode          : '" + abs_6_csv_nm_decode + "'")
         print("abs_7_csv_is_1st_header      : '" + abs_7_csv_is_1st_header + "'")
         print("abs_8_csv_cd_delimiter_value : '" + abs_8_csv_cd_delimiter_value + "'")
         print("abs_9_csv_cd_delimter_text   : '" + abs_9_csv_cd_delimter_text + "'")
-        print("DataFrame:")
-        df.show(10)
 
+    # Helper SAS Token URL
+    is_header         = 0 if (abs_7_csv_is_1st_header == "1") else None
+    tx_accesskey      = rn.get_secret(abs_2_csv_nm_secret, is_debugging)
+    ds_filepath_local = f"C:/temp/{abs_5_csv_ds_filename}"
+    ds_filepath_blob  = "" if len(abs_4_csv_ds_folderpath) == 0 else abs_4_csv_ds_folderpath + "/" 
+    ds_filepath_blob += f"{abs_5_csv_ds_filename}"    
+
+    # Define the connection string and the blob details
+    tx_connection_string = f"DefaultEndpointsProtocol=https;AccountName={abs_1_csv_nm_account};AccountKey={tx_accesskey};EndpointSuffix=core.windows.net"
+
+    # Create the BlobServiceClient object
+    blob_service_client = BlobServiceClient.from_connection_string(tx_connection_string)
+
+    # Create the BlobClient object
+    blob_client = blob_service_client.get_blob_client(container=abs_3_csv_nm_container, blob=ds_filepath_blob)
+    
+    # Download the blob to a local file
+    with open(ds_filepath_local, "wb") as download_file:
+        download_file.write(blob_client.download_blob().readall())
+    
+    # Read the CSV file with the specified parameters
+    df = pd.read_csv(ds_filepath_local, header=is_header, delimiter=abs_8_csv_cd_delimiter_value, encoding=abs_6_csv_nm_decode, quotechar=abs_9_csv_cd_delimter_text)
+    
     # All done
     return df
 
@@ -87,29 +89,6 @@ def abs_sas_url_xls(
     # Debugging
     is_debugging
 ):
-
-    # Helper SAS Token URL
-    tx_sas_token    = sc.get_secret(abs_2_xls_nm_secret, is_debugging)
-    tx_sas_url      = "spark.hadoop.fs.azure.sas." + abs_3_xls_nm_container + "." + abs_1_xls_nm_account + ".blob.core.windows.net"
-    is_header       = "true" if (abs_7_xls_is_first_header == "1") else "false"
-    
-    # Define the path to the CSV file in the blob container
-    tx_blob_container_path =  "wasbs://" + abs_3_xls_nm_container+  "@" + abs_1_xls_nm_account + ".blob.core.windows.net/"
-    tx_blob_container_path =+ abs_4_xls_ds_folderpath + "/" + abs_5_xls_ds_filename
-    
-    # Initialize Spark session
-    spark = ss.getSparkSession("BlobExcelToSparkDataFrame")
-
-    # Load the Excel file into a DataFrame using the SAS token
-    df = spark.read.format("com.crealytics.spark.excel").load(tx_blob_container_path) \
-            .option("treatEmptyValuesAsNulls", "true") \
-            .option("inferSchema", "true") \
-            .option(tx_sas_url,    tx_sas_token) \
-            .option("sheetName",   abs_6_xls_nm_sheet) \
-            .option("useHeader",   is_header) \
-            .option("dataAddress", abs_8_xls_cd_top_left_cell \
-                           + ":" + abs_9_xls_cd_bottom_right_cell)            
-
     # Show input Parameter(s)
     if (is_debugging == "1"):
         print("abs_1_xls_nm_account           : '" + abs_1_xls_nm_account           + "'")
@@ -121,10 +100,32 @@ def abs_sas_url_xls(
         print("abs_7_xls_is_first_row_header  : '" + abs_7_xls_is_first_header      + "'")
         print("abs_8_xls_cd_top_left_cell     : '" + abs_8_xls_cd_top_left_cell     + "'")
         print("abs_9_xls_cd_bottom_right_cell : '" + abs_9_xls_cd_bottom_right_cell + "'")
-        print("DataFrame:")
-        df.show(10)
-        
-    # Return Converted the pandas DataFrame to a Spark DataFrame
+
+    # Determine local variables
+    is_header         = 0 if (abs_7_xls_is_first_header == "1") else None
+    tx_accesskey      = rn.get_secret(abs_2_xls_nm_secret, is_debugging)
+    ds_filepath_local = f"C:/temp/{abs_5_xls_ds_filename}"
+    ds_filepath_blob  = "" if len(abs_4_xls_ds_folderpath) == 0 else abs_4_xls_ds_folderpath + "/" 
+    ds_filepath_blob += f"{abs_5_xls_ds_filename}"
+    cd_range          = f"{abs_8_xls_cd_top_left_cell}:{abs_9_xls_cd_bottom_right_cell}" if (abs_8_xls_cd_top_left_cell != "" and abs_9_xls_cd_bottom_right_cell != "") else None
+
+    # Define the connection string and the blob details
+    tx_connection_string = f"DefaultEndpointsProtocol=https;AccountName={abs_1_xls_nm_account};AccountKey={tx_accesskey};EndpointSuffix=core.windows.net"
+
+    # Create the BlobServiceClient object
+    blob_service_client = BlobServiceClient.from_connection_string(tx_connection_string)
+
+    # Create the BlobClient object
+    blob_client = blob_service_client.get_blob_client(container=abs_3_xls_nm_container, blob=ds_filepath_blob)
+
+    # Download the blob to a local file
+    with open(ds_filepath_local, "wb") as download_file:
+        download_file.write(blob_client.download_blob().readall())
+
+    # Load the Excel file into a Pandas DataFrame
+    df = pd.read_excel(ds_filepath_local, engine='openpyxl', sheet_name=abs_6_xls_nm_sheet, header=is_header, usecols=cd_range)
+
+    # All done
     return df
 
 def sql_user_password(

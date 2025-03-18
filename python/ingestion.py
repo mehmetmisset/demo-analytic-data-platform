@@ -40,7 +40,7 @@ def update_dataset(ds_external_reference_id, id_dataset, is_ingestion, nm_proced
             # load source to dataframe
             source_df = src.web_table_anonymous_web(wtb_1_any_ds_url, wtb_2_any_ds_path, wtb_3_any_ni_index, is_debugging)
 
-        elif cd_parameter_group == 'abs_sas_url_xls':
+        elif cd_parameter_group == 'abs_sas_url_csv':
 
             # Get Ingestion specific parameters
             abs_1_csv_nm_account         = run.get_param_value('abs_1_csv_nm_account', params)
@@ -56,7 +56,7 @@ def update_dataset(ds_external_reference_id, id_dataset, is_ingestion, nm_proced
             # load source to dataframe
             source_df = src.abs_sas_url_xls(abs_1_csv_nm_account, abs_2_csv_nm_secret, abs_3_csv_nm_container, abs_4_csv_ds_folderpath, abs_5_csv_ds_filename, abs_6_csv_nm_decode, abs_7_csv_is_1st_header, abs_8_csv_cd_delimiter_value, abs_9_csv_cd_delimter_text, is_debugging)
 
-        elif cd_parameter_group == 'abs_sas_url_csv':
+        elif cd_parameter_group == 'abs_sas_url_xls':
 
             # Get Ingestion specific parameters
             abs_1_xls_nm_account           = run.get_param_value('abs_1_xls_nm_account', params)
@@ -70,7 +70,7 @@ def update_dataset(ds_external_reference_id, id_dataset, is_ingestion, nm_proced
             abs_9_xls_cd_bottom_right_cell = run.get_param_value('abs_9_xls_cd_bottom_right_cell', params)
 
             # load source to dataframe
-            source_df = src.abs_sas_url_csv(abs_1_xls_nm_account, abs_2_xls_nm_secret, abs_3_xls_nm_container, abs_4_xls_ds_folderpath, abs_5_xls_ds_filename, abs_6_xls_nm_sheet, abs_7_xls_is_first_header, abs_8_xls_cd_top_left_cell, abs_9_xls_cd_bottom_right_cell, is_debugging)
+            source_df = src.abs_sas_url_xls(abs_1_xls_nm_account, abs_2_xls_nm_secret, abs_3_xls_nm_container, abs_4_xls_ds_folderpath, abs_5_xls_ds_filename, abs_6_xls_nm_sheet, abs_7_xls_is_first_header, abs_8_xls_cd_top_left_cell, abs_9_xls_cd_bottom_right_cell, is_debugging)
 
         elif cd_parameter_group == 'sql_user_password':
 
@@ -103,7 +103,7 @@ def update_dataset(ds_external_reference_id, id_dataset, is_ingestion, nm_proced
 # fetch all dataset tobe processed
 todo = run.query(sa.target_db, "SELECT ni_process_group, id_dataset, is_ingestion, nm_procedure, nm_tsl_schema, nm_tsl_table, nm_tgt_schema, nm_tgt_table "\
                 +"FROM dta.process_group "\
-                +"WHERE nm_tgt_schema IN ('psa_stocks', 'dta_dividend') "\
+                +"WHERE nm_tgt_schema IN ('psa_references')--, psa_stocks', 'dta_dividend') "\
                 +"ORDER BY ni_process_group ASC")
 
 ni_index = 0
@@ -125,8 +125,13 @@ while (ni_index < mx_index):
 
     if (is_debugging == "1"): # Show what dataset is being processed
         print("--- " + ("Ingestion ----" if (is_ingestion == 1) else "Transformation ") + "--------------------------------------")
-        print(f"nm_tgt_schema : '{nm_tgt_schema}'")
-        print(f"nm_tgt_table  : '{nm_tgt_table}'")
+        print(f"ds_external_reference_id : '{ds_external_reference_id}'")
+        print(f"id_dataset               : '{id_dataset}'")
+        print(f"nm_tgt_schema            : '{nm_tgt_schema}'")
+        print(f"nm_tgt_table             : '{nm_tgt_table}'")
+        print(f"nm_procedure             : '{nm_procedure}'")  
+        print(f"nm_tsl_schema            : '{nm_tsl_schema}'")
+        print(f"nm_tsl_table             : '{nm_tsl_table}'")
         print("")
 
     # Update dataset "NVIDIA Corporation (NVDA)"
