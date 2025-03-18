@@ -537,8 +537,8 @@ BEGIN
     SET @tx_sql += @nwl + '    SET @cd_procedure_step = "SRC";'
     SET @tx_sql += @nwl + '    IF (1=1) BEGIN SET @ds_procedure_step = "Execute `Source`-query and insert result into `Temporal Staging Area`-table.";'
     SET @tx_sql += @nwl + '      '
-    SET @tx_sql += @nwl + '      /* Truncate `Temporal Staging Area`-table. */'
-    SET @tx_sql += @nwl + '      TRUNCATE TABLE ' + @src + ';'
+    SET @tx_sql += @nwl + '      /* `Truncate of the `Temporal (Landing and/or) Staging Area`-table(s). */'
+    SET @tx_sql += @nwl + '      TRUNCATE TABLE [tsa_' + @ip_nm_target_schema + '].[tsa_' + @ip_nm_target_table + '];' 
     SET @tx_sql += @nwl + '      '
     SET @tx_sql += @nwl + '      ' + REPLACE(@tx_query_source, @nwl, @tb3)
     SET @tx_sql += @nwl + '      '
