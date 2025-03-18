@@ -142,9 +142,9 @@ def process(nm_target_schema, nm_target_table):
     
 # Process all datasets
 #process('psa_yahoo_stocks',        'nvidia')
-process('psa_yahoo_stocks',        'abnas')
-#process('psa_yahoo_exchange_rate', 'eur_x_cad')
-#process('psa_yahoo_exchange_rate', 'eur_x_usd')
+#process('psa_yahoo_stocks',        'abnas')
+process('psa_yahoo_exchange_rate', 'eur_x_cad')
+process('psa_yahoo_exchange_rate', 'eur_x_usd')
 #process('psa_yahoo_dividends',     'nvidia')
 #process('psa_references',          'currency')
 #process('psa_references',          'stock')
