@@ -402,7 +402,7 @@ BEGIN
     SET @sql  = @emp + 'UPDATE t SET';
     SET @sql += @nwl + '  t.meta_is_active = 0, t.meta_dt_valid_till = ISNULL(s.meta_dt_valid_from, @dt_current_stand)';
     SET @sql += @nwl + 'FROM ' + @tgt + ' AS t LEFT JOIN ' + @src + ' AS s ON t.meta_ch_bk = s.meta_ch_bk';
-    SET @sql += @nwl + 'WHERE t.meta_is_active = 1 AND t.meta_ch_rh = ISNULL(s.meta_ch_rh,"n/a")';
+    SET @sql += @nwl + 'WHERE t.meta_is_active = 1 AND t.meta_ch_rh != ISNULL(s.meta_ch_rh,"n/a")';
     SET @sql += @nwl + IIF(@ptp='Incremental', 'AND t.meta_ch_bk IN (SELECT meta_ch_bk FROM ' + @src + ')',''); 
     SET @tx_query_update = REPLACE(@sql, '"', '''');
   END

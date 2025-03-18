@@ -54,7 +54,7 @@ def update_dataset(ds_external_reference_id, id_dataset, is_ingestion, nm_proced
             abs_9_csv_cd_delimter_text   = run.get_param_value('abs_9_csv_cd_delimter_text', params)
 
             # load source to dataframe
-            source_df = src.abs_sas_url_xls(abs_1_csv_nm_account, abs_2_csv_nm_secret, abs_3_csv_nm_container, abs_4_csv_ds_folderpath, abs_5_csv_ds_filename, abs_6_csv_nm_decode, abs_7_csv_is_1st_header, abs_8_csv_cd_delimiter_value, abs_9_csv_cd_delimter_text, is_debugging)
+            source_df = src.abs_sas_url_csv(abs_1_csv_nm_account, abs_2_csv_nm_secret, abs_3_csv_nm_container, abs_4_csv_ds_folderpath, abs_5_csv_ds_filename, abs_6_csv_nm_decode, abs_7_csv_is_1st_header, abs_8_csv_cd_delimiter_value, abs_9_csv_cd_delimter_text, is_debugging)
 
         elif cd_parameter_group == 'abs_sas_url_xls':
 
