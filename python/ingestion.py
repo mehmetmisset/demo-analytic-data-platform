@@ -102,15 +102,18 @@ def update_dataset(ds_external_reference_id, id_dataset, is_ingestion, nm_proced
 
 def process(nm_target_schema, nm_target_table):
     
+    # Build SQL for Query
+    tx_query = f"SELECT ni_process_group, id_dataset, is_ingestion, nm_procedure, nm_tsl_schema, nm_tsl_table, nm_tgt_schema, nm_tgt_table "\
+             + f"FROM dta.process_group "\
+             + f"WHERE nm_tgt_schema = '{nm_target_schema}'"\
+             + f"AND   nm_tgt_table  = '{nm_target_table}'"\
+             + f"ORDER BY ni_process_group ASC"
+    
     # fetch all dataset tobe processed
-    todo = run.query(sa.target_db, "SELECT ni_process_group, id_dataset, is_ingestion, nm_procedure, nm_tsl_schema, nm_tsl_table, nm_tgt_schema, nm_tgt_table "\
-                    +"FROM dta.process_group "\
-                    +"WHERE nm_tgt_schema = '{nm_target_schema}'"\
-                    +"AND   nm_tgt_table  = '{nm_target_table}'"\
-                    +"ORDER BY ni_process_group ASC")
+    todo = run.query(sa.target_db, tx_query)
 
     # External Reference ID
-    ds_external_reference_id = 'python-'+todo.loc[ni_index]['id_dataset']+dt.now().strftime('%Y%m%d%H%M%S')
+    ds_external_reference_id = 'python-'+todo.loc[0]['id_dataset']+dt.now().strftime('%Y%m%d%H%M%S')
 
     # Parameter for "update_dataset"
     id_dataset    = todo.loc[0]['id_dataset']  
@@ -139,12 +142,12 @@ def process(nm_target_schema, nm_target_table):
     
 # Process all datasets
 process('psa_yahoo_stocks',        'nvidia')
-process('psa_yahoo_stocks',        'abnas')
-process('psa_yahoo_exchange_rate', 'eur_x_cad')
-process('psa_yahoo_exchange_rate', 'eur_x_usd')
-process('psa_yahoo_dividends',     'nvidia')
-process('psa_references',          'currency')
-process('psa_references',          'stock')
-process('psa_public',              'iteration')
+#process('psa_yahoo_stocks',        'abnas')
+#process('psa_yahoo_exchange_rate', 'eur_x_cad')
+#process('psa_yahoo_exchange_rate', 'eur_x_usd')
+#process('psa_yahoo_dividends',     'nvidia')
+#process('psa_references',          'currency')
+#process('psa_references',          'stock')
+#process('psa_public',              'iteration')
 
 
