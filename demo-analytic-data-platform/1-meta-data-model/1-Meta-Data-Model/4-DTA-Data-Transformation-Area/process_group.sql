@@ -1,9 +1,13 @@
 ﻿CREATE VIEW dta.process_group AS WITH
 
 n AS ( /* Node */
-  SELECT dst.id_dataset,
-         dst.nm_target_schema,
-         dst.nm_target_table
+  SELECT dst.id_dataset                                                                  AS id_dataset,
+         dst.is_ingestion                                                                AS is_ingestion,
+         CONCAT(dst.nm_target_schema, '.usp_', dst.nm_target_table)                      AS nm_procedure,
+         CASE WHEN dst.is_ingestion = 1 THEN 'tsl_'+ dst.nm_target_schema ELSE 'n/a' END AS nm_tsl_schema,
+         CASE WHEN dst.is_ingestion = 1 THEN 'tsl_'+ dst.nm_target_table  ELSE 'n/a' END AS nm_tsl_table,
+         dst.nm_target_schema                                                            AS nm_tgt_schema,
+         dst.nm_target_table                                                             AS nm_tgt_table
   FROM dta.dataset AS dst
   WHERE dst.meta_is_active = 1
 ),
@@ -20,8 +24,12 @@ e AS ( /* Edge */
 )
 
 SELECT d00.id_dataset
-     , d00.nm_target_schema
-     , d00.nm_target_table
+     , d00.is_ingestion
+     , d00.nm_procedure
+     , d00.nm_tsl_schema
+     , d00.nm_tsl_table     
+     , d00.nm_tgt_schema
+     , d00.nm_tgt_table
      , ni_process_group = MAX(IIF(d01.id_dataset_source IS NOT NULL, 1, 0)
                              +IIF(d02.id_dataset_source IS NOT NULL, 1, 0)
                              +IIF(d03.id_dataset_source IS NOT NULL, 1, 0)
@@ -48,6 +56,10 @@ FROM n AS d00
 
 
 GROUP BY d00.id_dataset
-       , d00.nm_target_schema
-       , d00.nm_target_table
+       , d00.is_ingestion
+       , d00.nm_procedure
+       , d00.nm_tsl_schema
+       , d00.nm_tsl_table     
+       , d00.nm_tgt_schema
+       , d00.nm_tgt_table
 GO
