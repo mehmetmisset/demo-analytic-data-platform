@@ -11,6 +11,8 @@
     <OutputPath>.</OutputPath>
     <Name>4-processing-python</Name>
     <RootNamespace>4-processing-python</RootNamespace>
+    <InterpreterId>
+    </InterpreterId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,6 +24,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="main.py" />
+    <Compile Include="modules\credentials.py" />
+    <Compile Include="modules\credentials_template.py" />
+    <Compile Include="modules\run.py" />
+    <Compile Include="modules\session.py" />
+    <Compile Include="modules\source.py" />
+    <Compile Include="modules\target.py" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="modules\" />
