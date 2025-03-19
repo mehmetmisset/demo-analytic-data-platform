@@ -33,7 +33,7 @@ BEGIN
     JOIN dta.dataset   AS dst ON dst.meta_is_active = 1 AND dst.id_dataset  = att.id_dataset AND dst.nm_target_schema = @ip_nm_target_schema AND dst.nm_target_table = @ip_nm_target_table
     JOIN srd.datatype  AS dtp ON dtp.meta_is_active = 1 AND dtp.id_datatype = att.id_datatype
 
-    WHERE att.meta_is_active = 1 AND att.nm_target_column NOT IN ('meta_dt_valid_from', 'meta_dt_valid_till', 'meta_is_active', 'meta_ch_rh', 'meta_ch_bk', 'meta_ch_pk')
+    WHERE att.meta_is_active = 1 AND att.nm_target_column NOT IN ('meta_dt_valid_from', 'meta_dt_valid_till', 'meta_is_active', 'meta_ch_rh', 'meta_ch_bk', 'meta_ch_pk', 'meta_dt_created')
     ORDER BY ni_ordering ASC;
 
   END
@@ -51,7 +51,8 @@ BEGIN
     SET @tx_etl += '  [meta_is_active]     BIT      NOT NULL,' + CHAR(10);
     SET @tx_etl += '  [meta_ch_rh]         CHAR(32) NOT NULL,' + CHAR(10);
     SET @tx_etl += '  [meta_ch_bk]         CHAR(32) NOT NULL,' + CHAR(10);
-    SET @tx_etl += '  [meta_ch_pk]         CHAR(32) NOT NULL'  + CHAR(10);
+    SET @tx_etl += '  [meta_ch_pk]         CHAR(32) NOT NULL,' + CHAR(10);
+    SET @tx_etl += '  [meta_dt_created]    DATETIME NOT NULL DEFAULT GETDATE()'  + CHAR(10);
 
   END
 
