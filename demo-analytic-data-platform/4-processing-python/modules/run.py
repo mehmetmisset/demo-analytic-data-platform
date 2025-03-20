@@ -100,7 +100,7 @@ def update_dataset(ds_external_reference_id, id_dataset, is_ingestion, nm_proced
     # All is well
     return result
 
-def process(nm_target_schema, nm_target_table, is_debugging):
+def data_pipeline(nm_target_schema, nm_target_table, is_debugging):
     
     # Build SQL for Query
     tx_query = f"SELECT ni_process_group, id_dataset, is_ingestion, nm_procedure, nm_tsl_schema, nm_tsl_table, nm_tgt_schema, nm_tgt_table "\
