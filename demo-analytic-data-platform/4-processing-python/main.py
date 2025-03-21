@@ -7,7 +7,11 @@ import modules.run as run
 # Set Debugging to "1" => true
 is_debugging = "1"
 
+# rebuild html documentation for main page
+run.export_documentation('-1', is_debugging)
+
 # Process all datasets
+
 run.data_pipeline('psa_yahoo_stocks',        'o', is_debugging)
 #run.data_pipeline('psa_yahoo_stocks',        'nvidia', is_debugging)
 #run.data_pipeline('psa_yahoo_stocks',        'abnas', is_debugging)

@@ -46,6 +46,12 @@ AS DECLARE
   @cl NVARCHAR(32);
 
 BEGIN
+    
+  /* Turn off Effected Row */
+  SET NOCOUNT ON;
+    
+  /* Turn off Warnings */
+  SET ANSI_WARNINGS OFF;
 
   IF (1=1 /* Build HTML-file */) BEGIN
     
@@ -97,7 +103,7 @@ BEGIN
         EXEC f @id, @tx; SET @tx = N'      '
         EXEC f @id, @tx; SET @tx = N'      <p><u><b>Status :</b></u><i><b style="color:' + @cl +';">' + @st + '</b></i></p>'
         EXEC f @id, @tx; SET @tx = N'      '
-        EXEC f @id, @tx; SET @tx = N'      <p><u><b>Group :</b></u><i>' + ISNULL(mdm.json_value(0, @tx_json_group, 'nm_group'), 'n/a') + '</b></i></p>'
+        EXEC f @id, @tx; SET @tx = N'      <p><u><b>Group :</b></u><i>' + ISNULL(mdm.json_value(0, @tx_json_group, 'fn_group'), 'n/a') + '</b></i></p>'
         EXEC f @id, @tx; SET @tx = N'      '
         EXEC f @id, @tx; SET @tx = N'      <h4><u>Description</u></h4>'
         EXEC f @id, @tx; SET @tx = N'      <p>' + ISNULL(mdm.json_value(0, @tx_json_dataset, 'fd_dataset'), '/n/a') + '</p>';
@@ -158,9 +164,9 @@ BEGIN
         EXEC f @id, @tx; SET @tx = N'      <p>These properties determine which "source"-attribute if any is used for calculatie the "Technical Valid"-from and till values.</p>'
         EXEC f @id, @tx; SET @tx = N'      <table>'
         EXEC f @id, @tx; SET @tx = N'        <tr><b><i><th>Property Name</th><th>Properyt Value</th></b></i></tr>'
-        EXEC f @id, @tx; SET @tx = N'        <tr><td><b><i>ELT Processing Type</b></i></td>'          + ISNULL(mdm.json_value(0, @tx_json_ingestion_etl, 'nm_processing_type'), 'n/a' )            + '</td></tr>'
-        EXEC f @id, @tx; SET @tx = N'        <tr><td><b><i>SQL for Technical Valid From</b></i></td>' + ISNULL(mdm.json_value(0, @tx_json_ingestion_etl, 'tx_sql_for_meta_dt_valid_from'), 'n/a' ) + '</td></tr>'
-        EXEC f @id, @tx; SET @tx = N'        <tr><td><b><i>SQL for Technical Valid Till</b></i></td>' + ISNULL(mdm.json_value(0, @tx_json_ingestion_etl, 'tx_sql_for_meta_dt_valid_till'), 'n/a' ) + '</td></tr>'
+        EXEC f @id, @tx; SET @tx = N'        <tr><td><b><i>ELT Processing Type</b></i></td>         <td>' + ISNULL(mdm.json_value(0, @tx_json_ingestion_etl, 'nm_processing_type'), 'n/a' )            + '</td></tr>'
+        EXEC f @id, @tx; SET @tx = N'        <tr><td><b><i>SQL for Technical Valid From</b></i></td><td>' + ISNULL(mdm.json_value(0, @tx_json_ingestion_etl, 'tx_sql_for_meta_dt_valid_from'), 'n/a' ) + '</td></tr>'
+        EXEC f @id, @tx; SET @tx = N'        <tr><td><b><i>SQL for Technical Valid Till</b></i></td><td>' + ISNULL(mdm.json_value(0, @tx_json_ingestion_etl, 'tx_sql_for_meta_dt_valid_till'), 'n/a' ) + '</td></tr>'
         EXEC f @id, @tx; SET @tx = N'      </table>'
       END      
 

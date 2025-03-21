@@ -4,13 +4,31 @@ from modules import source      as src
 from modules import target      as tgt
 from modules import run         as run
 
-from datetime     import datetime as dt
-from sqlalchemy   import create_engine, text
-from urllib.parse import quote
+from azure.storage.blob import BlobServiceClient
+from datetime           import datetime as dt
+from sqlalchemy         import create_engine, text
+from urllib.parse       import quote
 
 import pandas as pd
 import pyodbc
-from azure.storage.blob import BlobServiceClient
+import os
+from azure.storage.blob import ContentSettings
+
+
+def folder_exists(folder_path):
+    if os.path.isdir(folder_path):
+        print(f"The folder '{folder_path}' exists.")
+        return True
+    else:
+        print(f"The folder '{folder_path}' does not exist.")
+        return False
+
+def create_folder(folder_path):
+    try:
+        os.makedirs(folder_path, exist_ok=True)  # `exist_ok=True` prevents errors if the folder already exists
+        print(f"Folder '{folder_path}' created successfully.")
+    except Exception as e:
+        print(f"Error creating folder '{folder_path}': {e}")
 
 
 def update_dataset(ds_external_reference_id, id_dataset, is_ingestion, nm_procedure, nm_tsl_schema, nm_tsl_table, is_debugging):
@@ -139,6 +157,8 @@ def data_pipeline(nm_target_schema, nm_target_table, is_debugging):
     # Update dataset "NVIDIA Corporation (NVDA)"
     result = update_dataset(ds_external_reference_id, id_dataset, is_ingestion, nm_procedure, nm_tsl_schema, nm_tsl_table, is_debugging)
     
+    documentation = export_documentation(id_dataset, is_debugging)
+    
     print("all done")
     
 def export_documentation(id_dataset, is_debugging):
@@ -154,29 +174,51 @@ def export_documentation(id_dataset, is_debugging):
     
     # Fetch the data
     df = query(sa.target_db, tx_query)
+    tx = df['tx_line']
 
     # Generate HTML content
-    tx_html_content = df['tx_line'].to_html(index=False, escape=False)
+    tx_content_data = "\n".join(tx)
+    cd_content_type = "text/html"
 
     # Define file path and name
     ds_filepath_blob  = df.loc[0]['ds_file_path'] + df.loc[0]['nm_file_name']
-    ds_filepath_local = f"C:/Temp/{df.loc[0]['ds_file_path'].replace('\\', '/')}"
+    ds_filepath_blob  = ds_filepath_blob.replace('\\', r'/')
+    ds_temp_folder    = "C:/Temp"
+    ds_filepath_local = f"{ds_temp_folder}/{ds_filepath_blob}"
+    ds_folderpath_local = ds_filepath_local.replace("/" + df.loc[0]['nm_file_name'], "")
 
+    # check if folders exist
+    if folder_exists(ds_temp_folder) == False:
+        create_folder(ds_temp_folder)
+        
+    # check if folders exist
+    if folder_exists(ds_folderpath_local) == False:
+        create_folder(ds_folderpath_local)
+        
     # Write HTML content to a file
     with open(ds_filepath_local, "w", encoding="utf-8") as file:
-        file.write(tx_html_content)
+        file.write(tx_content_data)
 
     # Upload the file to Azure Blob Storage
     abs_1_nm_account   = sa.blob_documentation['account']
-    abs_2_cd_accesskey    = sa.blob_documentation['secret']
+    abs_2_cd_accesskey = get_secret(sa.blob_documentation['secret'], is_debugging)
     abs_3_nm_container = sa.blob_documentation['container']
 
-    # Upload the file to Azure Blob Storage
-    blob_service_client = BlobServiceClient(f"https://{abs_1_nm_account}.blob.core.windows.net", credential=abs_2_cd_accesskey)
+    # Define the connection string and the blob details
+    tx_connection_string = f"DefaultEndpointsProtocol=https;AccountName={abs_1_nm_account};AccountKey={abs_2_cd_accesskey};EndpointSuffix=core.windows.net"
+
+    # Create the BlobServiceClient object
+    blob_service_client = BlobServiceClient.from_connection_string(tx_connection_string)
+
+    # Create the BlobClient object
     blob_client = blob_service_client.get_blob_client(container=abs_3_nm_container, blob=ds_filepath_blob)
 
     with open(ds_filepath_local, "rb") as data:
-        blob_client.upload_blob(data, overwrite=True)
+        blob_client.upload_blob(
+            data,
+            overwrite=True,
+            content_settings=ContentSettings(content_type=cd_content_type)
+        )
 
     if is_debugging == "1":
         print(f"HTML file '{ds_filepath_blob}' uploaded to Azure Blob Storage container '{abs_3_nm_container}'.")
@@ -236,7 +278,6 @@ def usp_dataset_ingestion(nm_procedure, is_debugging):
 def usp_dataset_transformation(nm_procedure, ds_external_reference_id):
 
     return execute_procedure(sa.target_db, nm_procedure, ip_ds_external_reference_id = ds_external_reference_id)
-
 
 def truncate_table(credentials_db, nm_schema, nm_table):
     

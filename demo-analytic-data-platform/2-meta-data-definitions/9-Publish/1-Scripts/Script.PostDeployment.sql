@@ -80,6 +80,14 @@ GO
 BEGIN EXEC ##build_html_file_dataset_all @ip_is_debugging = 0; END
 GO
 
+
+PRINT('/* ------------------------------------------------------------------------- */');
+PRINT('/* Execute all "Update"-procedure for the "Transformation"-definitions.      */');
+PRINT('/* ------------------------------------------------------------------------- */');
+GO
+BEGIN EXEC ##build_html_page_main @ip_is_debugging = 0; END
+GO
+
 PRINT('/* ------------------------------------------------------------------------- */');
 PRINT('/* Execute all "Validation" of "metadata"-definitions.                       */');
 PRINT('/* ------------------------------------------------------------------------- */');

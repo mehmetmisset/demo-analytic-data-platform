@@ -12,7 +12,11 @@ target_db = {
     "username" : r"username",
     "password" : r"password"
 }
-
+blob_documentation = {
+    "account"   : "your-accoutn-name",
+    "secret"    : "the-secret-name-of-the-accesskey",
+    "container" : "your-container-name"
+}
 # path to the executable of Python
 ds_path_to_python = r'path_to_and_including_python.exe'
 
