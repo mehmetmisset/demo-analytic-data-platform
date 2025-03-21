@@ -10,6 +10,7 @@ from urllib.parse import quote
 
 import pandas as pd
 import pyodbc
+from azure.storage.blob import BlobServiceClient
 
 
 def update_dataset(ds_external_reference_id, id_dataset, is_ingestion, nm_procedure, nm_tsl_schema, nm_tsl_table, is_debugging):
@@ -140,8 +141,45 @@ def data_pipeline(nm_target_schema, nm_target_table, is_debugging):
     
     print("all done")
     
+def export_documentation(id_dataset, is_debugging):
+    
+    # Build SQL for Query
+    tx_query  = f"SELECT f.ds_file_path"
+    tx_query += f"\n     , f.nm_file_name"
+    tx_query += f"\n     , t.ni_line"
+    tx_query += f"\n     , tx_line"
+    tx_query += f"\nFROM mdm.html_file_name AS f" 
+    tx_query += f"\nJOIN mdm.html_file_text AS t ON t.id_dataset= f.id_dataset" 
+    tx_query += f"\nWHERE f.id_dataset = '{id_dataset}'"
+    
+    # Fetch the data
+    df = query(sa.target_db, tx_query)
 
+    # Generate HTML content
+    tx_html_content = df['tx_line'].to_html(index=False, escape=False)
 
+    # Define file path and name
+    ds_filepath_blob  = df.loc[0]['ds_file_path'] + df.loc[0]['nm_file_name']
+    ds_filepath_local = f"C:/Temp/{df.loc[0]['ds_file_path'].replace('\\', '/')}"
+
+    # Write HTML content to a file
+    with open(ds_filepath_local, "w", encoding="utf-8") as file:
+        file.write(tx_html_content)
+
+    # Upload the file to Azure Blob Storage
+    abs_1_nm_account   = sa.blob_documentation['account']
+    abs_2_cd_accesskey    = sa.blob_documentation['secret']
+    abs_3_nm_container = sa.blob_documentation['container']
+
+    # Upload the file to Azure Blob Storage
+    blob_service_client = BlobServiceClient(f"https://{abs_1_nm_account}.blob.core.windows.net", credential=abs_2_cd_accesskey)
+    blob_client = blob_service_client.get_blob_client(container=abs_3_nm_container, blob=ds_filepath_blob)
+
+    with open(ds_filepath_local, "rb") as data:
+        blob_client.upload_blob(data, overwrite=True)
+
+    if is_debugging == "1":
+        print(f"HTML file '{ds_filepath_blob}' uploaded to Azure Blob Storage container '{abs_3_nm_container}'.")
 
 def get_parameters(id_dataset):
 
