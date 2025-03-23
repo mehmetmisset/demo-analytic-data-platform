@@ -131,7 +131,8 @@ BEGIN
         EXEC f @id, @tx; SET @tx = N'        </b></i></tr>'
         SET @ni_run = 0;
         SET @tx_run = (
-          SELECT run.dt_run_started
+          SELECT TOP 5
+                 run.dt_run_started
                , run.dt_run_finished
                , run.dt_previous_stand
                , run.dt_current_stand

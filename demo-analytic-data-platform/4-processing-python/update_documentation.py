@@ -17,7 +17,7 @@ dst = run.query(sa.target_db, tx_sql_statement)
 print("Updating all documentation of datasets")
 for i in range(0, len(dst)):
   for row in dst:
-    id_dataset = dst.loc[0]['id_dataset']
+    id_dataset = dst.loc[i]['id_dataset']
     run.export_documentation(id_dataset, is_debugging)
 
 # update all datasets   
