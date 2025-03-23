@@ -29,8 +29,8 @@ run.export_documentation('-1', is_debugging)
 
 # Transformations
 # run.data_pipeline('dta_dimensions', 'currency', is_debugging)
-run.data_pipeline('dta_yahoo_dividends', 'stocks_u01_v02', is_debugging)
-run.data_pipeline('dta_yahoo_dividends', 'stocks_u01_v01', is_debugging)
+run.data_pipeline('dta_yahoo_stocks', 'stocks_u01_v02', is_debugging)
+run.data_pipeline('dta_yahoo_stocks', 'stocks_u01_v01', is_debugging)
 # run.data_pipeline('dta_yahoo_exchange_rate', 'exchange_rate', is_debugging)
 
 print("all done")
