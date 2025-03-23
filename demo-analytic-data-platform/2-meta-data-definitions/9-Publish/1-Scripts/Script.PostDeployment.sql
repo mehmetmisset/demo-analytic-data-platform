@@ -74,7 +74,7 @@ BEGIN EXEC ##usp_execute_all_usp @ip_is_only_metadata = 0; END
 GO
 
 PRINT('/* ------------------------------------------------------------------------- */');
-PRINT('/* Execute all "Update"-procedure for the "Transformation"-definitions.      */');
+PRINT('/* Execute all "Update"-documentation for the "Transformation"-definitions.  */');
 PRINT('/* ------------------------------------------------------------------------- */');
 GO
 BEGIN EXEC ##build_html_file_dataset_all @ip_is_debugging = 0; END
@@ -82,10 +82,10 @@ GO
 
 
 PRINT('/* ------------------------------------------------------------------------- */');
-PRINT('/* Execute all "Update"-procedure for the "Transformation"-definitions.      */');
+PRINT('/* Execute all "Update"-documentation for the "main"-page.                   */');
 PRINT('/* ------------------------------------------------------------------------- */');
 GO
-BEGIN EXEC ##build_html_page_main @ip_is_debugging = 0; END
+BEGIN EXEC mdm.usp_build_html_page_main @ip_is_debugging = 0; END
 GO
 
 PRINT('/* ------------------------------------------------------------------------- */');

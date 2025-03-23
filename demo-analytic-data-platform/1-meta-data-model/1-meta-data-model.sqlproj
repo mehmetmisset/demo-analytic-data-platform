@@ -78,6 +78,7 @@
     <Folder Include="8-Commen-Features\Procedures\Run" />
     <Folder Include="8-Commen-Features\Tables" />
     <Folder Include="8-Commen-Features\Views" />
+    <Folder Include="8-Commen-Features\Synonyms" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="1-Meta-Data-Model\1-MDM-Meta-Data-Model\html_file_name.sql" />
@@ -152,6 +153,9 @@
     <Build Include="8-Commen-Features\Functions\tvf_get_parameters.sql" />
     <Build Include="8-Commen-Features\Views\data_lineage_utilized_dataset.sql" />
     <Build Include="8-Commen-Features\Views\data_lineage_utilized_mapping.sql" />
+    <Build Include="8-Commen-Features\Synonyms\f.sql" />
+    <Build Include="8-Commen-Features\Procedures\Documentation\usp_build_html_file_dataset.sql" />
+    <Build Include="8-Commen-Features\Procedures\Documentation\usp_build_html_main_file.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="9-Publish\2-Depolyment\1-meta-data-model.blank-profiel.publish.xml" />

@@ -29,7 +29,7 @@ BEGIN
     DELETE FROM ##dst WHERE id_dataset = @id_dataset;
 
 	  /* Extract all "Transformation"-parts from "source"-query. */
-    EXEC ##build_html_file_dataset
+    EXEC [mdm].[usp_build_html_file_dataset]
       @ip_id_dataset   = @id_dataset,
       @ip_is_debugging = @ip_is_debugging;
 

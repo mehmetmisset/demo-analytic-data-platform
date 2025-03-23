@@ -1,7 +1,4 @@
-﻿DROP PROCEDURE IF EXISTS ##build_html_page_main
-GO
-
-CREATE PROCEDURE ##build_html_page_main
+﻿CREATE PROCEDURE mdm.usp_build_html_page_main
 
   /* Input Parameter(s) */
   @ip_is_debugging BIT = 0,
@@ -229,6 +226,3 @@ BEGIN
 
 END
 GO
-
---begin exec ##build_html_page_main 1, 0; end;
---go

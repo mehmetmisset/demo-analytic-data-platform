@@ -91,7 +91,6 @@
     <None Include="2-Definitions\readme.md" />
     <None Include="9-Publish\2-Deployment\2-meta-data-definitions.blank-profiel.publish.xml" />
     <None Include="9-Publish\2-Deployment\2-meta-data-definitions.synology.publish.xml" />
-    <None Include="9-Publish\1-Scripts\3-documentation\Script.usp_build_html_main_page.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="9-Publish\1-Scripts\Script.PostDeployment.sql" />
@@ -155,9 +154,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="9-Publish\1-Scripts\2-Validation\Script1.usp_validation_of_definitions.sql" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="9-Publish\1-Scripts\3-documentation\Script.usp_build_html_file_dataset.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="9-Publish\1-Scripts\3-documentation\Script.usp_build_html_file_dataset_all.sql" />

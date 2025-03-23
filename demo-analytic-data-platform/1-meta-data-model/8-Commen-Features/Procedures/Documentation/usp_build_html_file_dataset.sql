@@ -1,13 +1,4 @@
-﻿DROP SYNONYM IF EXISTS f;
-GO
-
-CREATE SYNONYM f FOR mdm.usp_html_file_text;
-GO
-
-DROP PROCEDURE IF EXISTS ##build_html_file_dataset; 
-GO
-
-CREATE PROCEDURE ##build_html_file_dataset 
+﻿CREATE PROCEDURE [mdm].[usp_build_html_file_dataset]
   
   @ip_id_dataset   CHAR(32),
   @ip_is_debugging BIT = 0
@@ -17,17 +8,17 @@ AS DECLARE
   /* JSON-Array to hold Infromation for the HTML text. */
   @ni_json_array_index        INT,                                 
   @mx_json_array_index        INT,                                 
-  @tx_json_dataset            NVARCHAR(MAX) = (SELECT * FROM tsa_dta.tsa_dataset                WHERE id_dataset = @ip_id_dataset FOR JSON AUTO),
-  @tx_json_development_status NVARCHAR(MAX) = (SELECT * FROM tsa_srd.tsa_development_status     WHERE id_development_status = (SELECT id_development_status FROM tsa_dta.tsa_dataset WHERE id_dataset = @ip_id_dataset) FOR JSON AUTO),
-  @tx_json_group              NVARCHAR(MAX) = (SELECT * FROM tsa_ohg.tsa_group                  WHERE id_group = (SELECT id_group FROM tsa_dta.tsa_dataset WHERE id_dataset = @ip_id_dataset) FOR JSON AUTO),
-  @tx_json_attribute          NVARCHAR(MAX) = (SELECT * FROM tsa_dta.tsa_attribute              WHERE id_dataset = @ip_id_dataset FOR JSON AUTO),
-  @tx_json_ingestion_etl      NVARCHAR(MAX) = (SELECT * FROM tsa_dta.tsa_ingestion_etl          WHERE id_dataset = @ip_id_dataset FOR JSON AUTO),
-  @tx_json_parameter_value    NVARCHAR(MAX) = (SELECT nm_parameter, tx_parameter_value, ni_parameter_value FROM (SELECT nm_parameter, tx_parameter_value, ni_parameter_value FROM tsa_dta.tsa_parameter_value AS val JOIN tsa_srd.tsa_parameter AS par ON par.id_parameter = val.id_parameter WHERE val.id_dataset = @ip_id_dataset) AS par ORDER BY par.ni_parameter_value FOR JSON AUTO),
+  @tx_json_dataset            NVARCHAR(MAX) = (SELECT * FROM dta.dataset                WHERE meta_is_active = 1 AND id_dataset = @ip_id_dataset FOR JSON AUTO),
+  @tx_json_development_status NVARCHAR(MAX) = (SELECT * FROM srd.development_status     WHERE meta_is_active = 1 AND id_development_status = (SELECT id_development_status FROM dta.dataset WHERE meta_is_active = 1 AND id_dataset = @ip_id_dataset) FOR JSON AUTO),
+  @tx_json_group              NVARCHAR(MAX) = (SELECT * FROM ohg.[group]                WHERE meta_is_active = 1 AND id_group = (SELECT id_group FROM dta.dataset WHERE meta_is_active = 1 AND id_dataset = @ip_id_dataset) FOR JSON AUTO),
+  @tx_json_attribute          NVARCHAR(MAX) = (SELECT * FROM dta.attribute              WHERE meta_is_active = 1 AND id_dataset = @ip_id_dataset FOR JSON AUTO),
+  @tx_json_ingestion_etl      NVARCHAR(MAX) = (SELECT * FROM dta.ingestion_etl          WHERE meta_is_active = 1 AND id_dataset = @ip_id_dataset FOR JSON AUTO),
+  @tx_json_parameter_value    NVARCHAR(MAX) = (SELECT nm_parameter, tx_parameter_value, ni_parameter_value FROM (SELECT nm_parameter, tx_parameter_value, ni_parameter_value FROM dta.parameter_value AS val JOIN srd.parameter AS par ON par.id_parameter = val.id_parameter WHERE par.meta_is_active = 1 AND val.meta_is_active = 1 AND val.id_dataset = @ip_id_dataset) AS par ORDER BY par.ni_parameter_value FOR JSON AUTO),
   
   /* JSON-Array and helpers to hold Infromation for the HTML text. */
   @ni_prt INT,
   @mx_prt INT,
-  @tx_prt NVARCHAR(MAX) = (SELECT * FROM tsa_dta.tsa_transformation_part WHERE id_dataset = @ip_id_dataset FOR JSON AUTO),
+  @tx_prt NVARCHAR(MAX) = (SELECT * FROM dta.transformation_part WHERE meta_is_active = 1 AND id_dataset = @ip_id_dataset FOR JSON AUTO),
   
   @ni_dst INT,
   @mx_dst INT,
@@ -130,7 +121,7 @@ BEGIN
         EXEC f @id, @tx; SET @tx = N'          <th>Run Started</th>'
         EXEC f @id, @tx; SET @tx = N'          <th>Run Finished</th>'
         EXEC f @id, @tx; SET @tx = N'          <th>Run Previous Stand</th>'
-        EXEC f @id, @tx; SET @tx = N'          <th>Run Current Stand/th>'
+        EXEC f @id, @tx; SET @tx = N'          <th>Run Current Stand</th>'
         EXEC f @id, @tx; SET @tx = N'          <th>Run Status (optional Error Message)</th>'
         EXEC f @id, @tx; SET @tx = N'          <th># Before </th>'
         EXEC f @id, @tx; SET @tx = N'          <th># Ingested</th>'
@@ -172,6 +163,8 @@ BEGIN
           EXEC f @id, @tx; SET @tx = N'        </tr>'
         SET @ni_run += 1; END
         EXEC f @id, @tx; SET @tx = N'      </table>'
+        EXEC f @id, @tx; SET @tx = N'      <br>'
+        EXEC f @id, @tx; SET @tx = N'      '
       END
 
       IF (1=1 /* Build HTML table for "Attributes". */) BEGIN
@@ -253,8 +246,8 @@ BEGIN
             SET @tx_map = (SELECT /* Extract "Mapping" for "Transformation"-part. */
               ni_ordering, nm_target_column, tx_transformation_mapping, is_in_group_by 
             FROM (SELECT att.ni_ordering, att.nm_target_column, map.tx_transformation_mapping, map.is_in_group_by 
-                  FROM tsa_dta.tsa_transformation_mapping AS map JOIN tsa_dta.tsa_attribute AS att ON att.id_attribute = map.id_attribute
-                  WHERE map.id_transformation_part = mdm.json_value(@ni_prt, @tx_prt, 'id_transformation_part')
+                  FROM dta.transformation_mapping AS map JOIN dta.attribute AS att ON att.meta_is_active = 1 AND att.id_attribute = map.id_attribute
+                  WHERE map.meta_is_active = 1 AND map.id_transformation_part = mdm.json_value(@ni_prt, @tx_prt, 'id_transformation_part')
                  ) AS map ORDER BY ni_ordering FOR JSON AUTO);
             SET @ni_map = 0; SET @mx_map = mdm.json_count(@tx_map); WHILE (@ni_map < @mx_map) BEGIN 
               EXEC f @id, @tx; SET @tx = N'          <tr>'
@@ -282,8 +275,8 @@ BEGIN
             SET @tx_dst = (SELECT /* Extract "Mapping" for "Transformation"-part. */
               ni_transformation_dataset, cd_join_type, nm_target_schema, nm_target_table, cd_alias, tx_join_criteria
             FROM (SELECT uds.ni_transformation_dataset, uds.cd_join_type, dst.nm_target_schema, dst.nm_target_table, uds.cd_alias, uds.tx_join_criteria
-                  FROM tsa_dta.tsa_transformation_dataset AS uds JOIN tsa_dta.tsa_dataset AS dst ON dst.id_dataset = uds.id_dataset
-                  WHERE uds.id_transformation_part = mdm.json_value(@ni_prt, @tx_prt, 'id_transformation_part') 
+                  FROM dta.transformation_dataset AS uds JOIN dta.dataset AS dst ON dst.id_dataset = uds.id_dataset
+                  WHERE uds.meta_is_active = 1 AND dst.meta_is_active = 1 AND uds.id_transformation_part = mdm.json_value(@ni_prt, @tx_prt, 'id_transformation_part') 
                  ) AS uds ORDER BY ni_transformation_dataset ASC FOR JSON AUTO);
             SET @ni_dst = 0; SET @mx_dst = mdm.json_count(@tx_dst); WHILE (@ni_dst < @mx_dst) BEGIN 
               EXEC f @id, @tx; SET @tx = N'          <tr>'
