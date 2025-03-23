@@ -36,6 +36,10 @@ AS DECLARE
   @ni_map INT,
   @mx_map INT,
   @tx_map NVARCHAR(MAX), /* Will be loaded with only the records of id_transformation_part */
+  
+  @ni_run INT,
+  @mx_run INT,
+  @tx_run NVARCHAR(MAX), 
 
   /* Helpers File Text*/
   @id CHAR(32)      = @ip_id_dataset,
@@ -116,6 +120,58 @@ BEGIN
         EXEC f @id, @tx; SET @tx = N'      <h3>Technical Properties :</h3>'
         EXEC f @id, @tx; SET @tx = N'      <p>The list of properties below is used by Azure Data Factory (ADF) select the correct `Copy Activity` and provide the correct `Parameters`.</p>'
         EXEC f @id, @tx; SET @tx = N'      <br>' 
+      END
+
+      IF (1=1 /* Adding Run status infromation */) BEGIN
+        EXEC f @id, @tx; SET @tx = N'      <h3>Run Status :</h3>'
+        EXEC f @id, @tx; SET @tx = N'      <p>The below table shows the run status of the dataset.</p>'
+        EXEC f @id, @tx; SET @tx = N'      <table>'
+        EXEC f @id, @tx; SET @tx = N'        <tr><b><i>'
+        EXEC f @id, @tx; SET @tx = N'          <th>Run Started</th>'
+        EXEC f @id, @tx; SET @tx = N'          <th>Run Finished</th>'
+        EXEC f @id, @tx; SET @tx = N'          <th>Run Previous Stand</th>'
+        EXEC f @id, @tx; SET @tx = N'          <th>Run Current Stand/th>'
+        EXEC f @id, @tx; SET @tx = N'          <th>Run Status (optional Error Message)</th>'
+        EXEC f @id, @tx; SET @tx = N'          <th># Before </th>'
+        EXEC f @id, @tx; SET @tx = N'          <th># Ingested</th>'
+        EXEC f @id, @tx; SET @tx = N'          <th># Inserted</th>'
+        EXEC f @id, @tx; SET @tx = N'          <th># Updated</th>'
+        EXEC f @id, @tx; SET @tx = N'          <th># After</th>'
+        EXEC f @id, @tx; SET @tx = N'        </b></i></tr>'
+        SET @ni_run = 0;
+        SET @tx_run = (
+          SELECT run.dt_run_started
+               , run.dt_run_finished
+               , run.dt_previous_stand
+               , run.dt_current_stand
+               , sts.fn_processing_status + CASE WHEN tx_message IS NOT NULL THEN ' (' + tx_message + ')' ELSE  '' END AS ds_run_status
+               , run.ni_before
+               , run.ni_ingested
+               , run.ni_inserted
+               , run.ni_updated
+               , run.ni_after
+          FROM rdp.run 
+          JOIN dta.dataset           AS dst ON dst.meta_is_active = 1 AND dst.id_dataset = run.id_dataset
+          JOIN srd.processing_status AS sts ON sts.meta_is_active = 1 AND sts.id_processing_status = run.id_processing_status
+          WHERE run.id_dataset = ''
+          ORDER BY dt_run_started DESC
+          FOR JSON AUTO
+        );
+        SET @mx_run = mdm.json_count(@tx_run); WHILE (@ni_run < @mx_run) BEGIN
+          EXEC f @id, @tx; SET @tx = N'        <tr>'
+          EXEC f @id, @tx; SET @tx = N'          <td>' + ISNULL(mdm.json_value(@ni_run, @tx_run, 'dt_run_started'), 'n/a') + '</td>'
+          EXEC f @id, @tx; SET @tx = N'          <td>' + ISNULL(mdm.json_value(@ni_run, @tx_run, 'dt_run_finished'), 'n/a') + '</td>'
+          EXEC f @id, @tx; SET @tx = N'          <td>' + ISNULL(mdm.json_value(@ni_run, @tx_run, 'dt_previous_stand'), 'n/a') + '</td>'
+          EXEC f @id, @tx; SET @tx = N'          <td>' + ISNULL(mdm.json_value(@ni_run, @tx_run, 'dt_current_stand'), 'n/a') + '</td>'
+          EXEC f @id, @tx; SET @tx = N'          <td>' + ISNULL(mdm.json_value(@ni_run, @tx_run, 'ds_run_status'), 'n/a') + '</td>'
+          EXEC f @id, @tx; SET @tx = N'          <td>' + ISNULL(mdm.json_value(@ni_run, @tx_run, 'ni_before'), 'n/a') + '</td>'
+          EXEC f @id, @tx; SET @tx = N'          <td>' + ISNULL(mdm.json_value(@ni_run, @tx_run, 'ni_ingested'), 'n/a') + '</td>'
+          EXEC f @id, @tx; SET @tx = N'          <td>' + ISNULL(mdm.json_value(@ni_run, @tx_run, 'ni_inserted'), 'n/a') + '</td>'
+          EXEC f @id, @tx; SET @tx = N'          <td>' + ISNULL(mdm.json_value(@ni_run, @tx_run, 'ni_updated'), 'n/a') + '</td>'
+          EXEC f @id, @tx; SET @tx = N'          <td>' + ISNULL(mdm.json_value(@ni_run, @tx_run, 'ni_after'), 'n/a') + '</td>'
+          EXEC f @id, @tx; SET @tx = N'        </tr>'
+        SET @ni_run += 1; END
+        EXEC f @id, @tx; SET @tx = N'      </table>'
       END
 
       IF (1=1 /* Build HTML table for "Attributes". */) BEGIN

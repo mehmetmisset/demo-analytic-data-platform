@@ -9,4 +9,4 @@ wtb_3_any_ni_index = '0'
 is_debugging = "1"
 
 df = src.web_table_anonymous_web(wtb_1_any_ds_url, wtb_2_any_ds_path, wtb_3_any_ni_index, is_debugging)
-df.head()
+df.columns
