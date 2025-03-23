@@ -153,7 +153,7 @@ BEGIN
           FROM rdp.run 
           JOIN dta.dataset           AS dst ON dst.meta_is_active = 1 AND dst.id_dataset = run.id_dataset
           JOIN srd.processing_status AS sts ON sts.meta_is_active = 1 AND sts.id_processing_status = run.id_processing_status
-          WHERE run.id_dataset = ''
+          WHERE run.id_dataset = @id
           ORDER BY dt_run_started DESC
           FOR JSON AUTO
         );
