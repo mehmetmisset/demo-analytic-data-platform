@@ -5,11 +5,9 @@
 # - web_table_anonymous_web : Load a table from a webpage into a Spark DataFrame.
 
 # Import Custom Modules
-from modules import session     as ss
 from modules import run         as rn
 
 from azure.storage.blob import BlobServiceClient
-from pyspark.sql        import SparkSession
 
 # Import for web_table_anonymous_web
 import pandas as pd
@@ -142,7 +140,7 @@ def sql_user_password(
 ):
     
     # Helper SAS Token URL
-    sql_6_cd_password = sc.get_secret(sql_3_nm_secret, is_debugging)
+    sql_6_cd_password = rn.get_secret(sql_3_nm_secret, is_debugging)
 
     # Database credentials
     credentials_db = {
@@ -179,6 +177,12 @@ def web_table_anonymous_web(
         is_debugging
     ):
 
+    # If is Debugging then show imput parameters
+    if (is_debugging == 1):
+        print("wtb_1_any_ds_url   : '" + wtb_1_any_ds_url + "'")
+        print("wtb_2_any_ds_path  : '" + wtb_2_any_ds_path + "'")
+        print("wtb_3_any_ni_index : '" + wtb_3_any_ni_index + "'")
+
     # Initialize the WebDriver (e.g., Chrome)
     driver = webdriver.Chrome()
 
@@ -186,14 +190,14 @@ def web_table_anonymous_web(
     driver.get(wtb_1_any_ds_url + wtb_2_any_ds_path)
 
     # Wait for the page to load (you might need to adjust the sleep time)
-    time.sleep(2)
+    time.sleep(5)
 
     try: # Find and click the "Accept Cookies" button (adjust the selector as needed)
         accept_button = driver.find_element(by.XPATH, '//button[text()="Alles accepteren"]')
         accept_button.click()
 
         # Wait for the page to load after accepting cookies
-        time.sleep(2)
+        time.sleep(5)
 
     except Exception as e:
         # Code to handle any other exceptions
@@ -216,14 +220,6 @@ def web_table_anonymous_web(
 
     # Read the table into a pandas DataFrame
     pandas_df = pd.read_html(table.getvalue())[int(wtb_3_any_ni_index)]
-
-    # If is Debugging then show imput parameters
-    if (is_debugging == 1):
-        print("wtb_1_any_ds_url   : '" + wtb_1_any_ds_url + "'")
-        print("wtb_2_any_ds_path  : '" + wtb_2_any_ds_path + "'")
-        print("wtb_3_any_ni_index : '" + wtb_3_any_ni_index + "'")
-        print("DataFrame:")
-        pandas_df.head(10)
 
     # Return the webtable as a DataFrame
     return pandas_df

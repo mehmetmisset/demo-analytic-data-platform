@@ -288,7 +288,7 @@ BEGIN
 					tds.ni_transformation_dataset,
 					tds.cd_alias, tds.cd_join_type,
 					CASE WHEN @is_full_join_used  = 0 
-					     AND  @is_union_join_used = 0 
+					     --AND  @is_union_join_used = 0 
 							 AND  tds.cd_join_type    = 'FROM' 
 						    THEN '  FROM (' /* Convert "FROM@is_union_join_used"-dataset into "subquery" that is filter on BK that have "change" that will "poisiblily" effect the result of the "Transformation". */
 								+@nwl+'    SELECT * FROM ['+dst.nm_target_schema+'].['+dst.nm_target_table+'] AS ['+tds.cd_alias+'] WHERE ['+tds.cd_alias+'].[meta_ch_bk] IN (' 
@@ -380,7 +380,7 @@ BEGIN
 			/* finish up the "main"-subquery part. */
 			SET @qry += @nwl + ') AS [main]';
 
-			IF (@is_full_join_used = 1 OR @is_union_join_used = 1 /* then the "FROM"-dataset can NOT be filter on BK`s, thus the whole "main"-resultset must be filter afterwards. */) BEGIN
+			IF (@is_full_join_used = 1 /* OR @is_union_join_used = 1*/ /* then the "FROM"-dataset can NOT be filter on BK`s, thus the whole "main"-resultset must be filter afterwards. */) BEGIN
 				SET @qry += IIF(LEN(@tx_sql_main_where_statement)!=0, @nwl + @tx_sql_main_where_statement, @emp);
 			END
 
@@ -520,14 +520,33 @@ BEGIN
     SET @tx_sql += @nwl + '  SET @cd_procedure_step = "SRC";'
     SET @tx_sql += @nwl + '  IF (1=1) BEGIN SET @ds_procedure_step = "Execute `Source`-query and insert result into `Temporal Staging Area`-table.";'
     SET @tx_sql += @nwl + '    '
-    SET @tx_sql += @nwl + '    /* `Truncate of the `Temporal (Landing and/or) Staging Area`-table(s). */'
-    SET @tx_sql += @nwl + '    TRUNCATE TABLE [tsa_' + @ip_nm_target_schema + '].[tsa_' + @ip_nm_target_table + '];' 
-    SET @tx_sql += @nwl + '    '
-    SET @tx_sql += @nwl + '    ' + REPLACE(@tx_query_source, @nwl, @tb3)
-    SET @tx_sql += @nwl + '    '
-    SET @tx_sql += @nwl + '    /* Set # Ended records. */'
-    SET @tx_sql += @nwl + '    SET @ni_ingested = @@ROWCOUNT;'
-    SET @tx_sql += @nwl + '    '
+    SET @tx_sql += @nwl + '    BEGIN TRY'
+    SET @tx_sql += @nwl + '      '
+    SET @tx_sql += @nwl + '      /* `Truncate of the `Temporal (Landing and/or) Staging Area`-table(s). */'
+    SET @tx_sql += @nwl + '      TRUNCATE TABLE [tsa_' + @ip_nm_target_schema + '].[tsa_' + @ip_nm_target_table + '];' 
+    SET @tx_sql += @nwl + '      '
+    SET @tx_sql += @nwl + '      /* Start the `Transaction`. */' 
+    SET @tx_sql += @nwl + '      BEGIN TRANSACTION; SET @is_transaction = 1;'
+    SET @tx_sql += @nwl + '      '
+    SET @tx_sql += @nwl + '      ' + REPLACE(@tx_query_source, @nwl, @tb3)
+    SET @tx_sql += @nwl + '      '
+    SET @tx_sql += @nwl + '      /* Set # Ended records. */'
+    SET @tx_sql += @nwl + '      SET @ni_ingested = @@ROWCOUNT;'
+    SET @tx_sql += @nwl + '      '
+    SET @tx_sql += @nwl + '      /* Commit the `Transaction`. */'
+    SET @tx_sql += @nwl + '      COMMIT TRANSACTION; SET @is_transaction = 0;'
+    SET @tx_sql += @nwl + '      '
+    SET @tx_sql += @nwl + '    END TRY'
+    SET @tx_sql += @nwl + '    BEGIN CATCH'
+    SET @tx_sql += @nwl + '      '
+    SET @tx_sql += @nwl + '      /* An `Error` occured`, rollback the transaction and register the `Error` in the Logging. */'
+    SET @tx_sql += @nwl + '      IF (@@TRANCOUNT > 0) BEGIN ROLLBACK TRANSACTION; EXEC rdp.run_failed @id_dataset; END;'
+    SET @tx_sql += @nwl + '      '
+    SET @tx_sql += @nwl + '      IF (@id_run IS NULL) BEGIN'
+    SET @tx_sql += @nwl + '        SET @tx_error_message = "ERROR: Loading of data to `Temporal Staging Area`-table `' + @ip_nm_target_schema + '.' + @ip_nm_target_table + '` failed!"'
+    SET @tx_sql += @nwl + '        RAISERROR(@tx_error_message, 18, 1)'
+    SET @tx_sql += @nwl + '      END' 
+    SET @tx_sql += @nwl + '    END CATCH  '
     SET @tx_sql += @nwl + '  END'
     SET @tx_sql += @nwl + '  ' 
     SET @tx_sql += @nwl + '  BEGIN TRY'

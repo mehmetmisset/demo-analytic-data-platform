@@ -34,90 +34,101 @@ def create_folder(folder_path):
 def update_dataset(ds_external_reference_id, id_dataset, is_ingestion, nm_procedure, nm_tsl_schema, nm_tsl_table, is_debugging):
     
     # Local Vairables
-    result = 'OK'
+    result = False
 
-    # If "Ingestion" first extract "source" data
-    if is_ingestion == 1:
-
-        # for "Ingestion" the run must be started, if "Transformation" the run is started in the "procedure" itself.
-        start(id_dataset, is_debugging, ds_external_reference_id)
-
-        # Get the parameters
-        params = get_parameters(id_dataset)
-        
-        # Paramters
-        cd_parameter_group = params.loc[0]['cd_parameter_group']
-
-        # Switch for cd_parameter_group
-        if cd_parameter_group == 'web_table_anonymous_web':
-
-            # Get Ingestion specific parameters
-            wtb_1_any_ds_url   = get_param_value('wtb_1_any_ds_url', params)
-            wtb_2_any_ds_path  = get_param_value('wtb_2_any_ds_path', params)
-            wtb_3_any_ni_index = get_param_value('wtb_3_any_ni_index', params)
-
-            # load source to dataframe
-            source_df = src.web_table_anonymous_web(wtb_1_any_ds_url, wtb_2_any_ds_path, wtb_3_any_ni_index, is_debugging)
-
-        elif cd_parameter_group == 'abs_sas_url_csv':
-
-            # Get Ingestion specific parameters
-            abs_1_csv_nm_account         = get_param_value('abs_1_csv_nm_account', params)
-            abs_2_csv_nm_secret          = get_param_value('abs_2_csv_nm_secret', params)
-            abs_3_csv_nm_container       = get_param_value('abs_3_csv_nm_container', params)
-            abs_4_csv_ds_folderpath      = get_param_value('abs_4_csv_ds_folderpath', params)
-            abs_5_csv_ds_filename        = get_param_value('abs_5_csv_ds_filename', params)
-            abs_6_csv_nm_decode          = get_param_value('abs_6_csv_nm_decode', params)
-            abs_7_csv_is_1st_header      = get_param_value('abs_7_csv_is_1st_header', params)
-            abs_8_csv_cd_delimiter_value = get_param_value('abs_8_csv_cd_delimiter_value', params)
-            abs_9_csv_cd_delimter_text   = get_param_value('abs_9_csv_cd_delimter_text', params)
-
-            # load source to dataframe
-            source_df = src.abs_sas_url_csv(abs_1_csv_nm_account, abs_2_csv_nm_secret, abs_3_csv_nm_container, abs_4_csv_ds_folderpath, abs_5_csv_ds_filename, abs_6_csv_nm_decode, abs_7_csv_is_1st_header, abs_8_csv_cd_delimiter_value, abs_9_csv_cd_delimter_text, is_debugging)
-
-        elif cd_parameter_group == 'abs_sas_url_xls':
-
-            # Get Ingestion specific parameters
-            abs_1_xls_nm_account           = get_param_value('abs_1_xls_nm_account', params)
-            abs_2_xls_nm_secret            = get_param_value('abs_2_xls_nm_secret', params)
-            abs_3_xls_nm_container         = get_param_value('abs_3_xls_nm_container', params)
-            abs_4_xls_ds_folderpath        = get_param_value('abs_4_xls_ds_folderpath', params)
-            abs_5_xls_ds_filename          = get_param_value('abs_5_xls_ds_filename', params)
-            abs_6_xls_nm_sheet             = get_param_value('abs_6_xls_nm_sheet', params)
-            abs_7_xls_is_first_header      = get_param_value('abs_7_xls_is_first_header', params)
-            abs_8_xls_cd_top_left_cell     = get_param_value('abs_8_xls_cd_top_left_cell', params)
-            abs_9_xls_cd_bottom_right_cell = get_param_value('abs_9_xls_cd_bottom_right_cell', params)
-
-            # load source to dataframe
-            source_df = src.abs_sas_url_xls(abs_1_xls_nm_account, abs_2_xls_nm_secret, abs_3_xls_nm_container, abs_4_xls_ds_folderpath, abs_5_xls_ds_filename, abs_6_xls_nm_sheet, abs_7_xls_is_first_header, abs_8_xls_cd_top_left_cell, abs_9_xls_cd_bottom_right_cell, is_debugging)
-
-        elif cd_parameter_group == 'sql_user_password':
-
-            # Get Ingestion specific parameters
-            sql_1_nm_server   = get_param_value('sql_1_nm_server', params)
-            sql_2_nm_username = get_param_value('sql_2_nm_username', params)
-            sql_3_nm_secret   = get_param_value('sql_3_nm_secret', params)
-            sql_4_nm_database = get_param_value('sql_4_nm_database', params)
-            sql_5_tx_query    = get_param_value('sql_5_tx_query', params)
-
-            # load source to dataframe
-            source_df = src.sql_user_password(sql_1_nm_server, sql_2_nm_username, sql_3_nm_secret, sql_4_nm_database, sql_5_tx_query, is_debugging)
-            
-        else:
-            raise ValueError(f"Unsupported cd_parameter_group: {cd_parameter_group}")
-        
-        # Load "Source"-dataframe to "Temporal Staging Landing"-table.
-        tgt.load_tsl(source_df, nm_tsl_schema, nm_tsl_table, is_debugging)
-        
-        # Start sql procedure specific for the "Target"-dataset on database side.
-        usp_dataset_ingestion(nm_procedure, is_debugging)
+    try:
     
-    # If "Transformation" start the run and the procedure
-    else:
-        usp_dataset_transformation(nm_procedure, ds_external_reference_id)
+        # If "Ingestion" first extract "source" data
+        if is_ingestion == 1:
+
+            # for "Ingestion" the run must be started, if "Transformation" the run is started in the "procedure" itself.
+            start(id_dataset, is_debugging, ds_external_reference_id)
+
+            # Get the parameters
+            params = get_parameters(id_dataset)
+            
+            # Paramters
+            cd_parameter_group = params.loc[0]['cd_parameter_group']
+
+            # Switch for cd_parameter_group
+            if cd_parameter_group == 'web_table_anonymous_web':
+
+                # Get Ingestion specific parameters
+                wtb_1_any_ds_url   = get_param_value('wtb_1_any_ds_url', params)
+                wtb_2_any_ds_path  = get_param_value('wtb_2_any_ds_path', params)
+                wtb_3_any_ni_index = get_param_value('wtb_3_any_ni_index', params)
+
+                # load source to dataframe
+                source_df = src.web_table_anonymous_web(wtb_1_any_ds_url, wtb_2_any_ds_path, wtb_3_any_ni_index, is_debugging)
+
+            elif cd_parameter_group == 'abs_sas_url_csv':
+
+                # Get Ingestion specific parameters
+                abs_1_csv_nm_account         = get_param_value('abs_1_csv_nm_account', params)
+                abs_2_csv_nm_secret          = get_param_value('abs_2_csv_nm_secret', params)
+                abs_3_csv_nm_container       = get_param_value('abs_3_csv_nm_container', params)
+                abs_4_csv_ds_folderpath      = get_param_value('abs_4_csv_ds_folderpath', params)
+                abs_5_csv_ds_filename        = get_param_value('abs_5_csv_ds_filename', params)
+                abs_6_csv_nm_decode          = get_param_value('abs_6_csv_nm_decode', params)
+                abs_7_csv_is_1st_header      = get_param_value('abs_7_csv_is_1st_header', params)
+                abs_8_csv_cd_delimiter_value = get_param_value('abs_8_csv_cd_delimiter_value', params)
+                abs_9_csv_cd_delimter_text   = get_param_value('abs_9_csv_cd_delimter_text', params)
+
+                # load source to dataframe
+                source_df = src.abs_sas_url_csv(abs_1_csv_nm_account, abs_2_csv_nm_secret, abs_3_csv_nm_container, abs_4_csv_ds_folderpath, abs_5_csv_ds_filename, abs_6_csv_nm_decode, abs_7_csv_is_1st_header, abs_8_csv_cd_delimiter_value, abs_9_csv_cd_delimter_text, is_debugging)
+
+            elif cd_parameter_group == 'abs_sas_url_xls':
+
+                # Get Ingestion specific parameters
+                abs_1_xls_nm_account           = get_param_value('abs_1_xls_nm_account', params)
+                abs_2_xls_nm_secret            = get_param_value('abs_2_xls_nm_secret', params)
+                abs_3_xls_nm_container         = get_param_value('abs_3_xls_nm_container', params)
+                abs_4_xls_ds_folderpath        = get_param_value('abs_4_xls_ds_folderpath', params)
+                abs_5_xls_ds_filename          = get_param_value('abs_5_xls_ds_filename', params)
+                abs_6_xls_nm_sheet             = get_param_value('abs_6_xls_nm_sheet', params)
+                abs_7_xls_is_first_header      = get_param_value('abs_7_xls_is_first_header', params)
+                abs_8_xls_cd_top_left_cell     = get_param_value('abs_8_xls_cd_top_left_cell', params)
+                abs_9_xls_cd_bottom_right_cell = get_param_value('abs_9_xls_cd_bottom_right_cell', params)
+
+                # load source to dataframe
+                source_df = src.abs_sas_url_xls(abs_1_xls_nm_account, abs_2_xls_nm_secret, abs_3_xls_nm_container, abs_4_xls_ds_folderpath, abs_5_xls_ds_filename, abs_6_xls_nm_sheet, abs_7_xls_is_first_header, abs_8_xls_cd_top_left_cell, abs_9_xls_cd_bottom_right_cell, is_debugging)
+
+            elif cd_parameter_group == 'sql_user_password':
+
+                # Get Ingestion specific parameters
+                sql_1_nm_server   = get_param_value('sql_1_nm_server', params)
+                sql_2_nm_username = get_param_value('sql_2_nm_username', params)
+                sql_3_nm_secret   = get_param_value('sql_3_nm_secret', params)
+                sql_4_nm_database = get_param_value('sql_4_nm_database', params)
+                sql_5_tx_query    = get_param_value('sql_5_tx_query', params)
+
+                # load source to dataframe
+                source_df = src.sql_user_password(sql_1_nm_server, sql_2_nm_username, sql_3_nm_secret, sql_4_nm_database, sql_5_tx_query, is_debugging)
+                
+            else:
+                raise ValueError(f"Unsupported cd_parameter_group: {cd_parameter_group}")
+            
+            # Load "Source"-dataframe to "Temporal Staging Landing"-table.
+            tgt.load_tsl(source_df, nm_tsl_schema, nm_tsl_table, is_debugging)
+            
+            # Start sql procedure specific for the "Target"-dataset on database side.
+            usp_dataset_ingestion(nm_procedure, is_debugging)
         
-    # All is well
-    return result
+        # If "Transformation" start the run and the procedure
+        else:
+            usp_dataset_transformation(nm_procedure, ds_external_reference_id)
+    
+        # If everything is done, return True
+        result = True
+
+    except Exception as e:
+
+        print(f"Error occurred: {e}")
+        result = False
+    
+    
+        # All is well
+        return result
 
 def data_pipeline(nm_target_schema, nm_target_table, is_debugging):
     
@@ -155,8 +166,20 @@ def data_pipeline(nm_target_schema, nm_target_table, is_debugging):
         print("")
 
     # Update dataset "NVIDIA Corporation (NVDA)"
-    result = update_dataset(ds_external_reference_id, id_dataset, is_ingestion, nm_procedure, nm_tsl_schema, nm_tsl_table, is_debugging)
-    
+    attempt = 0
+    result  = False
+    while (result == False and attempt < 3):
+        
+        if (is_debugging == "1"):
+            print(f"Attempt {attempt+1} to update dataset...")
+        
+        # Call the function to update the dataset
+        result = update_dataset(ds_external_reference_id, id_dataset, is_ingestion, nm_procedure, nm_tsl_schema, nm_tsl_table, is_debugging)    
+        
+        # Add 1 to the attempt counter
+        attempt += 1
+
+    # export documentation for dataset
     documentation = export_documentation(id_dataset, is_debugging)
     
     print("all done")
