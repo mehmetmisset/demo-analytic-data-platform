@@ -101,7 +101,7 @@ BEGIN
       EXEC f @id, @tx;       SET @tx = N'    ';
       EXEC f @id, @tx;       SET @tx = N'    <div style="display: flex; width: 100%; height: 100vh;">';
       
-      EXEC f @id, @tx;       SET @tx = N'      <div id="foolders" style="width: 15%; overflow-y: auto;">'
+      EXEC f @id, @tx;       SET @tx = N'      <div id="foolders" style="width: 25%; overflow-y: auto;">'
       
       EXEC f @id, @tx;       SET @tx = N'        <ul id="myUL">'
 
@@ -178,7 +178,7 @@ BEGIN
       EXEC f @id, @tx;       SET @tx = N'        </ul><!-- End myUL -->';
       
       EXEC f @id, @tx;       SET @tx = N'      </div>';
-      EXEC f @id, @tx;       SET @tx = N'      <div style="width: 85%;">' 
+      EXEC f @id, @tx;       SET @tx = N'      <div style="width: 75%;">' 
       EXEC f @id, @tx;       SET @tx = N'        <iframe id="iframe-dataset" src="" width="100%" height="100%">'
       EXEC f @id, @tx;       SET @tx = N'        </iframe>';
       EXEC f @id, @tx;       SET @tx = N'      </div>';
