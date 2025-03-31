@@ -1,6 +1,9 @@
 import sys
 sys.path.append('modules')
 
+# Read the config file
+# copy the credentials_template.py to credentials.py and fill in the values
+
 # Import Custom Modules
 import modules.run as run
 
