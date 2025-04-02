@@ -398,3 +398,4 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+demo-analytic-data-platform/4-processing-python/modules/credentials.py
