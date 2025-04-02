@@ -1,17 +1,24 @@
 # Description: This file contains the credentials for the database connections. 
-# The credentials are stored in a dictionary format.
+# to make the code work, a copy must be made of this file and named credentials.py.
+# The credentials must be filled in with the correct values.
+#
+# The credentials for the "Secret"-database.
 secret_db = {
     "server"   : "server_name,port",
     "database" : "secrets",
     "username" : r"username",
     "password" : r"password"
 }
+
+# The credentials for the "target"-database.
 target_db = {
     "server"   : "server_name,port",
     "database" : "secrets",
     "username" : r"username",
     "password" : r"password"
 }
+
+# The credentials for the "documentation"-blob storage with is setup as a static-webserver.
 blob_documentation = {
     "account"   : "your-accoutn-name",
     "secret"    : "the-secret-name-of-the-accesskey",

@@ -11,6 +11,8 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "3-processing-database", "3-
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "4-processing-python", "4-processing-python\4-processing-python.pyproj", "{149EB27E-67BB-402D-BF47-2521F1A1DECB}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "0-secrets", "0-secrets\0-secrets.sqlproj", "{5932E09D-8A1A-4A60-8BA7-4FB246504154}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,8 +39,17 @@ Global
 		{2CA660AE-5FA4-4499-97A0-2EC63CF92E28}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{149EB27E-67BB-402D-BF47-2521F1A1DECB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{149EB27E-67BB-402D-BF47-2521F1A1DECB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5932E09D-8A1A-4A60-8BA7-4FB246504154}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5932E09D-8A1A-4A60-8BA7-4FB246504154}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5932E09D-8A1A-4A60-8BA7-4FB246504154}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{5932E09D-8A1A-4A60-8BA7-4FB246504154}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5932E09D-8A1A-4A60-8BA7-4FB246504154}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5932E09D-8A1A-4A60-8BA7-4FB246504154}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {62F4080E-F185-4062-8562-65B5AE931819}
 	EndGlobalSection
 EndGlobal

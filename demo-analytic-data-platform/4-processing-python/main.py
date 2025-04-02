@@ -1,3 +1,6 @@
+# This is the main script to run the data pipeline for the PSA and DTA datasets.
+# It is the main entry point for the data pipeline and is used to run the data pipeline for all datasets.
+# It is also used to run the data pipeline for a specific dataset.
 import sys
 sys.path.append('modules')
 
@@ -7,7 +10,7 @@ import modules.run as run
 # Set Debugging to "1" => true
 is_debugging = "1"
 
-# rebuild html documentation for main page
+# rebuild html documentation for main pagepip
 run.export_documentation('-1', is_debugging)
 
 # Process all datasets
