@@ -3,6 +3,9 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
+# Ignore the following files if you are using the "GitHub for Windows" client
+credentials.py
+
 # User-specific files
 *.rsuser
 *.suo
